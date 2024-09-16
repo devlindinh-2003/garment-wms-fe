@@ -1,10 +1,10 @@
 import './App.css';
-import { Map } from 'lucide-react';
+import RouterComponent from './routes';
 
 function App() {
   return (
-    <div>
-      <Map color='red' size={30} />
+    <div className='App'>
+      <RouterComponent />
     </div>
   );
 }
