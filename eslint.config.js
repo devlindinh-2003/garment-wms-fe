@@ -6,7 +6,7 @@ import js from '@eslint/js';
 
 export default [
   {
-    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}']
   },
   { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
@@ -19,6 +19,7 @@ export default [
       'no-undef': 'warn',
       '@typescript-eslint/no-unused-vars': 'off',
       'react/react-in-jsx-scope': 'off',
-    },
-  },
+      '@typescript-eslint/no-require-imports': 'off'
+    }
+  }
 ];

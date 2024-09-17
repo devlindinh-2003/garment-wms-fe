@@ -19,7 +19,7 @@ const Colors = {
     700: '#1d4ed8',
     800: '#1e40af',
     900: '#1e3a8a',
-    950: '#172554',
+    950: '#172554'
   },
   commonBtnText: '#FFFFFF',
   btnBackground: '#FFFFFF',
@@ -30,8 +30,8 @@ const Colors = {
   pending: '#FE9705',
   skeleton: {
     bg: '#adadad',
-    hl: '#cccccc',
-  },
+    hl: '#cccccc'
+  }
 };
 
 export default Colors;
