@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import control from '@/assets/images/control.png';
-import logo from '@/assets/images/storage-icon.svg';
+import logo from '@/assets/images/warehouse-logo.svg';
 import { GoSignOut } from "react-icons/go";
 import { SideBarProps } from '@/constants/interface';
 
@@ -17,30 +17,53 @@ const SideBar: React.FC<SideBarProps> = ({
   };
   const [open, setOpen] = useState(true);
   const [activeTitle, setActiveTitle] = useState(menu[0]?.title || ''); 
-  const iconSize = 22;
+  const iconSize = 32;
+  const constraintWindowWidth = 800;
   const handleMenuClick = (menuTitle: string) => {
     setActiveTitle(menuTitle); 
   };
+  // Handle screen resize and collapse sidebar
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < constraintWindowWidth) {
+        setOpen(false);
+      } else {
+        setOpen(true);
+      }
+    };
+
+    // Set initial state based on screen size
+    handleResize();
+
+    // Listen for window resize
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   return (
     <div className="flex">
       <div
         className={` ${
           open ? 'w-72' : 'w-20 '
-        } bg-white h-screen p-5  pt-8 relative duration-300 ring-1 ring-blue-200`}
+        } bg-bluePrimary h-screen p-5  pt-8 relative duration-300 ring-1 ring-blue-200`}
       >
-        <img
-          src={control}
-          className={`absolute cursor-pointer -right-3 ${open ? 'top-[40px]' : 'top-[46px]'} w-7 border-slate-300
-           border-2 rounded-full  ${!open && 'rotate-180'}`}
-          onClick={() => setOpen(!open)}
-        />
+        {window.innerWidth >= constraintWindowWidth && (
+          <img
+            src={control}
+            className={`absolute cursor-pointer -right-3 top-[50px] w-7 border-slate-300
+             border-2 rounded-full  ${!open && 'rotate-180'}`}
+            onClick={() => setOpen(!open)}
+          />
+        )}
         <div className="flex gap-x-3 items-center">
           <img
             src={logo}
-            className={`cursor-pointer duration-500 w-8 h-8 ${open && ''}`}
+            className={`cursor-pointer duration-500 w-16 h-16 ${open && ''}`}
           />
           <h1
-            className={`text-black origin-left font-semibold text-xl duration-200 font-primary   ${
+            className={`text-white origin-left font-semibold text-xl duration-200 font-primary   ${
               !open && 'scale-0'
             }`}
           >
@@ -49,11 +72,13 @@ const SideBar: React.FC<SideBarProps> = ({
         </div>
         <ul className="pt-6">
           {menu.map((Menu, index) => (
-            // <Link to={Menu.link}>
+            <Link to={Menu.link}>
             <li
               key={index}
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-slate-400 text-gray-700 text-sm items-center gap-x-4 mt-2
-               ${activeTitle === Menu.title && 'bg-blue-300'} 
+              className={`flex font-semibold  rounded-md p-2 cursor-pointer hover:bg-blue-500 text-sm items-center gap-x-4 mt-2
+                hover:text-white
+                ${activeTitle === Menu.title ? 'text-bluePrimary-foreground': 'text-white'}
+               ${activeTitle === Menu.title && 'bg-white'} 
               ${!open && 'justify-center'}  
               `}
               onClick={() => handleMenuClick(Menu.title)}
@@ -63,12 +88,12 @@ const SideBar: React.FC<SideBarProps> = ({
                 {Menu.title}
               </span>
             </li>
-            // </Link>
+           </Link>
             
           ))}
         </ul>
         <div
-        className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-700 text-sm items-center gap-x-4 mt-2
+        className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-white text-sm items-center gap-x-4 mt-2
          ${!open && 'justify-center'}`}
         >
           <GoSignOut size={iconSize}/>

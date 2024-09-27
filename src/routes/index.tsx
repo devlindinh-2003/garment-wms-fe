@@ -10,6 +10,7 @@ import PurchaseStaffRoute from './PurchaseStaffRoute';
 import PurchaseStaffLayout from '@/layouts/PurchaseStaffLayout';
 import ProductionStaffRoute from './ProductionStaffRoute';
 import ProductionStaffLayout from '@/layouts/ProductionStaffLayout';
+import DeliveryNotesManagement from '@/pages/Delivery Notes/management';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -68,6 +69,15 @@ const RouterComponent: React.FC = () => {
             {
               path: '/purchase-staff/home',
               element: <Home />,
+            },
+          ],
+        },
+        {
+          element: <PurchaseStaffLayout />,
+          children: [
+            {
+              path: '/purchase-staff/delivery-note',
+              element: <DeliveryNotesManagement />,
             },
           ],
         },

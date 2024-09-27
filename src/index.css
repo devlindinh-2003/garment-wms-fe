@@ -35,8 +35,8 @@
     --gradient-2nd: #85A2F6;
     --gradient-3rd: #6E91F5;
     --gradient-4th: #5981F2;
-    --blue-primary: 217, 100%, 52%;
-    --blue-primary-foreground: 215, 89%, 48%;
+    --blue-primary: #246BFD;
+    --blue-primary-foreground: #6CBBFA;
   }
 
   .dark {
@@ -73,6 +73,6 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-slate-100 text-foreground;
   }
 }

@@ -2,32 +2,41 @@ import SideBar from '@/components/SideBar'
 import { MenuProps } from '@/constants/interface'
 import React from 'react'
 import { Outlet } from 'react-router-dom'
+import { FaHome, FaBoxOpen  } from "react-icons/fa";
+import { GiClothes } from "react-icons/gi";
+import { RiFilePaper2Fill } from "react-icons/ri";
+import TopBar from '@/components/TopBar';
+
 
 type Props = {}
+const iconSize = 32;
 const PurchaseStaffMenu: MenuProps[] = [
   {
     title: 'Home',
-    renderIcon: <></>,
+    renderIcon: <FaHome size={iconSize}/>,
     link: '/purchase-staff/home'
   },
   {
     title: 'Purchase Order',
-    renderIcon: <></>,
+    renderIcon: <FaBoxOpen size={iconSize}/>,
     link: '/purchase-staff/purchase-order'
   },
   {
-    title: 'Supplier',
-    renderIcon: <></>,
-    link: '/purchase-staff/supplier'
+    title: 'Delivery Note',
+    renderIcon: <FaBoxOpen size={iconSize}/>,
+    link: '/purchase-staff/delivery-note'
   },
   {
     title: 'Product',
-    renderIcon: <></>,
+    renderIcon: <GiClothes size={iconSize}/>
+    ,
     link: '/purchase-staff/product'
   },
   {
     title: 'Report',
-    renderIcon: <></>,
+    renderIcon: <RiFilePaper2Fill size={iconSize}/>
+
+    ,
     link: '/purchase-staff/report'
   },
 ]
@@ -35,7 +44,10 @@ const PurchaseStaffLayout = (props: Props) => {
   return (
     <div className='flex'>
     <SideBar menu={PurchaseStaffMenu}/>
-    <Outlet/>
+    <div className='flex flex-col gap-4 w-full'>
+      <TopBar/>
+      <Outlet/>
+    </div>
     </div>
     
   )
