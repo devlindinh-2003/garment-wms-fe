@@ -9,7 +9,7 @@ import TopBar from '@/components/TopBar';
 
 
 type Props = {}
-const iconSize = 32;
+const iconSize = 22;
 const PurchaseStaffMenu: MenuProps[] = [
   {
     title: 'Home',

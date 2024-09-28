@@ -17,7 +17,7 @@ const SideBar: React.FC<SideBarProps> = ({
   };
   const [open, setOpen] = useState(true);
   const [activeTitle, setActiveTitle] = useState(menu[0]?.title || ''); 
-  const iconSize = 32;
+  const iconSize = 22;
   const constraintWindowWidth = 800;
   const handleMenuClick = (menuTitle: string) => {
     setActiveTitle(menuTitle); 
