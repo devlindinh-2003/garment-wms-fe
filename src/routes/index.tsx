@@ -11,6 +11,7 @@ import PurchaseStaffLayout from '@/layouts/PurchaseStaffLayout';
 import ProductionStaffRoute from './ProductionStaffRoute';
 import ProductionStaffLayout from '@/layouts/ProductionStaffLayout';
 import DeliveryNotesManagement from '@/pages/Delivery Notes/management';
+import Demo from '@/pages/demo';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -19,6 +20,11 @@ const RouterComponent: React.FC = () => {
     {
       path: '/home',
       element: <Home />
+    },
+
+    {
+      path: '/demo',
+      element: <Demo />
     },
 
     {
@@ -33,11 +39,11 @@ const RouterComponent: React.FC = () => {
           children: [
             {
               path: '/warehouse-manager/home',
-              element: <Home />,
-            },
-          ],
-        },
-      ],
+              element: <Home />
+            }
+          ]
+        }
+      ]
     },
     // {
     //   path: '/login',
@@ -53,11 +59,11 @@ const RouterComponent: React.FC = () => {
           children: [
             {
               path: '/warehouse-staff/home',
-              element: <Home />,
-            },
-          ],
-        },
-      ],
+              element: <Home />
+            }
+          ]
+        }
+      ]
     },
     {
       path: '/',
@@ -85,19 +91,19 @@ const RouterComponent: React.FC = () => {
     },
     {
       path: '/',
-      element: <ProductionStaffRoute/>,
+      element: <ProductionStaffRoute />,
       children: [
         {
           element: <ProductionStaffLayout />,
           children: [
             {
               path: '/production-staff/home',
-              element: <Home />,
-            },
-          ],
-        },
-      ],
-    },
+              element: <Home />
+            }
+          ]
+        }
+      ]
+    }
 
     // { path: '*', element: <ErrorPage /> },
   ]);
