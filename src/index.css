@@ -31,12 +31,12 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --gradient-1st: #c7d6ff;
-    --gradient-2nd: #85a2f6;
-    --gradient-3rd: #6e91f5;
-    --gradient-4th: #5981f2;
-    --blue-primary: 217, 100%, 52%;
-    --blue-primary-foreground: 215, 89%, 48%;
+    --gradient-1st: #C7D6FF;
+    --gradient-2nd: #85A2F6;
+    --gradient-3rd: #6E91F5;
+    --gradient-4th: #5981F2;
+    --blue-primary: #246BFD;
+    --blue-primary-foreground: #6CBBFA;
   }
 
   .dark {
@@ -72,6 +72,6 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-slate-100 text-foreground;
   }
 }
