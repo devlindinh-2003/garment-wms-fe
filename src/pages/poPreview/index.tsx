@@ -17,17 +17,14 @@ const convertExcelDateToJSDate = (excelSerial: number): string => {
 };
 
 // Function to convert raw data to the format expected by the react-spreadsheet component
-// Here you can mark specific cells as read-only
+// Make all cells read-only
 const convertToSpreadsheetData = (data: any[][]) => {
-  return data.map((row, rowIndex) =>
-    row.map((cell, colIndex) => {
+  return data.map((row) =>
+    row.map((cell) => {
       if (isExcelDate(cell)) {
-        return { value: convertExcelDateToJSDate(cell) };
+        return { value: convertExcelDateToJSDate(cell), readOnly: true };
       }
-      if (rowIndex === 0 && colIndex === 0) {
-        return { value: cell, readOnly: true }; // Make cell A1 read-only
-      }
-      return { value: cell }; // Otherwise, keep original cell value
+      return { value: cell, readOnly: true };
     })
   );
 };
@@ -37,8 +34,8 @@ const POPreview: React.FC = () => {
   const navigate = useNavigate();
   const importedData = location.state?.importedData || [];
   const [spreadsheetData, setSpreadsheetData] = useState(convertToSpreadsheetData(importedData));
-  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false); // State for the dialog
-  const poNumber = spreadsheetData?.[2]?.[6]?.value || 'N/A'; // G2 corresponds to index [2][6]
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const poNumber = spreadsheetData?.[2]?.[6]?.value || 'N/A';
 
   console.log('Imported Data:', importedData);
 
@@ -54,18 +51,18 @@ const POPreview: React.FC = () => {
 
   // Handle the cancel action
   const handleCancel = () => {
-    setIsCancelDialogOpen(true); // Open the cancel confirmation dialog
+    setIsCancelDialogOpen(true);
   };
 
   // Handle confirmation from the dialog
   const handleConfirmCancel = () => {
     setIsCancelDialogOpen(false);
-    navigate(-1); // Navigate back after confirmation
+    navigate(-1);
   };
 
   // Handle closing the dialog without canceling
   const handleCloseDialog = () => {
-    setIsCancelDialogOpen(false); // Close dialog without action
+    setIsCancelDialogOpen(false);
   };
 
   return (
@@ -95,7 +92,7 @@ const POPreview: React.FC = () => {
       <div className="flex justify-end mt-4 space-x-5">
         {/* Cancel button to open confirmation dialog */}
         <Button
-          onClick={handleCancel} // Open the dialog on cancel click
+          onClick={handleCancel}
           className="bg-white text-primaryLight ring-1 ring-primaryLight hover:text-slate-600 hover:bg-slate-400 hover:ring-slate-400">
           Cancel
         </Button>

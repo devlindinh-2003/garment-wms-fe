@@ -38,12 +38,11 @@ const ImportPurchaseOrder: React.FC = () => {
       <div className="mt-10 max-w-4xl w-full">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold mb-4">Purchase Orders List</h1>
-
-          {/* Use the reusable UploadExcel component */}
           <UploadExcel
+            fileName="purchase order"
             onUploadComplete={handleUploadComplete}
-            continueButtonLabel="Proceed to Review" // Custom label for the continue button
-            onContinue={handleContinue} // Handle the continue action here
+            continueButtonLabel="Proceed to Review"
+            onContinue={handleContinue}
           />
         </div>
         <table className="table-auto w-full text-left border-collapse">

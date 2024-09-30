@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+import { Progress } from '@/components/ui/progress';
 import { FileUp, Trash, XCircle } from 'lucide-react';
 import Colors from '@/constants/color';
 import ExcelIcon from '@/assets/images/ExcelFile_Icon.png';
@@ -10,6 +11,7 @@ import { DialogTitle } from '@radix-ui/react-dialog';
 const MAX_FILE_SIZE_KB = 100;
 
 type UploadExcelProps = {
+  fileName: string;
   onUploadComplete: (data: any[][]) => void;
   continueButtonLabel?: string;
   onContinue: () => void;
@@ -17,6 +19,7 @@ type UploadExcelProps = {
 };
 
 const UploadExcel: React.FC<UploadExcelProps> = ({
+  fileName,
   onUploadComplete,
   onContinue,
   continueButtonLabel = 'Open File',
@@ -59,7 +62,14 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
   const processFile = (file: File | null) => {
     if (file) {
       setUploadError(null);
-      const fileSizeKB = file.size / 1024; // Convert bytes to KB
+
+      // Check file type (only accept .xlsx)
+      if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+        setUploadError('Only .xlsx files are allowed');
+        return;
+      }
+
+      const fileSizeKB = file.size / 1024;
       if (fileSizeKB > MAX_FILE_SIZE_KB) {
         setUploadError(`The file must not be over ${MAX_FILE_SIZE_KB} KB`);
         return;
@@ -121,7 +131,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
           e.preventDefault();
         }}>
         <DialogTitle>
-          <h1 className="text-xl font-semibold">Upload Purchase Owner</h1>
+          <h1 className="text-xl font-semibold capitalize">Upload {fileName}</h1>
         </DialogTitle>
 
         {/* File upload area */}
@@ -167,12 +177,10 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
           </div>
         )}
 
-        {/* Show upload progress */}
+        {/* Show upload progress using Shadcn Progress component */}
         {isUploading && (
-          <div className="w-full bg-gray-200 rounded-full h-4 mt-4">
-            <div
-              className="bg-blue-500 h-4 rounded-full"
-              style={{ width: `${uploadProgress}%` }}></div>
+          <div className="w-full mt-4">
+            <Progress value={uploadProgress} className="h-4 bg-gray-200" />
             <p className="text-sm text-gray-600 mt-1">{uploadProgress}% uploading...</p>
           </div>
         )}
@@ -181,7 +189,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
         {isUploadComplete && !uploadError && selectedFile && (
           <div className="mt-4 flex items-center justify-between bg-gray-100 p-4 rounded-lg">
             <div className="flex items-center space-x-3">
-              <img src={ExcelIcon} alt="Excel Icon" className="w-8 h-8" /> {/* Excel icon */}
+              <img src={ExcelIcon} alt="Excel Icon" className="w-8 h-8" />
               <div>
                 <p className="text-sm text-gray-700 font-bold">{selectedFile.name}</p>
                 <p className="text-xs text-green-600">Upload successfully</p>
