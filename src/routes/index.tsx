@@ -10,6 +10,8 @@ import PurchaseStaffRoute from './PurchaseStaffRoute';
 import PurchaseStaffLayout from '@/layouts/PurchaseStaffLayout';
 import ProductionStaffRoute from './ProductionStaffRoute';
 import ProductionStaffLayout from '@/layouts/ProductionStaffLayout';
+import POPreview from '@/pages/poPreview';
+import ImportPurchaseOrder from '@/pages/demoPO';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -32,11 +34,11 @@ const RouterComponent: React.FC = () => {
           children: [
             {
               path: '/warehouse-manager/home',
-              element: <Home />,
-            },
-          ],
-        },
-      ],
+              element: <Home />
+            }
+          ]
+        }
+      ]
     },
     // {
     //   path: '/login',
@@ -52,11 +54,11 @@ const RouterComponent: React.FC = () => {
           children: [
             {
               path: '/warehouse-staff/home',
-              element: <Home />,
-            },
-          ],
-        },
-      ],
+              element: <Home />
+            }
+          ]
+        }
+      ]
     },
     {
       path: '/',
@@ -67,27 +69,37 @@ const RouterComponent: React.FC = () => {
           children: [
             {
               path: '/purchase-staff/home',
-              element: <Home />,
-            },
-          ],
-        },
-      ],
+              element: <Home />
+            }
+          ]
+        }
+      ]
     },
     {
       path: '/',
-      element: <ProductionStaffRoute/>,
+      element: <ProductionStaffRoute />,
       children: [
         {
           element: <ProductionStaffLayout />,
           children: [
             {
               path: '/production-staff/home',
-              element: <Home />,
-            },
-          ],
-        },
-      ],
+              element: <Home />
+            }
+          ]
+        }
+      ]
     },
+
+    {
+      path: '/PODemo',
+      element: <ImportPurchaseOrder />
+    },
+
+    {
+      path: '/popreview',
+      element: <POPreview />
+    }
 
     // { path: '*', element: <ErrorPage /> },
   ]);
