@@ -171,7 +171,12 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
                 <p className="text-xs text-red-600">{uploadError}</p>
               </div>
             </div>
-            <Trash size={24} color="red" className="cursor-pointer" onClick={handleDeleteFile} />
+            <Trash
+              size={24}
+              color="red"
+              className="cursor-pointer hover:opacity-30"
+              onClick={handleDeleteFile}
+            />
           </div>
         )}
 
@@ -193,7 +198,12 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
                 <p className="text-xs text-green-600">Upload successfully</p>
               </div>
             </div>
-            <Trash size={24} color="red" className="cursor-pointer" onClick={handleDeleteFile} />
+            <Trash
+              size={25}
+              color="red"
+              className="cursor-pointer hover:opacity-30"
+              onClick={handleDeleteFile}
+            />
           </div>
         )}
 
