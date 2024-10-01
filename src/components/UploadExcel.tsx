@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/ui/Dialog';
 import { Progress } from '@/components/ui/progress';
 import { FileUp, Trash, XCircle } from 'lucide-react';
 import Colors from '@/constants/color';
