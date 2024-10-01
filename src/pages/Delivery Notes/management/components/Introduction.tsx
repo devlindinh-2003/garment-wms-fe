@@ -6,7 +6,7 @@ const Introduction = (props: Props) => {
   const title = 'Delivery Notes';
   const description = 'Easily update and manage your delivery notes here.';
   return (
-    <div className="w-full h-28 bg-white rounded-md
+    <div className="w-full h-32 bg-white rounded-xl shadow-sm border
     md:h-48
     ">
       <div className="flex items-center h-full justify-between">

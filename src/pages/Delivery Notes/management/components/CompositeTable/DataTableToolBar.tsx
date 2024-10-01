@@ -2,10 +2,11 @@
 
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { flexRender, Table } from '@tanstack/react-table';
+import { MdAdd } from "react-icons/md";
+
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
-import { DataTableViewOptions } from './DataTableViewOptions';
 
 import {
   ArrowDownIcon,
@@ -18,9 +19,11 @@ import {
   StopwatchIcon
 } from '@radix-ui/react-icons';
 
-import { DataTableFacetedFilter } from './DatatableFacedFilter';
 import { CustomColumnDef } from '@/types/CompositeTable';
 import { User } from '@/types/DemoUser';
+import { DataTableFacetedFilter } from '@/components/common/CompositeTable/DatatableFacedFilter';
+import { DataTableViewOptions } from '@/components/common/CompositeTable/DataTableViewOptions';
+import { useNavigate } from 'react-router-dom';
 
 export const statuses = [
   {
@@ -74,6 +77,10 @@ interface DataTableToolbarProps<TData> {
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+  const navigate = useNavigate();
+  function onClick(){
+    navigate('/purchase-staff/import-request/create')
+  }
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex flex-1 items-center space-x-2">
@@ -107,8 +114,13 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
           </Button>
         )}
       </div>
+      <div className="flex gap-5">
         <DataTableViewOptions table={table} />
-    
+        <Button onClick={onClick} variant={'default'} size="sm" className="ml-auto hidden h-8 lg:flex">
+          <MdAdd className="mr-2 h-4 w-4"/>
+          Add
+        </Button>
+      </div>
     </div>
   );
 }
