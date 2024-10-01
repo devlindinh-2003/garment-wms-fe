@@ -47,7 +47,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
 
   // Handle drag leave from the drop area
   const handleDragLeave = () => {
-    setIsDragging(false); //
+    setIsDragging(false);
   };
 
   // Handle file drop into the drop area
@@ -62,13 +62,11 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
   const processFile = (file: File | null) => {
     if (file) {
       setUploadError(null);
-
       // Check file type (only accept .xlsx)
       if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
         setUploadError('Only .xlsx files are allowed');
         return;
       }
-
       const fileSizeKB = file.size / 1024;
       if (fileSizeKB > MAX_FILE_SIZE_KB) {
         setUploadError(`The file must not be over ${MAX_FILE_SIZE_KB} KB`);
