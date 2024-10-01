@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
@@ -32,41 +32,61 @@ const formSchema = z.object({
   material: z.string({
     required_error: 'Please select a material to display.',
   }),
-  plannedQuantity: z.string().min(1, { message: 'Planned quantity is empty' }),
-  actualQuantity: z.string().min(1, { message: 'Actual quantity is empty' }),
+  plannedQuantity: z
+    .number()
+    .positive({ message: 'Planned quantity must be a positive number' }),
+  actualQuantity: z
+    .number()
+    .positive({ message: 'Actual quantity must be a positive number' }),
 });
 
 interface MaterialFormProps {
   isOpen: boolean;
   onOpenChange: (value: boolean) => void;
+  material: any; // Selected material to edit
   details: any[];
   setDetails: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-const MaterialForm = ({ isOpen, onOpenChange, details, setDetails }: MaterialFormProps) => {
+const EditMaterialForm = ({ isOpen, onOpenChange, material, details, setDetails }: MaterialFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       material: '',
-      plannedQuantity: '',
-      actualQuantity: '',
+      plannedQuantity: 0,
+      actualQuantity: 0,
     },
     mode: 'onChange',
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const newMaterial = {
-      materialId: (details.length + 1).toString(), // Generate new ID
-      SKU: `SKU${details.length + 1}`, // Generate new SKU
-      UOM: 'UOM', // Add default UOM
-      materialName: values.material,
-      plannedQuantity: Number(values.plannedQuantity),
-      actualQuantity: Number(values.actualQuantity),
-    };
-    
-    setDetails(prevDetails => [...prevDetails, newMaterial]); // Add new material to state
+  useEffect(() => {
+    if (material) {
+      form.reset({
+        material: material.materialName,
+        plannedQuantity: material.plannedQuantity || 0,
+        actualQuantity: material.actualQuantity || 0,
+      });
+    } else {
+      form.reset(); // Clear form if no material is passed
+    }
+  }, [material, form]);
 
-    console.log('Added Material:', newMaterial); // Check added material
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const materialData = {
+      ...material,
+      materialName: values.material,
+      plannedQuantity: values.plannedQuantity,
+      actualQuantity: values.actualQuantity,
+    };
+
+    const index = details.findIndex(item => item.materialId === material.materialId);
+    if (index !== -1) {
+      const updatedDetails = [...details];
+      updatedDetails[index] = { ...updatedDetails[index], ...materialData };
+      setDetails(updatedDetails);
+    }
+
+    console.log('Updated Details:', details);
     onCloseDialog(); // Close the dialog after submit
   };
 
@@ -79,7 +99,7 @@ const MaterialForm = ({ isOpen, onOpenChange, details, setDetails }: MaterialFor
     <Dialog open={isOpen} onOpenChange={onCloseDialog}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create a New Material</DialogTitle>
+          <DialogTitle>Edit Material</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -120,7 +140,7 @@ const MaterialForm = ({ isOpen, onOpenChange, details, setDetails }: MaterialFor
                     <Input
                       type="number"
                       value={value}
-                      onChange={(e) => onChange(e.target.value)}
+                      onChange={(e) => onChange(Number(e.target.value))}
                     />
                   </FormControl>
                   <FormMessage />
@@ -137,7 +157,7 @@ const MaterialForm = ({ isOpen, onOpenChange, details, setDetails }: MaterialFor
                     <Input
                       type="number"
                       value={value}
-                      onChange={(e) => onChange(e.target.value)}
+                      onChange={(e) => onChange(Number(e.target.value))}
                     />
                   </FormControl>
                   <FormMessage />
@@ -156,4 +176,4 @@ const MaterialForm = ({ isOpen, onOpenChange, details, setDetails }: MaterialFor
   );
 };
 
-export default MaterialForm;
+export default EditMaterialForm;

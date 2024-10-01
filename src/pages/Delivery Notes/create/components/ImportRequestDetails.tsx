@@ -6,19 +6,29 @@ import { getMaterialColumns } from './MaterialColumns';
 import type { ImportRequestDetails } from '@/types/ImportRequestType';
 import DataTable from '@/components/common/EditableTable/DataTable';
 import { Button } from '@/components/ui/button';
+import EditMaterialForm from './EditMaterialForm';
 type Props = {};
 
-const data = materialData
+// Replace this with your actual initial data or import
+const initialDetails = [
+  { materialId: "1", materialName: "Material 1", SKU: "SKU1", UOM: "pcs", plannedQuantity: 10, actualQuantity: 10 },
+  { materialId: "2", materialName: "Material 2", SKU: "SKU2", UOM: "pcs",plannedQuantity: 10, actualQuantity: 10 },
+  // Add more materials as needed
+];
 const ImportRequestDetails = (props: Props) => {
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isDialogCreateOpen, setIsDialogCreateOpen] = useState<boolean>(false);
   const [selectedMaterial, setSelectedMaterial] = useState<any>(null);
+  const [details, setDetails] = useState(initialDetails);
+  const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
+
   const onEdit = useCallback((material: ImportRequestDetails) => {
     setSelectedMaterial(material);
-    setIsDialogOpen(true);
+    setIsDialogEditOpen(true);
   }, []);
   const onDelete = useCallback((material: ImportRequestDetails) => {
-    console.log('Delete', material);
-  }, []);
+    const updatedDetails = details.filter(item => item.materialId !== material.materialId);
+    setDetails(updatedDetails);
+  }, [details]);
   const columns = useMemo(() => getMaterialColumns({ onEdit, onDelete }), []);
   return (
     <div className="px-4">
@@ -29,25 +39,41 @@ const ImportRequestDetails = (props: Props) => {
       <div className="flex justify-between mb-4">
         <div />
         {/* Add Button to Open the Dialog */}
-        <Button onClick={() => setIsDialogOpen(true)}>Add Material</Button>
+        <Button onClick={() => setIsDialogCreateOpen(true)}>Add Material</Button>
       </div>
         <div className="flex justify-between">
           <div />
           <div className="flex-nowrap">
-            <MaterialForm
-              isOpen={isDialogOpen}
-              material={selectedMaterial}
-              onOpenChange={(value) => {
-                setIsDialogOpen(value);
-                if (!value) {
-                  setSelectedMaterial(null);
-                }
-              }}
-            />
+          <MaterialForm
+        isOpen={isDialogCreateOpen}
+        onOpenChange={(value) => {
+          setIsDialogCreateOpen(value);
+        }}
+        details={details} 
+        setDetails={setDetails} 
+      />
+          </div>
+        </div>
+
+        <div className="flex justify-between">
+          <div />
+          <div className="flex-nowrap">
+          <EditMaterialForm
+          material={selectedMaterial}
+        isOpen={isDialogEditOpen}
+        onOpenChange={(value) => {
+          setIsDialogEditOpen(value);
+          if (!value) {
+            setSelectedMaterial(null);
+          }
+        }}
+        details={details} 
+        setDetails={setDetails} 
+      />
           </div>
         </div>
       
-        <DataTable data={data} columns={columns}/>
+        <DataTable data={details} columns={columns}/>
 
     </div>
   );
