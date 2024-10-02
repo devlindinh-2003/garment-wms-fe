@@ -4,21 +4,23 @@ import { Button } from '@/components/ui/button';
 import UploadExcel from '@/components/UploadExcel';
 import { mockPurchaseOrders } from '@/data/purchase_order';
 
+type SheetData = Record<string, (string | number | null | undefined)[][]>;
+
 const ImportPurchaseOrder: React.FC = () => {
-  const [parsedData, setParsedData] = useState<any[][]>([]);
+  const [sheetsData, setSheetsData] = useState<SheetData>({});
   const navigate = useNavigate();
 
   // Handle the completion of the file upload process
-  const handleUploadComplete = (data: any[][]) => {
-    setParsedData(data);
-    console.log('Uploaded data:', data);
+  const handleUploadComplete = (data: SheetData) => {
+    setSheetsData(data);
+    console.log('Uploaded sheets data:', data);
   };
 
   // Handle the continue action
   const handleContinue = () => {
-    if (parsedData.length > 0) {
-      console.log('Proceeding with uploaded data:', parsedData);
-      navigate('/popreview', { state: { importedData: parsedData } });
+    if (Object.keys(sheetsData).length > 0) {
+      console.log('Proceeding with uploaded sheets:', sheetsData);
+      navigate('/popreview', { state: { sheetsData } });
     } else {
       console.log('No data available. Cannot proceed.');
     }

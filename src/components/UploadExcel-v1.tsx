@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useRef, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { Button } from '@/components/ui/button';
@@ -11,11 +10,9 @@ import { DialogTitle } from '@radix-ui/react-dialog';
 
 const MAX_FILE_SIZE_KB = 100;
 
-type SheetRow = (string | number | null)[];
-
 type UploadExcelProps = {
   fileName: string;
-  onUploadComplete: (sheets: Record<string, SheetRow[]>) => void;
+  onUploadComplete: (data: any[][]) => void;
   continueButtonLabel?: string;
   onContinue: () => void;
   triggerButtonLabel?: string;
@@ -30,11 +27,11 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [isUploadComplete, setIsUploadComplete] = useState<boolean>(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isUploadComplete, setIsUploadComplete] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   // Handle file change when a user selects a file
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +43,11 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(true);
+  };
+
+  // Handle drag leave from the drop area
+  const handleDragLeave = () => {
+    setIsDragging(false);
   };
 
   // Handle file drop into the drop area
@@ -60,6 +62,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
   const processFile = (file: File | null) => {
     if (file) {
       setUploadError(null);
+      // Check file type (only accept .xlsx)
       if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
         setUploadError('Only .xlsx files are allowed');
         return;
@@ -90,23 +93,19 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
     }, 500);
   };
 
-  // Read the Excel file and pass all sheets to the onUploadComplete handler
+  // Read the Excel file and parse it to JSON
   const readExcel = (file: File) => {
     const reader = new FileReader();
-    reader.onload = (event: ProgressEvent<FileReader>) => {
-      const arrayBuffer = event.target?.result as ArrayBuffer;
-      const data = new Uint8Array(arrayBuffer);
-      const binaryStr = data.reduce((acc, byte) => acc + String.fromCharCode(byte), '');
+    reader.onload = (event: any) => {
+      const binaryStr = event.target.result;
       const workbook = XLSX.read(binaryStr, { type: 'binary' });
-      const sheetsData: Record<string, SheetRow[]> = {};
-      workbook.SheetNames.forEach((sheetName) => {
-        const sheet = XLSX.utils.sheet_to_json<SheetRow>(workbook.Sheets[sheetName], { header: 1 });
-        sheetsData[sheetName] = sheet;
-      });
-      console.log('Parsed Sheets Data:', sheetsData);
-      onUploadComplete(sheetsData);
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const jsonData: any[][] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      console.log('Parsed Data:', jsonData);
+      onUploadComplete(jsonData);
     };
-    reader.readAsArrayBuffer(file);
+    reader.readAsBinaryString(file);
   };
 
   // Handle file deletion and reset the file input field
@@ -125,7 +124,10 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
       <DialogTrigger>
         <Button>{triggerButtonLabel}</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}>
         <DialogTitle>
           <h1 className="text-xl font-semibold capitalize">Upload {fileName}</h1>
         </DialogTitle>
@@ -137,9 +139,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
               isDragging ? 'border-blue-700 bg-blue-50' : 'border-dashed border-blue-500'
             } rounded-lg p-10 cursor-pointer bg-gray-50`}
             onDragOver={handleDragOver}
-            onDragLeave={() => {
-              setIsDragging(false);
-            }}
+            onDragLeave={handleDragLeave}
             onDrop={handleDrop}>
             <input
               type="file"
@@ -180,7 +180,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
           </div>
         )}
 
-        {/* Show upload progress */}
+        {/* Show upload progress using Shadcn Progress component */}
         {isUploading && (
           <div className="w-full mt-4">
             <Progress value={uploadProgress} className="h-4 bg-gray-200" />

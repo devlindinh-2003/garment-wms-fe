@@ -1,68 +1,86 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Spreadsheet from 'react-spreadsheet';
-import { useLocation, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { Button } from '@/components/ui/button';
-import { AlertCircle } from 'lucide-react'; // For warning icon
-import { Dialog, DialogContent, DialogHeader } from '@/components/ui/Dialog';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { AlertCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Dialog';
 
-// Utility function to check if a given value is a valid Excel date
-const isExcelDate = (value: any): boolean => {
-  return typeof value === 'number' && value > 25569 && value < 60000; // Excel date range
-};
-
-// Utility function to convert an Excel date serial number to a JavaScript date string (formatted as dd/mm/yyyy)
-const convertExcelDateToJSDate = (excelSerial: number): string => {
-  const date = new Date((excelSerial - 25569) * 86400 * 1000); // Excel date to JS date conversion
-  return date.toLocaleDateString('en-GB'); // Format date as dd/mm/yyyy
-};
-
-// Function to convert raw data to the format expected by the react-spreadsheet component
-// Make all cells read-only
-const convertToSpreadsheetData = (data: any[][]) => {
+const convertToSpreadsheetData = (data: (string | number | null | undefined)[][]) => {
   return data.map((row) =>
-    row.map((cell) => {
-      if (isExcelDate(cell)) {
-        return { value: convertExcelDateToJSDate(cell), readOnly: true };
-      }
-      return { value: cell, readOnly: true };
-    })
+    row.map((cell) => ({
+      value: cell !== null && cell !== undefined ? convertIfDate(cell)?.toString() : ''
+    }))
   );
 };
 
+const convertIfDate = (
+  value: string | number | null | undefined
+): string | number | null | undefined => {
+  if (typeof value === 'number' && value > 25569 && value < 60000) {
+    const date = new Date((value - 25569) * 86400 * 1000);
+    return date.toLocaleDateString('en-GB');
+  }
+  return value;
+};
+
+const findPONumber = (data: (string | number | null | undefined)[][]): string => {
+  for (let row of data) {
+    if (row) {
+      for (let cell of row) {
+        if (typeof cell === 'string' && cell.toLowerCase().includes('po #')) {
+          const poIndex = row.indexOf(cell);
+          if (poIndex !== -1 && row[poIndex + 1]) {
+            const poValue = row[poIndex + 1];
+            if (typeof poValue === 'string' || typeof poValue === 'number') {
+              return poValue.toString();
+            }
+          }
+        }
+      }
+    }
+  }
+  return '';
+};
+
 const POPreview: React.FC = () => {
+  const columnLabels = ['A', 'B', 'C', 'D', 'E', 'F'];
   const location = useLocation();
   const navigate = useNavigate();
-  const importedData = location.state?.importedData || [];
-  const [spreadsheetData, setSpreadsheetData] = useState(convertToSpreadsheetData(importedData));
+  const { sheetsData } = location.state as {
+    sheetsData: Record<string, (string | number | null | undefined)[][]>;
+  };
+  const [currentSheet, setCurrentSheet] = useState<string>(Object.keys(sheetsData)[0] || '');
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
-  const poNumber = spreadsheetData?.[2]?.[6]?.value || 'N/A';
+  const [poNumber, setPONumber] = useState<string>('');
+  const spreadsheetRef = useRef<HTMLDivElement>(null);
 
-  console.log('Imported Data:', importedData);
+  useEffect(() => {
+    const sheetData = sheetsData[currentSheet];
+    if (sheetData) {
+      const foundPONumber = findPONumber(sheetData);
+      setPONumber(foundPONumber);
+    }
+  }, [currentSheet, sheetsData]);
 
-  const handleNewFileUpload = (newData: any[][]) => {
-    const parsedData = convertToSpreadsheetData(newData);
-    setSpreadsheetData(parsedData); // Update the spreadsheet data directly in the same route
-  };
-
-  // Handle the save action (placeholder for actual save logic)
-  const handleSave = () => {
-    console.log('Saving data...', spreadsheetData);
-  };
-
-  // Handle the cancel action
-  const handleCancel = () => {
-    setIsCancelDialogOpen(true);
-  };
-
-  // Handle confirmation from the dialog
-  const handleConfirmCancel = () => {
-    setIsCancelDialogOpen(false);
-    navigate(-1);
-  };
-
-  // Handle closing the dialog without canceling
-  const handleCloseDialog = () => {
-    setIsCancelDialogOpen(false);
+  const renderSpreadsheet = (data: (string | number | null | undefined)[][]) => {
+    return (
+      <div
+        ref={spreadsheetRef}
+        className="border border-gray-300 rounded-lg bg-white p-6 shadow-lg w-auto h-auto">
+        {data?.length > 0 ? (
+          <div className="w-auto h-auto">
+            <Spreadsheet
+              data={convertToSpreadsheetData(data)}
+              columnLabels={columnLabels}
+              className="table-fixed w-auto h-auto"
+            />
+          </div>
+        ) : (
+          <p className="text-gray-600">No data to display</p>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -70,35 +88,39 @@ const POPreview: React.FC = () => {
       {/* Header Section */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-semibold text-gray-700">Purchase Order Preview</h1>
+        {poNumber && <h2 className="text-xl font-semibold text-gray-600">PO Number: {poNumber}</h2>}
       </div>
 
-      {/* Display the extracted PO Number */}
-      <div className="mb-6">
-        <h2 className="text-xl font-medium">PO Number: {poNumber}</h2>
-      </div>
+      {/* Tabs to switch between sheets */}
+      <Tabs value={currentSheet} onValueChange={setCurrentSheet}>
+        <TabsList>
+          {Object.keys(sheetsData).map((sheetName) => (
+            <TabsTrigger
+              key={sheetName}
+              value={sheetName}
+              className="px-4 py-2 font-medium text-gray-600 hover:bg-gray-100">
+              {sheetName}
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
-      {/* Spreadsheet Display Section */}
-      <div className="flex justify-center items-center min-h-screen bg-gray-50 p-6">
-        <div className="border border-gray-300 rounded-lg bg-white p-6 shadow-lg">
-          {spreadsheetData.length > 0 ? (
-            <Spreadsheet data={spreadsheetData} className="table-fixed w-full border-collapse" />
-          ) : (
-            <p className="text-gray-600">No data to display</p>
-          )}
-        </div>
-      </div>
+        {Object.entries(sheetsData).map(([sheetName, data]) => (
+          <TabsContent key={sheetName} value={sheetName} className="bg-gray-50 p-6">
+            <div className="flex justify-center items-center">{renderSpreadsheet(data)}</div>
+          </TabsContent>
+        ))}
+      </Tabs>
 
       {/* Footer Buttons */}
       <div className="flex justify-end mt-4 space-x-5">
-        {/* Cancel button to open confirmation dialog */}
         <Button
-          onClick={handleCancel}
+          onClick={() => {
+            setIsCancelDialogOpen(true);
+          }}
           className="bg-white text-primaryLight ring-1 ring-primaryLight hover:text-slate-600 hover:bg-slate-400 hover:ring-slate-400">
           Cancel
         </Button>
-        <Button onClick={handleSave} className="bg-primaryLight text-white px-4 py-2 rounded-md">
-          Save purchase
-        </Button>
+        <Button className="bg-primaryLight text-white px-4 py-2 rounded-md">Save purchase</Button>
       </div>
 
       {/* Confirmation Dialog */}
@@ -108,11 +130,13 @@ const POPreview: React.FC = () => {
             e.preventDefault();
           }}
           className="max-w-lg mx-auto p-4 rounded-lg shadow-lg">
+          {/* Accessible Dialog Title */}
+          <DialogTitle className="text-xl font-semibold  text-center text-red-500 flex flex-col gap-3">
+            <AlertCircle size={48} className=" mx-auto " />
+            Are you sure you want to cancel the file?
+          </DialogTitle>
+
           <DialogHeader className="text-center flex flex-col gap-3">
-            <AlertCircle size={48} className="text-red-500 mx-auto " />
-            <h3 className="text-xl font-semibold text-red-600 text-center">
-              Are you sure want to cancel the file ?
-            </h3>
             <p className="text-gray-600 text-center">
               The file will be removed. Are you sure you want to cancel? This action cannot be
               undone.
@@ -121,12 +145,17 @@ const POPreview: React.FC = () => {
 
           <div className="flex flex-col space-y-5">
             <Button
-              onClick={handleCloseDialog}
+              onClick={() => {
+                setIsCancelDialogOpen(false);
+              }}
               className="bg-white text-primaryLight ring-1 ring-primaryLight hover:text-slate-600 hover:bg-slate-400 hover:ring-slate-400">
               No, Go Back
             </Button>
             <Button
-              onClick={handleConfirmCancel}
+              onClick={() => {
+                setIsCancelDialogOpen(false);
+                navigate('/PODemo');
+              }}
               className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md">
               Yes, Cancel
             </Button>
