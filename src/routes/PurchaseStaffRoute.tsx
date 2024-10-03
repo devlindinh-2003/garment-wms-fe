@@ -1,10 +1,7 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom';
 
 const PurchaseStaffRoute = () => {
-  return (
-    <Outlet/>
-  )
-}
+  return <Outlet />;
+};
 
-export default PurchaseStaffRoute
+export default PurchaseStaffRoute;

@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/Badge';
 import { CustomColumnDef } from '@/types/CompositeTable';
 import { importRequestsData, ImportRequest } from '@/types/ImportRequestType';
 import TanStackBasicTable from './CompositeTable';
+import { Link } from 'react-router-dom';
 
 type Props = {};
 
@@ -80,7 +81,12 @@ const ImportRequestList = (props: Props) => {
     {
       header: 'Supplier',
       accessorKey: 'supplier',
-      enableColumnFilter: false
+      enableColumnFilter: false,
+      cell: ({ row }) => (
+        <Link to={''} className="text-blue-600 underline-offset-1">
+          {row.original.supplier}
+        </Link>
+      )
     },
     {
       header: 'Delivery type',
