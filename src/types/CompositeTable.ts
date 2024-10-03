@@ -29,6 +29,9 @@ export interface UseGetTableResponseType<TData> {
 // Extend the ColumnDef type to include filterOptions
 export type CustomColumnDef<TData> = ColumnDef<TData> & {
   filterOptions?: FilterOption[]; // Add the filterOptions property here
+  isEditable?: boolean;
+  editableCell?: any;
+  isPopover?: boolean;
 };
 type FilterOption = {
   label: string;

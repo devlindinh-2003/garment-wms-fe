@@ -1,7 +1,7 @@
 import DataTableColumnHeader from '@/components/common/EditableTable/DataTableColumnHeader';
 import DataTableRowActions from '@/components/common/EditableTable/DataTableRowActions';
+import { CustomColumnDef } from '@/types/CompositeTable';
 import { ImportRequestDetails } from '@/types/ImportRequestType';
-import { ColumnDef } from '@tanstack/react-table';
 
 interface MaterialsColumnsProps {
   onEdit: (material: ImportRequestDetails) => void;
@@ -11,7 +11,7 @@ interface MaterialsColumnsProps {
 export const getMaterialColumns = ({
   onEdit,
   onDelete
-}: MaterialsColumnsProps): ColumnDef<ImportRequestDetails>[] => [
+}: MaterialsColumnsProps): CustomColumnDef<ImportRequestDetails>[] => [
   {
     accessorKey: 'materialId',
     header: 'Material ID'
@@ -21,7 +21,9 @@ export const getMaterialColumns = ({
     header: ({ column }) => (
       <DataTableColumnHeader className="text-center" column={column} title="Name" />
     ),
-    cell: ({ row }) => <div className="text-center">{row.original.materialName}</div>
+    cell: ({ row }) => <div className="text-center">{row.original.materialName}</div>,
+    isEditable: true,
+    isPopover: true
   },
   {
     accessorKey: 'SKU',
@@ -38,19 +40,22 @@ export const getMaterialColumns = ({
     cell: ({ row }) => <div className="text-center">{row.original.UOM}</div>
   },
   {
-    accessorKey: 'actualQuantity',
-    header: ({ column }) => (
-      <DataTableColumnHeader className="text-center" column={column} title="Actual Quantity" />
-    ),
-    cell: ({ row }) => <div className="text-center">{row.original.actualQuantity}</div>
-  },
-  {
     accessorKey: 'plannedQuantity',
     header: ({ column }) => (
       <DataTableColumnHeader className="text-center" column={column} title="Planned Quantity" />
     ),
-    cell: ({ row }) => <div className="text-center">{row.original.plannedQuantity}</div>
+    cell: ({ row }) => <div className="text-center">{row.original.plannedQuantity}</div>,
+    isEditable: true
   },
+  {
+    accessorKey: 'actualQuantity',
+    header: ({ column }) => (
+      <DataTableColumnHeader className="text-center" column={column} title="Actual Quantity" />
+    ),
+    cell: ({ row }) => <div className="text-center">{row.original.actualQuantity}</div>,
+    isEditable: true
+  },
+
   {
     id: 'actions',
     cell: ({ row }) => <DataTableRowActions row={row} onEdit={onEdit} onDelete={onDelete} />,
