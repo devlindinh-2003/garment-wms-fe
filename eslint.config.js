@@ -21,7 +21,8 @@ export default [
       'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      'prefer-const': 'off'
+      'prefer-const': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off'
     }
   }
 ];

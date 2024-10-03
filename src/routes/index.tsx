@@ -14,6 +14,7 @@ import POPreview from '@/pages/poPreview';
 import ImportPurchaseOrder from '@/pages/demoPO';
 import DeliveryNotesManagement from '@/pages/Delivery Notes/management';
 import Demo from '@/pages/demo';
+import PurchaseOrderManagement from '@/pages/Purchase Order/management';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -86,6 +87,10 @@ const RouterComponent: React.FC = () => {
             {
               path: '/purchase-staff/delivery-note',
               element: <DeliveryNotesManagement />
+            },
+            {
+              path: '/purchase-staff/purchase-order',
+              element: <PurchaseOrderManagement />
             }
           ]
         }
