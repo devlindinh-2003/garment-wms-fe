@@ -6,7 +6,6 @@ import { getMaterialColumns } from './MaterialColumns';
 import type { ImportRequestDetails } from '@/types/ImportRequestType';
 import DataTable from '@/components/common/EditableTable/DataTable';
 import { Button } from '@/components/ui/button';
-import EditMaterialForm from './EditMaterialForm';
 type Props = {};
 
 // Replace this with your actual initial data or import
@@ -29,17 +28,30 @@ const initialDetails = [
   }
   // Add more materials as needed
 ];
-const ImportRequestDetails = ({ onSelectMaterial }: Props) => {
+const ImportRequestDetails = (props: Props) => {
   const [isDialogCreateOpen, setIsDialogCreateOpen] = useState<boolean>(false);
   const [selectedMaterial, setSelectedMaterial] = useState<any>(null);
   const [details, setDetails] = useState(initialDetails);
   const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
+  const [isLoading, setisLoading] = useState<boolean>(false);
   const [isEditDetail, setEditDetail] = useState<Boolean>(false);
 
   const onEdit = useCallback((material: ImportRequestDetails) => {
     setSelectedMaterial(material);
     setIsDialogEditOpen(true);
   }, []);
+
+  const handleToogleDialog = () => {
+    if (isEditDetail) {
+      setisLoading(true);
+
+      setDetails([...initialDetails]);
+      setEditDetail(false);
+      setisLoading(false);
+    } else {
+      setEditDetail(true);
+    }
+  };
   const onDelete = useCallback(
     (material: ImportRequestDetails) => {
       const updatedDetails = details.filter((item) => item.materialId !== material.materialId);
@@ -47,6 +59,12 @@ const ImportRequestDetails = ({ onSelectMaterial }: Props) => {
     },
     [details]
   );
+  const handleSave = () => {
+    console.log(details);
+    setisLoading(true);
+    setEditDetail(false);
+    setisLoading(false);
+  };
   const columns = useMemo(() => getMaterialColumns({ onEdit, onDelete }), []);
   return (
     <div className="px-4">
@@ -54,13 +72,13 @@ const ImportRequestDetails = ({ onSelectMaterial }: Props) => {
         <div className="font-primary font-bold text-xl mb-4">Import Request Details</div>
       </div>
 
-      <div className="flex justify-between mb-4">
-        <div />
-        {/* Add Button to Open the Dialog */}
-        {/* <Button onClick={() => setIsDialogCreateOpen(true)}>Add Material</Button> */}
-        <Button onClick={() => setEditDetail(!isEditDetail)}>
-          {isEditDetail ? 'Cancel' : 'Edit'}
-        </Button>
+      <div className="flex justify-end mb-4">
+        {isEditDetail && (
+          <Button className="mr-4" onClick={handleSave}>
+            Save
+          </Button>
+        )}
+        <Button onClick={handleToogleDialog}>{isEditDetail ? 'Cancel' : 'Edit'}</Button>
       </div>
       <div className="flex justify-between">
         <div />
@@ -94,7 +112,9 @@ const ImportRequestDetails = ({ onSelectMaterial }: Props) => {
         </div>
       </div>
 
-      <DataTable data={details} columns={columns} isEdit={isEditDetail} />
+      {details && !isLoading && (
+        <DataTable data={details} columns={columns} isEdit={isEditDetail} setDetails={setDetails} />
+      )}
     </div>
   );
 };

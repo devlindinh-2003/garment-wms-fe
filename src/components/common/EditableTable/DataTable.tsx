@@ -8,9 +8,8 @@ import {
   TableRow
 } from '@/components/ui/Table';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
-import { CustomColumnDef } from '@/types/CompositeTable';
 import {
-  ColumnDef as TanStackColumnDef,
+  ColumnDef,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
@@ -20,20 +19,27 @@ import {
 import { CSSProperties, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import SelectionCommand from './SelectionCommand';
+import { createZodSchema } from '@/helpers/createZodSchema';
+import { Input } from '@/components/ui/Input';
 
 const DEFAULT_REACT_TABLE_COLUMN_WIDTH = 150;
 
 interface DataTableProps<TData, TValue> {
-  columns: CustomColumnDef<TData>[];
+  columns: any;
   data: TData[];
   isEdit: Boolean;
+  setDetails: any;
 }
-const DataTable = <TData, TValue>({ data, columns, isEdit }: DataTableProps<TData, TValue>) => {
+const DataTable = <TData, TValue>({
+  data,
+  columns,
+  isEdit,
+  setDetails
+}: DataTableProps<TData, TValue>) => {
   // Handle material selection for a row (generic dynamic column update)
   const handleMaterialSelect = (rowIndex: number, material: any) => {
-    console.log(material);
-    setEditableData((prevData) =>
-      prevData.map((row, index) =>
+    setDetails((prevData: any) =>
+      prevData.map((row: any, index: number) =>
         index === rowIndex
           ? {
               ...row,
@@ -50,9 +56,9 @@ const DataTable = <TData, TValue>({ data, columns, isEdit }: DataTableProps<TDat
     );
   };
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [editableData, setEditableData] = useState(data); // Store the editable data
+  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
   const table = useReactTable({
-    data: editableData,
+    data: data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -64,8 +70,40 @@ const DataTable = <TData, TValue>({ data, columns, isEdit }: DataTableProps<TDat
 
   // Handle input change
   const handleInputChange = (rowIndex: number, columnId: string, value: any) => {
-    setEditableData((prevData) =>
-      prevData.map((row, index) => (index === rowIndex ? { ...row, [columnId]: value } : row))
+    const formattedValue =
+      columnId === 'plannedQuantity' || columnId === 'actualQuantity' ? Number(value) : value;
+    // Dynamically create the Zod schema for validation
+    const schema = createZodSchema(columns);
+
+    const updatedRow = {
+      ...data[rowIndex],
+      [columnId]: formattedValue
+    };
+
+    // Validate the updated row using the dynamically generated schema
+    const result = schema.safeParse(updatedRow);
+
+    if (!result.success) {
+      // Find and display the validation error for the specific field
+      const error = result.error.issues.find((issue) => issue.path[0] === columnId);
+      if (error) {
+        setValidationErrors((prev) => ({
+          ...prev,
+          [`${rowIndex}-${columnId}`]: error.message
+        }));
+        return;
+      }
+    }
+    // Clear any previous error for the field if validation passes
+    setValidationErrors((prev) => ({
+      ...prev,
+      [`${rowIndex}-${columnId}`]: ''
+    }));
+
+    setDetails((prevData: any) =>
+      prevData.map((row: any, index: number) =>
+        index === rowIndex ? { ...row, [columnId]: formattedValue } : row
+      )
     );
   };
   const [openPopovers, setOpenPopovers] = useState<{ [key: string]: boolean }>({}); // Store open state for each popover
@@ -125,14 +163,21 @@ const DataTable = <TData, TValue>({ data, columns, isEdit }: DataTableProps<TDat
                           </PopoverContent>
                         </Popover>
                       ) : (
-                        <input
-                          type="text"
-                          value={cell.getValue() as string} // Assuming the value is a string
-                          onChange={(e) =>
-                            handleInputChange(rowIndex, cell.column.id, e.target.value)
-                          }
-                          className="border rounded p-1"
-                        />
+                        <>
+                          <Input
+                            type="number"
+                            value={cell.getValue() as string} // Assuming the value is a string
+                            onChange={(e) =>
+                              handleInputChange(rowIndex, cell.column.id, e.target.value)
+                            }
+                            className={`border rounded p-1 ${validationErrors[`${rowIndex}-${cell.column.id}`] ? 'border-red-500' : ''}`}
+                          />
+                          {validationErrors[`${rowIndex}-${cell.column.id}`] && (
+                            <div className="text-red-500 text-sm ">
+                              {validationErrors[`${rowIndex}-${cell.column.id}`]}
+                            </div>
+                          )}
+                        </>
                       )
                     ) : (
                       flexRender(cell.column.columnDef.cell, cell.getContext())

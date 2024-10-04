@@ -2,7 +2,7 @@ import DataTableColumnHeader from '@/components/common/EditableTable/DataTableCo
 import DataTableRowActions from '@/components/common/EditableTable/DataTableRowActions';
 import { CustomColumnDef } from '@/types/CompositeTable';
 import { ImportRequestDetails } from '@/types/ImportRequestType';
-
+import { z, ZodSchema } from 'zod';
 interface MaterialsColumnsProps {
   onEdit: (material: ImportRequestDetails) => void;
   onDelete: (material: ImportRequestDetails) => void;
@@ -45,7 +45,8 @@ export const getMaterialColumns = ({
       <DataTableColumnHeader className="text-center" column={column} title="Planned Quantity" />
     ),
     cell: ({ row }) => <div className="text-center">{row.original.plannedQuantity}</div>,
-    isEditable: true
+    isEditable: true,
+    validation: z.number().nonnegative('Planned Quantity must be equal or  greater than 0')
   },
   {
     accessorKey: 'actualQuantity',
@@ -53,7 +54,8 @@ export const getMaterialColumns = ({
       <DataTableColumnHeader className="text-center" column={column} title="Actual Quantity" />
     ),
     cell: ({ row }) => <div className="text-center">{row.original.actualQuantity}</div>,
-    isEditable: true
+    isEditable: true,
+    validation: z.number().positive('Actual Quantity have to be at least 1')
   },
 
   {

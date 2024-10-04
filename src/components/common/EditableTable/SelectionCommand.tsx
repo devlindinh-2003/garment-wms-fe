@@ -16,17 +16,13 @@ const initialDetails = [
     materialId: '1',
     materialName: 'Material 1',
     SKU: 'SKU1',
-    UOM: 'pcs',
-    plannedQuantity: 10,
-    actualQuantity: 10
+    UOM: 'pcs'
   },
   {
     materialId: '2',
     materialName: 'Material 2',
     SKU: 'SKU2',
-    UOM: 'pcs',
-    plannedQuantity: 10,
-    actualQuantity: 10
+    UOM: 'pcs'
   }
   // Add more materials as needed
 ];
