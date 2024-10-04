@@ -20,7 +20,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
   isIncrease
 }) => {
   return (
-    <div className="px-3 py-2 bg-white w-full rounded-md">
+    <div className="px-4 py-3 bg-white w-full rounded-lg">
       <div className="flex items-center justify-between">
         <h1 className="text-lg uppercase">{title}</h1>
         <Button className="text-sm">View</Button>
