@@ -73,7 +73,7 @@ export default function TanStackBasicTable<TData, TValue>({
         <div>Loading Data ...</div>
       ) : (
         <>
-          <h1 className="text-2xl font-bold mb-4">User Lists</h1>
+          {/* <h1 className="text-2xl font-bold mb-4">User Lists</h1> */}
           <DataTableToolbar table={table} />
           <div className="rounded-md border mb-8">
             <TanStackBasicTableTableComponent table={table} columns={columns} />

@@ -81,7 +81,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
           placeholder="Filter users..."
           value={(table.getColumn('username')?.getFilterValue() as string) ?? ''}
           onChange={(event) => table.getColumn('username')?.setFilterValue(event.target.value)}
-          className="h-8 w-[150px] lg:w-[450px]"
+          className="h-8 w-[150px] lg:w-[350px]"
         />
         {table
           .getHeaderGroups()[0]

@@ -43,8 +43,8 @@ const SideBar: React.FC<SideBarProps> = ({ menu }) => {
 
         <div
           className={` ${
-            open ? 'w-72' : 'w-20 '
-          } bg-bluePrimary min-h-screen p-5 sticky  pt-8 duration-300 ring-1 ring-blue-200`}>
+            open ? 'w-[258px]' : 'w-20 '
+          } bg-bluePrimary min-h-screen p-5 sticky pt-8 duration-300 ring-1 ring-blue-200`}>
           {window.innerWidth >= constraintWindowWidth && (
             <img
               src={control}

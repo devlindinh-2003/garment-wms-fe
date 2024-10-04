@@ -10,9 +10,11 @@ import PurchaseStaffRoute from './PurchaseStaffRoute';
 import PurchaseStaffLayout from '@/layouts/PurchaseStaffLayout';
 import ProductionStaffRoute from './ProductionStaffRoute';
 import ProductionStaffLayout from '@/layouts/ProductionStaffLayout';
-import ImportRequestManagement from '@/pages/Delivery Notes/management';
+
 import Demo from '@/pages/demo';
-import CreateImportRequest from '@/pages/Delivery Notes/create';
+import ImportRequestManagement from '@/pages/ImportRequest/management';
+import CreateImportRequest from '@/pages/ImportRequest/create';
+import ViewImportRequest from '@/pages/ImportRequest/view';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -94,6 +96,15 @@ const RouterComponent: React.FC = () => {
             {
               path: '/purchase-staff/import-request/create',
               element: <CreateImportRequest />,
+            },
+          ],
+        },
+        {
+          element: <PurchaseStaffLayout />,
+          children: [
+            {
+              path: '/purchase-staff/import-request/:id',
+              element: <ViewImportRequest/>,
             },
           ],
         },

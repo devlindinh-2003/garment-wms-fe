@@ -16,7 +16,7 @@ export interface ImportRequestDetails {
   SKU?: String;
   UOM?: String;
   plannedQuantity?: number;
-  actualQuantity?: ImportRequestStatus;
+  actualQuantity?: number;
 }
 enum ImportRequestStatus {
   PENDING,
