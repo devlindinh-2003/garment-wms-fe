@@ -23,7 +23,8 @@ export default [
       '@typescript-eslint/no-explicit-any': 'off',
       'prefer-const': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
-      'react/prop-types': 'off'
+      'react/prop-types': 'off',
+      'react/jsx-key': 'off'
     }
   }
 ];
