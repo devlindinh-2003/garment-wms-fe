@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Command,
   CommandEmpty,
@@ -7,32 +7,23 @@ import {
   CommandItem,
   CommandList
 } from '@/components/ui/Command';
+import { getallMaterialVariant } from '@/api/services/materialVariant';
 
 interface Props {
   onSelectMaterial: (material: any) => void; // Callback for when a material is selected
 }
-const initialDetails = [
-  {
-    materialId: '1',
-    materialName: 'Material 1',
-    SKU: 'SKU1',
-    UOM: 'pcs'
-  },
-  {
-    materialId: '2',
-    materialName: 'Material 2',
-    SKU: 'SKU2',
-    UOM: 'pcs'
-  },
-  {
-    materialId: '3',
-    materialName: 'Material 3',
-    SKU: 'SKU3',
-    UOM: 'pcs'
-  }
-  // Add more materials as needed
-];
+
 const SelectionCommand: React.FC<Props> = ({ onSelectMaterial }) => {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchMaterials = async () => {
+      const materialList = await getallMaterialVariant(); // Fetch material list
+      setData(materialList); // Set the fetched material list in state
+    };
+
+    fetchMaterials();
+  }, []);
+
   return (
     <Command className="w-[500px]">
       <CommandInput placeholder="Search..." />

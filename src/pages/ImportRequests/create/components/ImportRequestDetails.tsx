@@ -5,11 +5,21 @@ import { Button } from '@/components/ui/button';
 import { PODeliveryDetail } from '@/types/purchaseOrder';
 type Props = {
   data: PODeliveryDetail[] | undefined;
+  setPoDeliverydetails: React.Dispatch<React.SetStateAction<PODeliveryDetail[] | undefined>>;
 };
 
-const ImportRequestDetails = ({ data }: Props) => {
-  console.log(data);
-  const [details, setDetails] = useState(data);
+const ImportRequestDetails = ({ data, setPoDeliverydetails }: Props) => {
+  const initializeDetails = (data: PODeliveryDetail[] | undefined) => {
+    // Map through the data and add plannedQuantity and actualQuantity fields
+    return (
+      data?.map((item) => ({
+        ...item,
+        plannedQuantity: item.quantityByPack, // Default value, you can modify this as needed
+        actualQuantity: item.quantityByPack // Default value, you can modify this as needed
+      })) || []
+    );
+  };
+  const [details, setDetails] = useState(initializeDetails(data));
   const [isEditDetail, setEditDetail] = useState<Boolean>(false);
 
   const handleToogleDialog = () => {

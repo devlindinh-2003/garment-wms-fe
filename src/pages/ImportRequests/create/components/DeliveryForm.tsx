@@ -34,7 +34,7 @@ import { cn } from '@/lib/utils';
 import { CalendarIcon, CaretSortIcon } from '@radix-ui/react-icons';
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
 import { CheckIcon } from 'lucide-react';
-import { PODelivery, PurchaseOrder } from '@/types/purchaseOrder';
+import { PODelivery, PODeliveryDetail, PurchaseOrder } from '@/types/purchaseOrder';
 
 type Props = {};
 
@@ -53,6 +53,7 @@ interface DeliveryFormProps {
   selectedPO: PurchaseOrder | undefined;
   setSelectedPO: React.Dispatch<React.SetStateAction<PurchaseOrder | undefined>>;
   setSelectedPoDelivery: React.Dispatch<React.SetStateAction<PODelivery | undefined>>;
+  setPoDeliverydetails: React.Dispatch<React.SetStateAction<PODeliveryDetail[] | undefined>>;
 }
 const DeliveryForm: React.FC<DeliveryFormProps> = ({
   form,
@@ -60,7 +61,8 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
   data,
   selectedPO,
   setSelectedPO,
-  setSelectedPoDelivery
+  setSelectedPoDelivery,
+  setPoDeliverydetails
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -69,6 +71,7 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
     form.setValue('purchaseOrder', currentValue === field.value ? '' : currentValue);
     setSelectedPO(item);
     setPODelivery(item.poDelivery);
+
     setOpen(false);
   };
   return (
@@ -181,6 +184,7 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
                         field.onChange(value);
                         // Set the selected delivery batch
                         setSelectedPoDelivery(selectedDelivery);
+                        setPoDeliverydetails(selectedDelivery.poDeliveryDetail);
                       }
                     }}>
                     <SelectTrigger>

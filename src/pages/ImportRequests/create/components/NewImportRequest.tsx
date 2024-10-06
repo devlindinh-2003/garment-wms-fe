@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
 import { useState } from 'react';
-import { PODelivery, PurchaseOrder } from '@/types/purchaseOrder';
+import { PODelivery, PODeliveryDetail, PurchaseOrder } from '@/types/purchaseOrder';
 
 type Props = {};
 const WarehouseInfo = {
@@ -39,6 +39,7 @@ const NewImportRequest = (props: Props) => {
   const { data } = useGetAllPurchaseOrder();
   const [selectedPO, setSelectedPO] = useState<PurchaseOrder>();
   const [selectedPoDelivery, setSelectedPoDelivery] = useState<PODelivery>();
+  const [poDeliveryDetails, setPoDeliverydetails] = useState<PODeliveryDetail[]>();
   const onSubmit = (data: z.infer<typeof deliveryFormSchema>) => {
     console.log(data);
   };
@@ -61,6 +62,7 @@ const NewImportRequest = (props: Props) => {
             setSelectedPO={setSelectedPO}
             selectedPO={selectedPO}
             setSelectedPoDelivery={setSelectedPoDelivery}
+            setPoDeliverydetails={setPoDeliverydetails}
           />
         </div>
       </div>
@@ -101,8 +103,11 @@ const NewImportRequest = (props: Props) => {
         </div>
       </div>
 
-      {selectedPoDelivery?.poDeliveryDetail && (
-        <ImportRequestDetails data={selectedPoDelivery?.poDeliveryDetail} />
+      {poDeliveryDetails && (
+        <ImportRequestDetails
+          data={poDeliveryDetails}
+          setPoDeliverydetails={setPoDeliverydetails}
+        />
       )}
 
       <div className="flex justify-center items-center pb-4">
