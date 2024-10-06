@@ -1,13 +1,13 @@
+/* eslint-disable no-unused-vars */
 import React, { useRef, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/Dialog';
+import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/ui/Dialog';
 import { Progress } from '@/components/ui/progress';
-import { CircleCheckBig, FileUp, Trash, XCircle } from 'lucide-react';
+import { FileUp, Trash, XCircle } from 'lucide-react';
 import Colors from '@/constants/color';
 import ExcelIcon from '@/assets/images/ExcelFile_Icon.png';
 import { DialogTitle } from '@radix-ui/react-dialog';
-import { Step, Stepper } from 'react-form-stepper';
 
 const MAX_FILE_SIZE_KB = 100;
 
@@ -35,9 +35,8 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
   const [isUploadComplete, setIsUploadComplete] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [activeStep, setActiveStep] = useState(0);
 
-  // Handle file change when user selects a file
+  // Handle file change when a user selects a file
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
     processFile(file);
@@ -72,12 +71,11 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
       }
       setSelectedFile(file);
       setIsUploading(true);
-      setActiveStep(1);
       simulateUploadProgress(file);
     }
   };
 
-  // Simulate file upload progress
+  // Simulate a file upload progress
   const simulateUploadProgress = (file: File) => {
     let progress = 0;
     const uploadInterval = setInterval(() => {
@@ -86,12 +84,13 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
       if (progress >= 100) {
         clearInterval(uploadInterval);
         setIsUploading(false);
+        setIsUploadComplete(true);
         readExcel(file);
       }
     }, 500);
   };
 
-  // Read the Excel file and pass all sheets to onUploadComplete handler
+  // Read the Excel file and pass all sheets to the onUploadComplete handler
   const readExcel = (file: File) => {
     const reader = new FileReader();
     reader.onload = (event: ProgressEvent<FileReader>) => {
@@ -104,13 +103,8 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
         const sheet = XLSX.utils.sheet_to_json<SheetRow>(workbook.Sheets[sheetName], { header: 1 });
         sheetsData[sheetName] = sheet;
       });
+      console.log('Parsed Sheets Data:', sheetsData);
       onUploadComplete(sheetsData);
-      setIsUploadComplete(true);
-      setActiveStep(2);
-    };
-    reader.onerror = () => {
-      setUploadError('Error reading the file');
-      setActiveStep(1);
     };
     reader.readAsArrayBuffer(file);
   };
@@ -121,31 +115,21 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
     setIsUploadComplete(false);
     setUploadProgress(0);
     setUploadError(null);
-    setActiveStep(0);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
-  // active = 0
-  const renderProductionPlan = () => {
-    return (
-      <div className="flex flex-col items-center justify-center">
-        <h1 className="text-xl">Production Plan</h1>
-        <Button
-          onClick={() => {
-            setActiveStep((prevStep) => prevStep + 1);
-          }}>
-          Next
-        </Button>
-      </div>
-    );
-  };
+  return (
+    <Dialog>
+      <DialogTrigger>
+        <Button>{triggerButtonLabel}</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogTitle>
+          <h1 className="text-xl font-semibold capitalize">Upload {fileName}</h1>
+        </DialogTitle>
 
-  //active = 1
-  const renderUploadExcel = () => {
-    return (
-      <div>
         {/* File upload area */}
         {!selectedFile && !uploadError && (
           <div
@@ -222,80 +206,26 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
             />
           </div>
         )}
-      </div>
-    );
-  };
 
-  // active = 2
-  const renderUploadSuccessfully = () => {
-    return (
-      <main>
-        <div className="flex justify-center flex-col items-center">
-          <CircleCheckBig color={Colors.success} size={60} className="text-center mb-5" />
-          <div className="flex flex-col space-y-4">
-            <h1 className="font-bold text-2xl text-center text-green-500">Upload successfully</h1>
-            <h2>Your file has been uploaded successfully</h2>
-          </div>
-        </div>
-        <div className="flex justify-end items-center gap-5 mt-6">
-          <Button
-            className="bg-white text-red-500 ring-1 ring-red-500 "
-            onClick={() => {
-              handleDeleteFile();
-              setActiveStep(0);
-            }}>
-            Cancel
-          </Button>
-          <Button
-            onClick={() => {
-              onContinue();
-            }}>
-            Preview
-          </Button>
-        </div>
-      </main>
-    );
-  };
-
-  return (
-    <Dialog>
-      <DialogTrigger>
-        <Button>{triggerButtonLabel}</Button>
-      </DialogTrigger>
-      <DialogContent
-        onInteractOutside={(e) => {
-          e.preventDefault();
-        }}>
-        <DialogTitle>
-          <h1 className="text-xl font-semibold capitalize ">Upload {fileName}</h1>
-        </DialogTitle>
-
-        {/* Stepper component */}
-        <Stepper
-          activeStep={activeStep}
-          styleConfig={{
-            activeBgColor:
-              uploadError && activeStep === 1 ? 'red' : Colors.primaryLightBackgroundColor,
-            activeTextColor: Colors.commonBtnText,
-            completedBgColor: Colors.primaryDarkBackgroundColor,
-            completedTextColor: Colors.commonBtnText,
-            inactiveBgColor: Colors.greyText,
-            inactiveTextColor: Colors.commonBtnText,
-            size: '30px',
-            circleFontSize: '16px',
-            labelFontSize: '13px',
-            borderRadius: '20px',
-            fontWeight: '300'
-          }}>
-          <Step label="Choose production plan" />
-          <Step label="Upload Excel" />
-          <Step label="Update successfully" />
-        </Stepper>
-
-        {/* Render components based on step */}
-        {activeStep === 0 && renderProductionPlan()}
-        {activeStep === 1 && renderUploadExcel()}
-        {activeStep === 2 && renderUploadSuccessfully()}
+        {/* Conditionally render buttons only after upload starts */}
+        {selectedFile && (
+          <DialogFooter>
+            <Button
+              className="bg-white text-primaryLight ring-1 ring-primaryLight hover:text-slate-600 hover:bg-slate-400 hover:ring-slate-400"
+              onClick={handleDeleteFile}
+              disabled={isUploading}>
+              Cancel
+            </Button>
+            <Button
+              className={`bg-blue-600 text-white ${
+                !isUploadComplete || uploadError ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+              disabled={!isUploadComplete || !!uploadError}
+              onClick={onContinue}>
+              {continueButtonLabel}
+            </Button>
+          </DialogFooter>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -16,6 +16,7 @@ import DeliveryNotesManagement from '@/pages/Delivery Notes/management';
 import Demo from '@/pages/demo';
 import PurchaseOrderManagement from '@/pages/Purchase Order/management';
 import PurchaseOrderPreview from '@/pages/Purchase Order/preview';
+import StepperDemo from '@/pages/demoStepper';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -125,6 +126,11 @@ const RouterComponent: React.FC = () => {
     {
       path: '/popreview',
       element: <POPreview />
+    },
+
+    {
+      path: '/stepperdemo',
+      element: <StepperDemo />
     }
 
     // { path: '*', element: <ErrorPage /> },

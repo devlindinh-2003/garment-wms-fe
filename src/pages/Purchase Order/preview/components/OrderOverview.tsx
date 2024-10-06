@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/Badge';
 import { Label } from '@/components/ui/Label';
 import React from 'react';
 
@@ -18,7 +19,7 @@ const KeyValueDisplay: React.FC<KeyValueDisplayProps> = ({ name, value }) => {
 const OrderOverview = () => {
   return (
     <div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between gap-2">
         <h1 className="text-xl font-semibold text-primaryDark">Purchase Order Overview</h1>
       </div>
       <section className="flex flex-col space-y-5">
