@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import UploadExcel from '@/components/UploadExcel';
-import { mockPurchaseOrders } from '@/data/purchase_order';
+// import { mockPurchaseOrders } from '@/data/purchase_order';
 
 type SheetData = Record<string, (string | number | null | undefined)[][]>;
 
@@ -58,7 +58,7 @@ const ImportPurchaseOrder: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {mockPurchaseOrders.map((order) => (
+            {/* {mockPurchaseOrders.map((order) => (
               <tr key={order.id} className="border-b">
                 <td className="px-4 py-2 border">{order.id}</td>
                 <td className="px-4 py-2 border">{order.PO_number}</td>
@@ -77,7 +77,7 @@ const ImportPurchaseOrder: React.FC = () => {
                   </Button>
                 </td>
               </tr>
-            ))}
+            ))} */}
           </tbody>
         </table>
       </div>

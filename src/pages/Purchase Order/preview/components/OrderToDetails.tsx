@@ -7,7 +7,7 @@ const KeyValueDisplay: React.FC<KeyValueDisplayProps> = ({ name, value }) => {
   return (
     <div className="flex items-center gap-2">
       <span className="">{name}:</span>
-      <span className="font-semibold underline">{value}</span>
+      <span className="font-semibold ">{value}</span>
     </div>
   );
 };

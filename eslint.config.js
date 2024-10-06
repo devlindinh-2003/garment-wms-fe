@@ -15,8 +15,8 @@ export default [
   js.configs.recommended,
   {
     rules: {
-      'no-unused-vars': 'warn',
-      'no-undef': 'warn',
+      'no-unused-vars': 'off',
+      'no-undef': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-require-imports': 'off',

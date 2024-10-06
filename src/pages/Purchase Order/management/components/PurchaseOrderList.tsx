@@ -1,59 +1,109 @@
-import React, { useState } from 'react';
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  PaginationState,
-  SortingState
-} from '@tanstack/react-table';
-import { PurchaseOrderData, fetchPurchaseOrders } from '@/data/purchaseOrderData'; // replace with actual data fetching logic
 import TanStackBasicTable from '@/components/common/CompositeTable';
+import { Badge } from '@/components/ui/Badge';
+import { Checkbox } from '@/components/ui/Checkbox';
+import { useDebounce } from '@/hooks/useDebouce';
+import { CustomColumnDef } from '@/types/CompositeTable';
+import { ImportPurchaseOrder, importPurchaseOrderData } from '@/types/ImportPurchaseOrderType';
+import { PurchaseOrder } from '@/types/PurchaseOrder';
+import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
+import { useState } from 'react';
+import UploadExcel from './UploadExcel';
+import { useNavigate } from 'react-router-dom';
 
-const PurchaseOrderList: React.FC = () => {
+type SheetData = Record<string, (string | number | null | undefined)[][]>;
+
+const PurchaseOrderList = () => {
+  const [sheetsData, setSheetsData] = useState<SheetData>({});
+  const navigate = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const debouncedColumnFilters: ColumnFiltersState = useDebounce(columnFilters, 1000);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10
+    pageSize: 20
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<PurchaseOrderData>({ data: [], total_filtered: 0, limit: 10 });
+  const handleUploadComplete = (data: SheetData) => {
+    setSheetsData(data);
+    console.log('Uploaded sheets data:', data);
+  };
 
-  // Simulate fetching data on component load or pagination change
-  React.useEffect(() => {
-    setIsLoading(true);
-    fetchPurchaseOrders(pagination.pageIndex, pagination.pageSize)
-      .then((result) => {
-        setData(result);
-        setIsLoading(false);
-      })
-      .catch(() => setIsLoading(false));
-  }, [pagination]);
+  const handleContinue = () => {
+    if (Object.keys(sheetsData).length > 0) {
+      console.log('Proceeding with uploaded sheets:', sheetsData);
+      navigate('/purchase-staff/purchase-order/preview', { state: { sheetsData } });
+    } else {
+      console.log('No data available. Cannot proceed.');
+    }
+  };
+  const purchaseOrderColumns: CustomColumnDef<ImportPurchaseOrder>[] = [
+    {
+      header: 'PO Number',
+      accessorKey: 'poNumber',
+      cell: ({ getValue }) => <div className="pl-2 font-semibold">{getValue<string>()}</div>,
+      enableColumnFilter: false
+    },
+    {
+      header: 'Production Plan ID',
+      accessorKey: 'quarterlyProductionPlanId',
+      cell: ({ getValue }) => <div className="pl-4">{getValue<string>()}</div>,
+      enableColumnFilter: false
+    },
+    {
+      header: 'Order Date',
+      accessorKey: 'orderDate',
+      enableColumnFilter: false
+    },
+    {
+      header: 'Delivery date',
+      accessorKey: 'createdAt',
+      enableColumnFilter: false
+    },
+    {
+      header: 'Status',
+      accessorKey: 'status',
+      cell: ({ row }) => {
+        const status = row.original.status;
+        let colorVariant;
 
-  // Define columns for purchase order data
-  const columns: ColumnDef<any>[] = [
-    { header: 'Order ID', accessorKey: 'orderId' },
-    { header: 'Supplier', accessorKey: 'supplier' },
-    { header: 'Order Date', accessorKey: 'orderDate' },
-    { header: 'Status', accessorKey: 'status' },
-    { header: 'Total Amount', accessorKey: 'totalAmount', cell: ({ value }) => `$${value}` }
+        switch (status) {
+          case 'incompleted':
+            colorVariant = 'bg-red-500 text-white';
+            break;
+          case 'completed':
+            colorVariant = 'bg-green-500 text-white';
+            break;
+          default:
+            colorVariant = 'bg-gray-200 text-black';
+        }
+
+        return <Badge className={colorVariant}>{status}</Badge>;
+      }
+    }
   ];
 
   return (
-    <div className="pb-4">
-      <h1 className="text-2xl font-semibold mb-4">Purchase Orders</h1>
-      <div className="w-full bg-white rounded-md shadow-lg p-6">
-        <TanStackBasicTable
-          isTableDataLoading={isLoading}
-          paginatedTableData={data}
-          columns={columns}
-          pagination={pagination}
-          setPagination={setPagination}
-          sorting={sorting}
-          setSorting={setSorting}
-          columnFilters={columnFilters}
-          setColumnFilters={setColumnFilters}
+    <div className="flex flex-col px-3 pt-3 pb-4 w-auto bg-white rounded-xl shadow-sm border">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-primaryLight">Purchase Order Lists</h1>
+        <UploadExcel
+          fileName="purchase order"
+          onUploadComplete={handleUploadComplete}
+          continueButtonLabel="Proceed to Review"
+          onContinue={handleContinue}
+          triggerButtonLabel="Import a purchase order"
         />
       </div>
+      <TanStackBasicTable
+        isTableDataLoading={false}
+        paginatedTableData={importPurchaseOrderData}
+        columns={purchaseOrderColumns}
+        pagination={pagination}
+        setPagination={setPagination}
+        sorting={sorting}
+        setSorting={setSorting}
+        columnFilters={columnFilters}
+        setColumnFilters={setColumnFilters}
+      />
     </div>
   );
 };

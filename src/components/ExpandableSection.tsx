@@ -21,7 +21,7 @@ const ExpandableSection: FC<ExpandableSectionProps> = ({
       className="ring-1 ring-slate-400 px-4 py-3 rounded-lg"
       open={isOpen}
       onOpenChange={setIsOpen}>
-      <div className="flex items-center justify-between space-x-4 w-[600px]">
+      <div className="flex items-center justify-between space-x-4 w-full">
         <h1 className="text-lg font-semibold">{title}</h1>
         <CollapsibleTrigger asChild>
           <Button
