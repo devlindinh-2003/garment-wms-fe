@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/Table';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import {
-  ColumnDef,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
@@ -36,7 +35,6 @@ const DataTable = <TData, TValue>({
   isEdit,
   setDetails
 }: DataTableProps<TData, TValue>) => {
-  // Handle material selection for a row (generic dynamic column update)
   const handleMaterialSelect = (rowIndex: number, material: any) => {
     setDetails((prevData: any) =>
       prevData.map((row: any, index: number) =>
@@ -54,6 +52,24 @@ const DataTable = <TData, TValue>({
           : row
       )
     );
+    togglePopover(`${rowIndex}`);
+  };
+  const addRow = (material: any) => {
+    setDetails((prevData: any) => [
+      ...prevData,
+      {
+        // Only add the columns that exist in both the material object and the previous rows
+        ...Object.keys(prevData[0] || {}).reduce((acc, key) => {
+          if (material[key] !== undefined) {
+            acc[key] = material[key];
+          } else {
+            acc[key] = ''; // Set a default empty value if the key is missing in the material
+          }
+          return acc;
+        }, {} as any) // Accumulator that dynamically adds material keys
+      }
+    ]);
+    togglePopover('99');
   };
   const [sorting, setSorting] = useState<SortingState>([]);
   const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
@@ -106,7 +122,7 @@ const DataTable = <TData, TValue>({
       )
     );
   };
-  const [openPopovers, setOpenPopovers] = useState<{ [key: string]: boolean }>({}); // Store open state for each popover
+  const [openPopovers, setOpenPopovers] = useState<{ [key: string]: boolean }>({});
   // Toggle open state for popovers
   const togglePopover = (cellId: string) => {
     setOpenPopovers((prev) => ({
@@ -146,8 +162,8 @@ const DataTable = <TData, TValue>({
                     {cell.column.columnDef.isEditable && isEdit ? (
                       cell.column.columnDef.isPopover ? (
                         <Popover
-                          open={openPopovers[`${rowIndex}-${cell.id}`] || false} // Check open state for each popover
-                          onOpenChange={() => togglePopover(`${rowIndex}-${cell.id}`)} // Toggle the specific popover
+                          open={openPopovers[`${rowIndex}`] || false} // Check open state for each popover
+                          onOpenChange={() => togglePopover(`${rowIndex}`)} // Toggle the specific popover
                         >
                           <PopoverTrigger asChild>
                             <Button variant={'outline'}>
@@ -193,6 +209,24 @@ const DataTable = <TData, TValue>({
               </TableCell>
             </TableRow>
           )}
+          <TableRow>
+            <TableCell>
+              <Popover
+                open={openPopovers[`99`] || false} // Check open state for each popover
+                onOpenChange={() => togglePopover(`99`)} // Toggle the specific popover
+              >
+                <PopoverTrigger asChild>
+                  <Button variant={'outline'}>+ New Material</Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0" align="start">
+                  <SelectionCommand onSelectMaterial={(material) => addRow(material)} />
+                </PopoverContent>
+              </Popover>
+            </TableCell>
+            {table.getAllColumns().map((column) => (
+              <TableCell key={column.id}></TableCell>
+            ))}
+          </TableRow>
         </TableBody>
         <TableFooter>
           {table.getFooterGroups().map((footerGroup) => {

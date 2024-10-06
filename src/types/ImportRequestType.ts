@@ -1,4 +1,5 @@
 import { UseGetTableResponseType } from './CompositeTable';
+import { Material, MaterialVariant, UOM } from './MaterialTypes';
 
 export interface ImportRequest {
   id: String;
@@ -10,14 +11,6 @@ export interface ImportRequest {
   status?: ImportRequestStatus;
 }
 
-export interface ImportRequestDetails {
-  materialId?: String;
-  materialName?: String;
-  SKU?: String;
-  UOM?: String;
-  plannedQuantity?: number;
-  actualQuantity?: ImportRequestStatus;
-}
 enum ImportRequestStatus {
   PENDING,
   REJECTED,
@@ -25,7 +18,6 @@ enum ImportRequestStatus {
   IN_PROGRESS,
   FINISHED
 }
-
 export const importRequestsData: UseGetTableResponseType<ImportRequest> = {
   limit: 10,
   page: 1,
@@ -121,15 +113,32 @@ export const importRequestsData: UseGetTableResponseType<ImportRequest> = {
       deliveryType: 'Sea',
       deliveryDate: '2024-10-05',
       status: ImportRequestStatus.REJECTED
-    },
-    {
-      id: 'IR010',
-      poReceiptId: 'PO12354',
-      warehouseStaffName: 'Scarlett Johansson',
-      supplier: 'MegaWholesalers',
-      deliveryType: 'Sea',
-      deliveryDate: '2024-10-05',
-      status: ImportRequestStatus.REJECTED
     }
   ]
 };
+export interface ImportRequestDetailTableTypes {
+  uomId: string;
+  name: string;
+  code: string;
+  materialUOM: UOM;
+  material: Material;
+  packUnit: string;
+  size: string;
+  uomPerPack: number;
+  packedWidth: number;
+  packedLength: number;
+  packedHeight: number;
+  packedWeight: number;
+  plannedQuantity: number;
+  actualQUantity: number;
+  id: string;
+  poDeliveryId: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+  deletedAt: string | null;
+  quantityByPack: number;
+  materialVariantId: string;
+  expiredDate: string | null;
+  totalAmount: number;
+  materialVariant: MaterialVariant;
+}

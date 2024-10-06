@@ -23,6 +23,12 @@ const initialDetails = [
     materialName: 'Material 2',
     SKU: 'SKU2',
     UOM: 'pcs'
+  },
+  {
+    materialId: '3',
+    materialName: 'Material 3',
+    SKU: 'SKU3',
+    UOM: 'pcs'
   }
   // Add more materials as needed
 ];
