@@ -133,7 +133,9 @@ const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders })
           fileName="purchase order"
           onUploadComplete={handleUploadComplete}
           continueButtonLabel="Proceed to Review"
-          onContinue={handleContinue}
+          onContinue={() =>
+            navigate('/purchase-staff/purchase-order/detail', { state: { sheetsData } })
+          }
           triggerButtonLabel="Import a purchase order"
         />
       </div>

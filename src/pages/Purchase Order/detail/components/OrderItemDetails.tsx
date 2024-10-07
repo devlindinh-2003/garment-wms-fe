@@ -1,12 +1,16 @@
 import TanStackBasicTable from '@/components/common/CompositeTable';
 import { Badge } from '@/components/ui/Badge';
 import { CustomColumnDef } from '@/types/CompositeTable';
-import { MaterialVariant, purchaseOrderDeliveryData } from '@/types/PurchaseOrderDelivery';
+import { purchaseOrderDeliveryData } from '@/types/PurchaseOrderDelivery';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
 import { useState } from 'react';
 import ExpandableSectionCustom from './ExpandableSectionCustom';
+import { MaterialVariant } from '@/types/MaterialVariant';
+import { ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const OrderItemDetails = () => {
+  const navigate = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -101,6 +105,9 @@ const OrderItemDetails = () => {
     }
   ];
 
+  const handleNavigateToDeliveryDetail = () =>
+    navigate('/purchase-staff/purchase-order/detail/delivery');
+
   return (
     <div>
       <h1 className="text-xl font-semibold text-primaryDark">Purchase Delivery </h1>
@@ -110,7 +117,12 @@ const OrderItemDetails = () => {
           status={<Badge className="bg-green-500 text-lg w-[8rem]text-center">Finished</Badge>}
           defaultOpen={false}>
           <div className="flex items-center justify-between mt-5 gap-3">
-            <h1 className="text-xl font-semibold text-primaryDark">Delivery Details</h1>
+            <div
+              className="flex items-center gap-2 text-primaryDark hover:opacity-50 cursor-pointer"
+              onClick={handleNavigateToDeliveryDetail}>
+              <h1 className="text-xl font-semibold ">Purchase Order Delivery</h1>
+              <ExternalLink size={20} />
+            </div>
             <div className="flex items-center gap-3">
               <span>Total amount: </span> <span className="font-semibold">4</span>
             </div>
@@ -133,7 +145,12 @@ const OrderItemDetails = () => {
           status={<Badge className="bg-yellow-500 text-lg w-[8rem]text-center ">Pending</Badge>}
           defaultOpen={false}>
           <div className="flex items-center justify-between mt-5 gap-3">
-            <h1 className="text-xl font-semibold text-primaryDark">Delivery Details</h1>
+            <div
+              className="flex items-center gap-2 text-primaryDark hover:opacity-50 cursor-pointer"
+              onClick={handleNavigateToDeliveryDetail}>
+              <h1 className="text-xl font-semibold ">Purchase Order Delivery</h1>
+              <ExternalLink size={20} />
+            </div>
             <div className="flex items-center gap-3">
               <span>Total amount: </span> <span className="font-semibold">4</span>
             </div>

@@ -17,7 +17,7 @@ const PurchaseOrderManagement = () => {
         const response = await getAllPurchaseOrders();
         console.log('response');
         console.log(response);
-        setPoList(response.data.data);
+        setPoList(response?.data?.data || []);
       } catch (err) {
         setError('Failed to fetch purchase orders');
         console.error(err);
@@ -25,7 +25,6 @@ const PurchaseOrderManagement = () => {
         setLoading(false);
       }
     };
-
     fetchPurchaseOrders();
   }, []);
 

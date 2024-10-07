@@ -18,6 +18,7 @@ import PurchaseOrderManagement from '@/pages/Purchase Order/management';
 import PurchaseOrderPreview from '@/pages/Purchase Order/preview';
 import StepperDemo from '@/pages/demoStepper';
 import PurchaseOrderDetails from '@/pages/Purchase Order/detail';
+import PurchaseOrderDeliveryDetails from '@/pages/Purchase Order Delivery/detail';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -98,6 +99,10 @@ const RouterComponent: React.FC = () => {
             {
               path: '/purchase-staff/purchase-order/detail',
               element: <PurchaseOrderDetails />
+            },
+            {
+              path: '/purchase-staff/purchase-order/detail/delivery',
+              element: <PurchaseOrderDeliveryDetails />
             }
           ]
         }

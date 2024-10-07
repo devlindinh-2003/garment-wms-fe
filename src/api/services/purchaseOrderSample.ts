@@ -5,7 +5,7 @@ const backend_url = 'https://garment-wms-be.onrender.com';
 const BACKEND_HOST = 'http://localhost:8000';
 
 export const getAllPurchaseOrders: () => Promise<PurchaseOrderResponse> = async () => {
-  const res = await axios.get(`${BACKEND_HOST}/purchase-order`);
+  const res = await axios.get(`${backend_url}/purchase-order`);
   return res.data;
 };
 
