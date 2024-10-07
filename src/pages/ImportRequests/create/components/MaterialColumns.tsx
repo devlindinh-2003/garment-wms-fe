@@ -56,7 +56,7 @@ export const getMaterialColumns = ({}: any): CustomColumnDef<ImportRequestDetail
     header: ({ column }) => (
       <DataTableColumnHeader className="text-center" column={column} title="Planned Quantity" />
     ),
-    cell: ({ row }) => <div className="text-center">{row.original.quantityByPack}</div>,
+    cell: ({ row }) => <div className="text-center">{row.original.plannedQuantity}</div>,
     isEditable: true,
     validation: z.number().nonnegative('Planned Quantity must be equal or  greater than 0')
   },
@@ -65,7 +65,7 @@ export const getMaterialColumns = ({}: any): CustomColumnDef<ImportRequestDetail
     header: ({ column }) => (
       <DataTableColumnHeader className="text-center" column={column} title="Actual Quantity" />
     ),
-    cell: ({ row }) => <div className="text-center">{row.original.quantityByPack}</div>,
+    cell: ({ row }) => <div className="text-center">{row.original.actualQuantity}</div>,
     isEditable: true,
     validation: z.number().positive('Actual Quantity have to be at least 1')
   },

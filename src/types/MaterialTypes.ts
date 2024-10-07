@@ -1,3 +1,5 @@
+import { PageMeta } from './purchaseOrder';
+
 // Unit of Measure (UOM)
 export interface UOM {
   id: string;
@@ -49,3 +51,12 @@ export interface MaterialVariant {
   deletedAt: string | null;
   material: Material;
 }
+export type MaterialVariantResponse = {
+  statusCode: number;
+  data: {
+    data: MaterialVariant[];
+    pageMeta: PageMeta;
+  };
+  message: string;
+  errors: any | null;
+};

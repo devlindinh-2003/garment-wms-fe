@@ -43,8 +43,7 @@ const formSchema = z.object({
   purchaseOrderBatch: z.string().min(1, 'Please select a supplier batch.'),
   deliveryDate: z.date({
     required_error: 'A date of delivery is required.'
-  }),
-  productionPlan: z.string().min(1, 'Supplier mobile number is required.')
+  })
 });
 interface DeliveryFormProps {
   form: UseFormReturn<z.infer<typeof formSchema>>;
@@ -71,7 +70,6 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
     form.setValue('purchaseOrder', currentValue === field.value ? '' : currentValue);
     setSelectedPO(item);
     setPODelivery(item.poDelivery);
-
     setOpen(false);
   };
   return (
@@ -205,7 +203,7 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
             )}
           />
 
-          <FormField
+          {/* <FormField
             control={form.control}
             name="productionPlan"
             render={({ field }) => (
@@ -222,7 +220,7 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
         </form>
       </Form>
     </div>

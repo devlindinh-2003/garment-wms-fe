@@ -23,8 +23,7 @@ const deliveryFormSchema = z.object({
   purchaseOrderBatch: z.string().min(1, 'Please select a supplier batch.'),
   deliveryDate: z.date({
     required_error: 'A date of delivery is required.'
-  }),
-  productionPlan: z.string().min(1, 'Supplier mobile number is required.')
+  })
 });
 const NewImportRequest = (props: Props) => {
   const form = useForm<z.infer<typeof deliveryFormSchema>>({
@@ -32,8 +31,7 @@ const NewImportRequest = (props: Props) => {
     defaultValues: {
       purchaseOrder: '',
       purchaseOrderBatch: '',
-      deliveryDate: undefined,
-      productionPlan: ''
+      deliveryDate: undefined
     }
   });
   const { data } = useGetAllPurchaseOrder();
@@ -42,6 +40,7 @@ const NewImportRequest = (props: Props) => {
   const [poDeliveryDetails, setPoDeliverydetails] = useState<PODeliveryDetail[]>();
   const onSubmit = (data: z.infer<typeof deliveryFormSchema>) => {
     console.log(data);
+    console.log(poDeliveryDetails);
   };
   return (
     <div className="w-full pt-4 flex flex-col gap-4">
@@ -74,17 +73,30 @@ const NewImportRequest = (props: Props) => {
           <div className="font-primary font-bold text-xl mb-4">Supplier</div>
 
           {/* <SuppierForm/> */}
-          <div className="flex flex-col gap-4">
-            <div className="font-primary font-semibold text-sm">
-              Warehouse name: {WarehouseInfo.name}
+          {selectedPO?.supplier ? (
+            <div className="flex flex-col gap-4">
+              <div className="font-primary font-semibold text-sm">
+                Warehouse name: {selectedPO?.supplier.supplierName || 'Unknown'}
+              </div>
+              <div className="font-primary font-semibold text-sm">
+                Address: {selectedPO?.supplier.address || 'Unknown'}
+              </div>
+              <div className="font-primary font-semibold text-sm">
+                Phone: {selectedPO?.supplier.phoneNumber || 'Unknown'}
+              </div>
+              <div className="font-primary font-semibold text-sm">
+                Email: {selectedPO?.supplier.email || 'Unknown'}
+              </div>
+              <div className="font-primary font-semibold text-sm">
+                Fax: {selectedPO?.supplier.fax || 'Unknown'}
+              </div>
             </div>
-            <div className="font-primary font-semibold text-sm">
-              Address: {WarehouseInfo.address}
+          ) : (
+            <div className="flex flex-col gap-4 text-xl border border-gray-300 rounded-md p-4 h-full">
+              <div className="font-bold text-lg text-center">Choose the PO first</div>
+              {/* Add your content inside this div */}
             </div>
-            <div className="font-primary font-semibold text-sm">Phone: {WarehouseInfo.phone}</div>
-            <div className="font-primary font-semibold text-sm">Email: {WarehouseInfo.email}</div>
-            <div className="font-primary font-semibold text-sm">Fax: {WarehouseInfo.fax}</div>
-          </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-4">

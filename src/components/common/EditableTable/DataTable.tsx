@@ -63,10 +63,10 @@ const DataTable = <TData, TValue>({
           if (material[key] !== undefined) {
             acc[key] = material[key];
           } else {
-            acc[key] = ''; // Set a default empty value if the key is missing in the material
+            acc[key] = '';
           }
           return acc;
-        }, {} as any) // Accumulator that dynamically adds material keys
+        }, {} as any)
       }
     ]);
     togglePopover('99');
@@ -171,11 +171,14 @@ const DataTable = <TData, TValue>({
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-[200px] p-0" align="start">
-                            <SelectionCommand
-                              onSelectMaterial={(material) =>
-                                handleMaterialSelect(rowIndex, material)
-                              }
-                            />
+                            {data && (
+                              <SelectionCommand
+                                dataTable={data}
+                                onSelectMaterial={(material) =>
+                                  handleMaterialSelect(rowIndex, material)
+                                }
+                              />
+                            )}
                           </PopoverContent>
                         </Popover>
                       ) : (
@@ -209,24 +212,29 @@ const DataTable = <TData, TValue>({
               </TableCell>
             </TableRow>
           )}
-          <TableRow>
-            <TableCell>
-              <Popover
-                open={openPopovers[`99`] || false} // Check open state for each popover
-                onOpenChange={() => togglePopover(`99`)} // Toggle the specific popover
-              >
-                <PopoverTrigger asChild>
-                  <Button variant={'outline'}>+ New Material</Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0" align="start">
-                  <SelectionCommand onSelectMaterial={(material) => addRow(material)} />
-                </PopoverContent>
-              </Popover>
-            </TableCell>
-            {table.getAllColumns().map((column) => (
-              <TableCell key={column.id}></TableCell>
-            ))}
-          </TableRow>
+          {isEdit && (
+            <TableRow>
+              <TableCell>
+                <Popover
+                  open={openPopovers[`99`] || false} // Check open state for each popover
+                  onOpenChange={() => togglePopover(`99`)} // Toggle the specific popover
+                >
+                  <PopoverTrigger asChild>
+                    <Button variant={'outline'}>+ New Material</Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0" align="start">
+                    <SelectionCommand
+                      dataTable={data}
+                      onSelectMaterial={(material) => addRow(material)}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </TableCell>
+              {table.getAllColumns().map((column) => (
+                <TableCell key={column.id}></TableCell>
+              ))}
+            </TableRow>
+          )}
         </TableBody>
         <TableFooter>
           {table.getFooterGroups().map((footerGroup) => {

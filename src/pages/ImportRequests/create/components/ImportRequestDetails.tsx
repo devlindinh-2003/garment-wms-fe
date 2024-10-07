@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { getMaterialColumns } from './MaterialColumns';
 import DataTable from '@/components/common/EditableTable/DataTable';
 import { Button } from '@/components/ui/button';
@@ -11,28 +11,26 @@ type Props = {
 const ImportRequestDetails = ({ data, setPoDeliverydetails }: Props) => {
   const initializeDetails = (data: PODeliveryDetail[] | undefined) => {
     // Map through the data and add plannedQuantity and actualQuantity fields
-    return (
-      data?.map((item) => ({
-        ...item,
-        plannedQuantity: item.quantityByPack, // Default value, you can modify this as needed
-        actualQuantity: item.quantityByPack // Default value, you can modify this as needed
-      })) || []
-    );
+    return (data || []).map((item) => ({
+      ...item,
+      plannedQuantity: item.quantityByPack, // Default value, you can modify this as needed
+      actualQuantity: item.quantityByPack // Default value, you can modify this as needed
+    }));
   };
   const [details, setDetails] = useState(initializeDetails(data));
   const [isEditDetail, setEditDetail] = useState<Boolean>(false);
 
   const handleToogleDialog = () => {
     if (isEditDetail) {
-      setDetails([...data]);
+      setDetails(initializeDetails(data)); // Reset details to the original data, handling undefined case
       setEditDetail(false);
     } else {
       setEditDetail(true);
     }
   };
-
   const handleSave = () => {
     setEditDetail(false);
+    setPoDeliverydetails(details);
   };
   const columns = useMemo(() => getMaterialColumns({}), []);
   return (

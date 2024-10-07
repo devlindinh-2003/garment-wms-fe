@@ -130,7 +130,7 @@ export interface ImportRequestDetailTableTypes {
   packedHeight: number;
   packedWeight: number;
   plannedQuantity: number;
-  actualQUantity: number;
+  actualQuantity: number;
   id: string;
   poDeliveryId: string;
   createdAt: string | null;

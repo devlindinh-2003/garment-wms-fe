@@ -54,7 +54,7 @@ export interface PurchaseOrder {
 }
 
 // Pagination Meta
-interface PageMeta {
+export interface PageMeta {
   totalItems: number;
   page: number;
   limit: number;
