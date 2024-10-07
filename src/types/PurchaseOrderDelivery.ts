@@ -1,4 +1,5 @@
 import { UseGetTableResponseType } from './CompositeTable';
+import { MaterialVariant } from './MaterialVariant';
 
 export interface PurchaseOrderDelivery {
   poDeliveryDetail: PurchaseOrderDeliveryDetail[];
@@ -6,54 +7,6 @@ export interface PurchaseOrderDelivery {
 
 export interface PurchaseOrderDeliveryDetail {
   materialVariant: MaterialVariant;
-}
-
-export interface MaterialVariant {
-  id: string;
-  materialId: string;
-  name: string;
-  code: string;
-  packUnit: string;
-  uomPerPack: number;
-  packedWidth: number;
-  packedLength: number;
-  packedHeight: number;
-  packedWeight: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt?: string | null;
-  material: Material;
-}
-
-export interface Material {
-  id: string;
-  materialTypeId: string;
-  uomId: string;
-  name: string;
-  code: string;
-  reorderLevel: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt?: string | null;
-  uom: UnitOfMeasurement;
-  materialType: MaterialType;
-}
-
-export interface UnitOfMeasurement {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt?: string | null;
-}
-
-export interface MaterialType {
-  id: string;
-  name: string;
-  code: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt?: string | null;
 }
 
 // Mock Data in UseGetTableResponseType format
