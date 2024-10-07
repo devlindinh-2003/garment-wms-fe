@@ -5,7 +5,7 @@ type Props = {};
 
 const CommentComponent = (props: Props) => {
   return (
-    <article className="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
+    <article className="p-6 text-base bg-white rounded-lg dark:bg-gray-900 my-4">
       <footer className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <p className="inline-flex gap-2 items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">

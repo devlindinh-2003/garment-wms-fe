@@ -1,14 +1,23 @@
 import { Textarea } from '@/components/ui/Textarea'
-import React from 'react'
+import { ImportRequest } from '@/types/ImportRequestType'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import SupplierWarehouseInfo from './SupplierWarehouseInfo'
-import Process from './Process'
+import importRequestSelector from '../../create/slice/selector'
 import ImportRequestDetails from './ImportRequestDetails'
+import Process from './Process'
+import SupplierWarehouseInfo from './SupplierWarehouseInfo'
+
 
 type Props = {}
 
 
 const ImportRequestSheet = (props: Props) => {
+    const  importRequest: ImportRequest  = useSelector(importRequestSelector.importRequest);
+    let poDeliveryId = importRequest?.poDelivery?.id
+    let purchaseOrder = importRequest?.poDelivery?.purchaseOrder.poNumber
+    let planDeliveryDate = importRequest?.poDelivery?.expectedDeliverDate
+    let actualDeliveryDate = importRequest?.poDelivery?.deliverDate
+    
   return (
     <div className='flex flex-col gap-4 border-2 shadow-sm rounded-xl px-4'>
         <div className='font-primary text-3xl flex justify-center items-center font-bold my-5'>
@@ -19,10 +28,10 @@ const ImportRequestSheet = (props: Props) => {
         md:grid grid-cols-2 w-full'>
             <div className='flex flex-col gap-2'>
                 <div className='font-primary font-semibold text-sm'>
-                    Purchase Order: <Link to={'/'} className='text-bluePrimary underline underline-offset-2'>PO-2021-0001</Link>
+                    Purchase Order: <Link to={'/'} className='text-bluePrimary underline underline-offset-2'>{purchaseOrder}</Link>
                 </div>
                 <div className='font-primary font-semibold text-sm'>
-                    PO delivery: <Link to={'/'} className='text-bluePrimary underline underline-offset-2'>POD-210</Link>
+                    PO delivery: <Link to={'/'} className='text-bluePrimary underline underline-offset-2'>{poDeliveryId?.slice(0,8)}</Link>
                 </div>
                 <div className='font-primary font-semibold text-sm'>
                     Production plan: <Link to={'/'} className='text-bluePrimary underline underline-offset-2'>PL-201</Link>
@@ -33,10 +42,10 @@ const ImportRequestSheet = (props: Props) => {
                     Good Import Type: Material
                 </div>
                 <div className='font-primary font-semibold text-sm'>
-                    Plan Delivery Date: 20/09/2024
+                    Plan Delivery Date: {planDeliveryDate ? new Date(planDeliveryDate).toLocaleDateString() : 'Not yet'}
                 </div>
                 <div className='font-primary font-semibold text-sm'>
-                Actual Delivery Date: 20/09/2024
+                Actual Delivery Date:  {actualDeliveryDate ? new Date(actualDeliveryDate).toLocaleDateString() : 'Not yet'}
                 </div>
             </div>
         </div>

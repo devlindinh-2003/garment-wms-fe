@@ -1,21 +1,30 @@
-import React from 'react';
+import { Badge } from '@/components/ui/Badge';
 import {
-  ColumnDef,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger
+} from "@/components/ui/DropdownMenu";
+import { Button } from '@/components/ui/button';
+import { useDebounce } from '@/hooks/useDebouce';
+import { useGetImportRequests } from '@/hooks/useGetImportRequest';
+import { CustomColumnDef } from '@/types/CompositeTable';
+import { ImportRequest } from '@/types/ImportRequestType';
+import { DotsHorizontalIcon } from '@radix-ui/react-icons';
+import {
   ColumnFiltersState,
   PaginationState,
   SortingState
 } from '@tanstack/react-table';
 import { useState } from 'react';
-import { useDebounce } from '@/hooks/useDebouce';
-import { Checkbox } from '@/components/ui/Checkbox';
-import { Badge } from '@/components/ui/Badge';
-import { CustomColumnDef } from '@/types/CompositeTable';
-import { importRequestsData, ImportRequest } from '@/types/ImportRequestType';
+import { useNavigate } from 'react-router-dom';
 import TanStackBasicTable from './CompositeTable';
-
 type Props = {};
 
-const ImportRequestList = (props: Props) => {
+const   ImportRequestList = (props: Props) => {
+  const navigate = useNavigate();  
+
   // sorting state of the table
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -29,88 +38,118 @@ const ImportRequestList = (props: Props) => {
     pageSize: 10 //default page size
   });
 
-  const filterOptions = {
-    country: ['USA', 'Canada', 'UK', 'Australia'],
-    city: ['New York', 'Los Angeles', 'Toronto', 'London'],
-    favorite_color: ['Red', 'Blue', 'Green', 'Yellow'],
-    gender: ['Male', 'Female', 'Other']
-    // Add more filter options for other columns
-  };
-  const userColumns: CustomColumnDef<ImportRequest>[] = [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-          className="translate-y-[2px]"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="translate-y-[2px]"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false
-    },
 
+const { importRequestData, isimportRequestLoading  } = useGetImportRequests({
+  sorting,
+  columnFilters: debouncedColumnFilters,
+  pagination})
+  
+
+  const importRequestColumn: CustomColumnDef<ImportRequest>[] = [
+    {
+      header: 'Import request ID',
+      accessorKey: 'code',
+      enableColumnFilter: false
+    },
     {
       header: 'Delivery ID',
-      accessorKey: 'id',
-      enableColumnFilter: false
-    },
-    {
-      header: 'Created by',
-      accessorKey: 'warehouseStaffName',
-      enableColumnFilter: false
-    },
-    {
-      header: 'Purchase Order ID',
-      accessorKey: 'poReceiptId',
+      accessorKey: 'poDeliveryId',
       enableColumnFilter: false
     },
     {
       header: 'Supplier',
-      accessorKey: 'supplier',
+      accessorKey: 'from',
       enableColumnFilter: false
     },
     {
-      header: 'Delivery type',
-      accessorKey: 'deliveryType',
-      enableColumnFilter: false
+      header: 'Import Request Type',
+      accessorKey: 'type',
+      enableColumnFilter: true,
+      filterOptions: [
+        { label: 'MATERIAL_BY_PO', value: 'MATERIAL_BY_PO' },
+        { label: 'MATERIAL_RETURN', value: 'MATERIAL_RETURN' },
+        { label: 'MATERIAL_NOT_BY_PO', value: 'MATERIAL_NOT_BY_PO' },
+        { label: 'PRODUCT_BY_MO', value: 'PRODUCT_BY_MO' },
+        { label: 'PRODUCT_RETURN', value: 'PRODUCT_RETURN' },
+        { label: 'PRODUCT_NOT_BY_MO', value: 'PRODUCT_NOT_BY_MO' },
+      ]
     },
     {
-      header: 'Delivery date',
-      accessorKey: 'deliveryDate',
-      enableColumnFilter: false
+      header: 'Create date',
+      accessorKey: 'createdAt',
+      enableColumnFilter: false,
+      cell: ({ row }) => {
+        const dateString = row.original.createdAt;
+        if (!dateString) {
+          return <div>N/A</div>; 
+        }
+        const date = new Date(dateString);
+        const formattedDate = date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        });
+        return (
+          <div>
+            <div>{formattedDate}</div>
+          </div>
+        );
+      },
+      
     },
     {
       header: 'Status',
       accessorKey: 'status',
-      cell: ({ row }) => <Badge variant={'default'}> {row.original.status}</Badge>,
+      enableColumnFilter: true,
+      cell: ({ row }) => 
+      (
+      <Badge variant={'default'}> 
+      {row.original.status}
+      </Badge>),
       filterOptions: [
-        { label: 'Male', value: 'Male' },
-        { label: 'Female', value: 'Female' },
-        { label: 'Complicated', value: 'Complicated' }
+        { label: 'PENDING', value: 'PENDING' },
+        { label: 'REJECTED', value: 'REJECTED' },
+        { label: 'APPROVED', value: 'APPROVED' },
+        { label: 'INSPECTING', value: 'INSPECTING' },
+        { label: 'INSPECTED', value: 'INSPECTED' },
+        { label: 'IMPORTING', value: 'IMPORTING' },
+        { label: 'IMPORTED', value: 'IMPORTED' },
+        { label: 'CANCELED', value: 'CANCELED' },
       ]
-    }
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const request = row.original
+   
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <DotsHorizontalIcon className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+               onClick={() => navigate(`/purchase-staff/import-request/${request.id}`)}
+              >View</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
   ];
 
   return (
     <div className="pb-4">
       <div className="mb-4 w-auto bg-white rounded-xl shadow-sm border">
         <TanStackBasicTable
-          isTableDataLoading={false}
-          paginatedTableData={importRequestsData}
-          columns={userColumns}
+          isTableDataLoading={isimportRequestLoading}
+          paginatedTableData={importRequestData ?? undefined}
+          columns={importRequestColumn}
           pagination={pagination}
           setPagination={setPagination}
           sorting={sorting}

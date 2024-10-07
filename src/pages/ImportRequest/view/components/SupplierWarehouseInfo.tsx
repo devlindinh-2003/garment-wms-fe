@@ -1,4 +1,6 @@
-import React from 'react'
+import { ImportRequest } from '@/types/ImportRequestType';
+import { useSelector } from 'react-redux';
+import importRequestSelector from '../../create/slice/selector';
 
 type Props = {}
 const WarehouseInfo = {
@@ -9,6 +11,8 @@ const WarehouseInfo = {
     fax: '1234567890'
 }
 const SupplierWarehouseInfo = (props: Props) => {
+    const  importRequest: ImportRequest  = useSelector(importRequestSelector.importRequest);
+    let supplier = importRequest?.poDelivery?.purchaseOrder.supplier
   return (
     <div className='
         flex flex-col gap-4
@@ -21,19 +25,19 @@ const SupplierWarehouseInfo = (props: Props) => {
                 {/* <SuppierForm/> */}
                 <div className='flex flex-col gap-4'>
                     <div className='font-primary font-semibold text-sm'>
-                        Warehouse name: {WarehouseInfo.name}
+                        Supplier name: {supplier?.supplierName}
                     </div>
                     <div className='font-primary font-semibold text-sm'>
-                        Address: {WarehouseInfo.address}
+                        Address: {supplier?.address}
                     </div>
                     <div className='font-primary font-semibold text-sm'>
-                        Phone: {WarehouseInfo.phone}
+                        Phone: {supplier?.phoneNumber}
                         </div>
                     <div className='font-primary font-semibold text-sm'>
-                        Email: {WarehouseInfo.email}
+                        Email: {supplier?.email}
                     </div>
                     <div className='font-primary font-semibold text-sm'>
-                        Fax: {WarehouseInfo.fax}
+                        Fax: {supplier?.fax}
                     </div>
                 </div>
             </div>

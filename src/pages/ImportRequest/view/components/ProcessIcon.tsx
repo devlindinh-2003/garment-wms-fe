@@ -22,13 +22,13 @@ const ProcessIcon: React.FC<Props> = (props: Props) => {
           {props.isDone ? <FaCheck /> : <GoPersonFill color='black'/>}
         </span>{' '}
         <span className='lg:text-xs md:text-xs flex '>{props.title}</span>
-      </div>
+      </div>  
     </li>)
       :
       (
         <li className={`relative flex-1 after:content-[''] ${props.index < props.totalSteps-1 ? "after:h-full": ""}  after:w-0.5   ${props.isDone ? 'after:bg-bluePrimary' : ' after:bg-slate-500'} after:inline-block after:absolute after:-bottom-8 after:left-[15px] lg:after:left-5`}>
           <div  className="flex items-center font-medium w-full  ">
-              <span className={`w-8 h-8 ${props.isDone ? 'bg-bluePrimary' : 'text-slate-500 border-slate-500'} border-2 border-transparent rounded-full flex justify-center items-center mr-3 text-sm text-white lg:w-10 lg:h-10`}>
+              <span className={`w-8 h-8 ${props.isDone ? 'bg-bluePrimary' : 'text-slate-500 border-slate-500'} border-2  rounded-full flex justify-center items-center mr-3 text-sm text-white lg:w-10 lg:h-10`}>
               {props.isDone ? <FaCheck /> : <GoPersonFill color='black'/>}
               </span>
               <div className="block">

@@ -1,83 +1,96 @@
-import TanStackBasicTable from '@/components/common/CompositeTable';
-import { useDebounce } from '@/hooks/useDebouce';
+import { DataTable } from '@/components/ui/DataTable';
 import { CustomColumnDef } from '@/types/CompositeTable';
-import { ImportRequestDetails as type  } from '@/types/ImportRequestType';
-import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
-import React, { useState } from 'react'
-import { details, detailsForTable } from '../../create/components/data';
+import { ImportRequest } from '@/types/ImportRequestType';
+import { useSelector } from 'react-redux';
+import importRequestSelector from '../../create/slice/selector';
 
-type Props = {}
+type Props = {};
 
-const ImportRequestDetails = (props: Props) => {
-    // sorting state of the table
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  // column filters state of the table
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const debouncedColumnFilters: ColumnFiltersState = useDebounce(columnFilters, 1000);
-// pagination state of the table
-const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0, //initial page index
-    pageSize: 10 //default page size
-  });
-
-  const DetailsColumn: CustomColumnDef<type>[] = [
-
-  {
-    header: 'Material ID',
-    accessorKey: 'materialId',
-    enableColumnFilter: false
-  },
-  {
-    header: 'Material Name',
-    accessorKey: 'materialName',
-    enableColumnFilter: false
-  },
-  {
-    header: 'SKU',
-    accessorKey: 'SKU',
-    enableColumnFilter: false
-  },
-  {
-    header: 'Unit of measure',
-    accessorKey: 'UOM',
-    enableColumnFilter: false
-  },
-  {
-    header: 'Planned quantity',
-    accessorKey: 'plannedQuantity',
-    enableColumnFilter: false
-  },
-  {
-    header: 'Actual quantity',
-    accessorKey: 'actualQuantity',
-    enableColumnFilter: false
-  },
-  
-];
-  return (
-    <div className='flex flex-col gap-4'>
-        <div className='font-primary text-xl font-bold my-2'>
-            Import Request Details
-        </div>
-        <div className="pb-4">
-      <div className="mb-4 w-auto bg-white rounded-xl shadow-sm border">
-        <TanStackBasicTable
-          isTableDataLoading={false}
-          paginatedTableData={detailsForTable}
-          columns={DetailsColumn}
-          pagination={pagination}
-          setPagination={setPagination}
-          sorting={sorting}
-          setSorting={setSorting}
-          columnFilters={columnFilters}
-          setColumnFilters={setColumnFilters}
-        />
-      </div>
-    </div>
-
-    </div>
-  )
+interface ColumnType {
+  name?: string;
+  code?: string;
+  packUnit?: string;
+  uomPerPack?: number;
+  quantityByPack?: number;
+  materialName: string;
+  materialCode?: string;
+  materialType?: string;
 }
 
-export default ImportRequestDetails
+const ImportRequestDetails = (props: Props) => {
+  const importRequest: ImportRequest = useSelector(importRequestSelector.importRequest);
+  let details = importRequest?.importRequestDetail ?? [];
+  let formattedDetails: ColumnType[] = [];
+  if (details) {
+    formattedDetails = details.map((detail) => {
+      const materialVariant = detail.materialVariant;
+
+      return {
+        name: materialVariant?.name ?? 'N/A', // Fallback to 'N/A' if undefined
+        code: materialVariant?.code ?? 'N/A',
+        packUnit: materialVariant?.packUnit ?? 'N/A',
+        materialName: materialVariant?.material?.name ?? 'N/A', // Fallback for nested material
+        uomPerPack: materialVariant?.uomPerPack ?? 0, // Default to 0 if undefined
+        quantityByPack: detail.quantityByPack ?? 0, // Default to 0 if undefined
+        materialCode: materialVariant?.material?.code ?? 'N/A', // Fallback for nested material
+        materialType: materialVariant?.material?.materialType?.name ?? 'N/A' // Fallback for nested materialType
+      };
+    });
+  }
+
+  console.log(formattedDetails);
+  const DetailsColumn: CustomColumnDef<ColumnType>[] = [
+    {
+      header: 'Variant code',
+      accessorKey: 'code',
+      enableColumnFilter: false
+    },
+    {
+      header: 'Material Code',
+      accessorKey: 'materialCode',
+      enableColumnFilter: false
+    },
+    {
+      header: 'Material Name',
+      accessorKey: 'materialName',
+      enableColumnFilter: false
+    },
+    {
+      header: 'Variant Name',
+      accessorKey: 'name',
+      enableColumnFilter: false
+    },
+    {
+      header: 'Material Type',
+      accessorKey: 'materialType',
+      enableColumnFilter: false
+    },
+    {
+      header: 'Unit of measure',
+      accessorKey: 'packUnit',
+      enableColumnFilter: false
+    },
+    {
+      header: 'Quantity per pack',
+      accessorKey: 'uomPerPack',
+      enableColumnFilter: false
+    },
+    {
+      header: 'Quantity By Pack',
+      accessorKey: 'quantityByPack',
+      enableColumnFilter: false
+    }
+  ];
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="font-primary text-xl font-bold my-2">Import Request Details</div>
+      <div className="pb-4">
+        <div className="mb-4 w-auto bg-white rounded-xl shadow-sm border">
+          <DataTable columns={DetailsColumn} data={formattedDetails} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ImportRequestDetails;

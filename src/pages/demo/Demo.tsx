@@ -115,7 +115,7 @@ function Demo() {
     },
     {
       header: 'City',
-      accessorKey: 'city'
+      accessorKey: 'city',
     },
     {
       header: 'Fav Color',
