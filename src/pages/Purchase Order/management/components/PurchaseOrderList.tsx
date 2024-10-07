@@ -42,7 +42,7 @@ const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders })
   const handleContinue = () => {
     if (Object.keys(sheetsData).length > 0) {
       console.log('Proceeding with uploaded sheets:', sheetsData);
-      navigate('/purchase-staff/purchase-order/preview', { state: { sheetsData } });
+      navigate('/purchase-staff/purchase-order/detail', { state: { sheetsData } });
     } else {
       console.log('No data available. Cannot proceed.');
     }

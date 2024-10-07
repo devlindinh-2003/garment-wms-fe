@@ -44,9 +44,6 @@ export interface PODelivery {
   poDeliveryDetail: PODeliveryDetail[];
 }
 
-// Purchase Order
-
-// Pagination Meta
 interface PageMeta {
   totalItems: number;
   page: number;
@@ -59,10 +56,10 @@ interface PageMeta {
 // Purchase Order Response
 export interface PurchaseOrderResponse {
   statusCode: number;
-  data: {
+  data?: {
     data: PurchaseOrder[];
     pageMeta: PageMeta;
-  };
+  } | null;
   message: string;
   errors: any;
 }

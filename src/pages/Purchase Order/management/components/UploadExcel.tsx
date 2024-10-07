@@ -8,6 +8,7 @@ import Colors from '@/constants/color';
 import ExcelIcon from '@/assets/images/ExcelFile_Icon.png';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { Step, Stepper } from 'react-form-stepper';
+import { uploadPurchaseOrderExcel } from '@/api/services/purchaseOrderSample';
 
 const MAX_FILE_SIZE_KB = 100;
 
@@ -86,9 +87,29 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
       if (progress >= 100) {
         clearInterval(uploadInterval);
         setIsUploading(false);
-        readExcel(file);
+        uploadFileToServer(file);
       }
     }, 500);
+  };
+
+  // Upload file to the server using the imported API
+  const uploadFileToServer = async (file: File) => {
+    try {
+      const response = await uploadPurchaseOrderExcel(file);
+      if (response.statusCode === 400) {
+        setUploadError(response.message || 'Invalid file format. Please try again.');
+        console.error('Error from server:', response.message);
+        setActiveStep(1);
+      } else {
+        console.log('Server response:', response);
+        setIsUploadComplete(true);
+        setActiveStep(2);
+      }
+      console.log(response);
+    } catch (error) {
+      setUploadError('Failed to upload file. Please try again.');
+      setActiveStep(1);
+    }
   };
 
   // Read the Excel file and pass all sheets to onUploadComplete handler
