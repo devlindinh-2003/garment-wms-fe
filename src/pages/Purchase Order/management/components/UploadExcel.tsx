@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import * as XLSX from 'xlsx';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/Dialog';
 import { Progress } from '@/components/ui/progress';
@@ -9,6 +8,7 @@ import ExcelIcon from '@/assets/images/ExcelFile_Icon.png';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { Step, Stepper } from 'react-form-stepper';
 import { uploadPurchaseOrderExcel } from '@/api/services/purchaseOrderSample';
+import { AxiosProgressEvent } from 'axios';
 
 const MAX_FILE_SIZE_KB = 100;
 
@@ -62,10 +62,6 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
   const processFile = (file: File | null) => {
     if (file) {
       setUploadError(null);
-      if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-        setUploadError('Only .xlsx files are allowed');
-        return;
-      }
       const fileSizeKB = file.size / 1024;
       if (fileSizeKB > MAX_FILE_SIZE_KB) {
         setUploadError(`The file must not be over ${MAX_FILE_SIZE_KB} KB`);
@@ -74,30 +70,32 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
       setSelectedFile(file);
       setIsUploading(true);
       setActiveStep(1);
-      simulateUploadProgress(file);
+      uploadFileToServer(file);
     }
   };
 
-  // Simulate file upload progress
-  const simulateUploadProgress = (file: File) => {
-    let progress = 0;
-    const uploadInterval = setInterval(() => {
-      progress += 10;
-      setUploadProgress(progress);
-      if (progress >= 100) {
-        clearInterval(uploadInterval);
-        setIsUploading(false);
-        uploadFileToServer(file);
-      }
-    }, 500);
-  };
-
-  // Upload file to the server using the imported API
   const uploadFileToServer = async (file: File) => {
     try {
-      const response = await uploadPurchaseOrderExcel(file);
+      const response = await uploadPurchaseOrderExcel(file, (progressEvent: AxiosProgressEvent) => {
+        const total = progressEvent.total || 0;
+        const progress = Math.round((progressEvent.loaded * 100) / total);
+        setUploadProgress(progress);
+      });
+
       if (response.statusCode === 400) {
-        setUploadError(response.message || 'Invalid file format. Please try again.');
+        if (response.message === 'Invalid file format') {
+          setUploadError('The file format is invalid. Please upload a valid Excel (.xlsx) file.');
+        } else if (response.message === 'Invalid format') {
+          setUploadError(
+            'The uploaded file does not match the required template format. Please use the correct template and try again.'
+          );
+        } else if (response.message === 'There is error in the file' && response.errors) {
+          setUploadError(
+            `We found issues in the uploaded file. <a href="${response.errors}" target="_blank" class="underline text-blue-600">Click here</a> to download the file with errors and correct them.`
+          );
+        } else {
+          setUploadError('An unknown error occurred. Please try again.');
+        }
         console.error('Error from server:', response.message);
         setActiveStep(1);
       } else {
@@ -105,35 +103,11 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
         setIsUploadComplete(true);
         setActiveStep(2);
       }
-      console.log(response);
     } catch (error) {
       setUploadError('Failed to upload file. Please try again.');
+      console.error('Failed to upload file:', error);
       setActiveStep(1);
     }
-  };
-
-  // Read the Excel file and pass all sheets to onUploadComplete handler
-  const readExcel = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (event: ProgressEvent<FileReader>) => {
-      const arrayBuffer = event.target?.result as ArrayBuffer;
-      const data = new Uint8Array(arrayBuffer);
-      const binaryStr = data.reduce((acc, byte) => acc + String.fromCharCode(byte), '');
-      const workbook = XLSX.read(binaryStr, { type: 'binary' });
-      const sheetsData: Record<string, SheetRow[]> = {};
-      workbook.SheetNames.forEach((sheetName) => {
-        const sheet = XLSX.utils.sheet_to_json<SheetRow>(workbook.Sheets[sheetName], { header: 1 });
-        sheetsData[sheetName] = sheet;
-      });
-      onUploadComplete(sheetsData);
-      setIsUploadComplete(true);
-      setActiveStep(2);
-    };
-    reader.onerror = () => {
-      setUploadError('Error reading the file');
-      setActiveStep(1);
-    };
-    reader.readAsArrayBuffer(file);
   };
 
   // Handle file deletion and reset the file input field
@@ -163,7 +137,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
     );
   };
 
-  //active = 1
+  // active = 1
   const renderUploadExcel = () => {
     return (
       <div>
@@ -198,33 +172,44 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
           </div>
         )}
 
-        {/* Show upload error message */}
-        {uploadError && (
-          <div className="mt-4 flex items-center justify-between bg-red-100 p-4 rounded-lg">
-            <div className="flex items-center space-x-3">
-              <XCircle size={24} color="red" />
-              <div>
-                <p className="text-sm text-gray-700">{selectedFile?.name}</p>
-                <p className="text-xs text-red-600">{uploadError}</p>
+        {selectedFile && !isUploadComplete && (
+          <div className="flex flex-col bg-gray-100 border border-dashed border-gray-300 rounded-lg mt-4 pb-3">
+            <div className="flex justify-between items-center p-4">
+              <div className="flex items-center">
+                <img src={ExcelIcon} alt="Excel Icon" className="w-10 h-10 mr-4" />
+                <div className="flex flex-col">
+                  <p className="font-semibold">{selectedFile.name}</p>
+                </div>
               </div>
+              <Trash
+                size={20}
+                color="red"
+                className="cursor-pointer hover:opacity-30 ml-9"
+                onClick={handleDeleteFile}
+              />
             </div>
-            <Trash
-              size={24}
-              color="red"
-              className="cursor-pointer hover:opacity-30"
-              onClick={handleDeleteFile}
-            />
+            <div className="px-4 w-full ">
+              {isUploading ? (
+                <Progress value={uploadProgress} className="h-2 bg-gray-200 mt-2 w-full" />
+              ) : uploadError ? (
+                <p className="text-red-600 mt-2">Upload failed</p>
+              ) : (
+                <p className="text-green-600 mt-2">Upload successful</p>
+              )}
+            </div>
           </div>
         )}
 
-        {/* Show upload progress */}
-        {isUploading && (
-          <div className="w-full mt-4">
-            <Progress value={uploadProgress} className="h-4 bg-gray-200" />
-            <p className="text-sm text-gray-600 mt-1">{uploadProgress}% uploading...</p>
+        {/* Show detailed upload error message */}
+        {uploadError && (
+          <div className="mt-4 flex flex-col bg-red-100 p-4 rounded-lg border border-red-300">
+            <div className="flex items-center mb-2">
+              <XCircle size={30} color="red" />
+              <p className="ml-2 text-sm font-semibold text-red-600">{selectedFile?.name}</p>
+            </div>
+            <p className="text-sm text-red-600" dangerouslySetInnerHTML={{ __html: uploadError }} />
           </div>
         )}
-
         {/* Show success message and file info after upload */}
         {isUploadComplete && !uploadError && selectedFile && (
           <div className="mt-4 flex items-center justify-between bg-gray-100 p-4 rounded-lg">
@@ -310,7 +295,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
           }}>
           <Step label="Choose production plan" />
           <Step label="Upload Excel" />
-          <Step label="Update successfully" />
+          <Step label="Upload successfully" />
         </Stepper>
 
         {/* Render components based on step */}

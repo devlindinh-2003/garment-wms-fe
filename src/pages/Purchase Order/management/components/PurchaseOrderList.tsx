@@ -105,7 +105,6 @@ const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders })
         const status = row.original.status as PurchaseOrderStatus;
         const statusLabel = PurchaseOrderStatusLabels[status];
         let colorVariant;
-
         switch (status) {
           case PurchaseOrderStatus.IN_PROGESS:
             colorVariant = 'bg-yellow-500 text-white';
@@ -119,7 +118,6 @@ const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders })
           default:
             colorVariant = 'bg-gray-200 text-black';
         }
-
         return <Badge className={colorVariant}>{statusLabel}</Badge>;
       }
     }
