@@ -18,12 +18,20 @@ import {
   SortingState
 } from '@tanstack/react-table';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import TanStackBasicTable from './CompositeTable';
 type Props = {};
 
 const   ImportRequestList = (props: Props) => {
   const navigate = useNavigate();  
+  const location = useLocation();
+
+  const handleViewClick = (requestId: string) => {
+    const basePath = location.pathname.split('/import-request')[0]; // Get base path (either manager or purchase-staff)
+    
+    // Navigate to the new route
+    navigate(`${basePath}/import-request/${requestId}`);
+  };
 
   // sorting state of the table
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -143,7 +151,7 @@ const { importRequestData, isimportRequestLoading  } = useGetImportRequests({
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-               onClick={() => navigate(`/purchase-staff/import-request/${request.id}`)}
+               onClick={() => handleViewClick(request.id)}
               >View</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

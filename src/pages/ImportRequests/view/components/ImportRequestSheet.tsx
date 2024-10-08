@@ -33,9 +33,9 @@ const ImportRequestSheet = (props: Props) => {
                 <div className='font-primary font-semibold text-sm'>
                     PO delivery: <Link to={'/'} className='text-bluePrimary underline underline-offset-2'>{poDeliveryId?.slice(0,8)}</Link>
                 </div>
-                <div className='font-primary font-semibold text-sm'>
+                {/* <div className='font-primary font-semibold text-sm'>
                     Production plan: <Link to={'/'} className='text-bluePrimary underline underline-offset-2'>PL-201</Link>
-                </div>
+                </div> */}
             </div>
             <div className='flex flex-col gap-2'>
                 <div className='font-primary font-semibold text-sm'>

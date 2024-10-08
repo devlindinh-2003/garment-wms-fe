@@ -1,10 +1,7 @@
-import { Card, CardContent, CardHeader,CardTitle  } from '@/components/ui/Card';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import MaterialForm from './MaterialForm';
-import {details as materialData} from './data';
-import { getMaterialColumns } from './MaterialColumns';
 import type { ImportRequestDetails } from '@/types/ImportRequestType';
-import DataTable from '@/components/common/EditableTable/DataTable';
+import { useState } from 'react';
+import MaterialForm from './MaterialForm';
+// import DataTable from '@/components/common/EditableTable/DataTable';
 import { Button } from '@/components/ui/button';
 import EditMaterialForm from './EditMaterialForm';
 type Props = {};
@@ -21,15 +18,15 @@ const ImportRequestDetails = (props: Props) => {
   const [details, setDetails] = useState(initialDetails);
   const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
 
-  const onEdit = useCallback((material: ImportRequestDetails) => {
-    setSelectedMaterial(material);
-    setIsDialogEditOpen(true);
-  }, []);
-  const onDelete = useCallback((material: ImportRequestDetails) => {
-    const updatedDetails = details.filter(item => item.materialId !== material.materialId);
-    setDetails(updatedDetails);
-  }, [details]);
-  const columns = useMemo(() => getMaterialColumns({ onEdit, onDelete }), []);
+  // const onEdit = useCallback((material: ImportRequestDetails) => {
+  //   setSelectedMaterial(material);
+  //   setIsDialogEditOpen(true);
+  // }, []);
+  // const onDelete = useCallback((material: ImportRequestDetails) => {
+  //   const updatedDetails = details.filter(item => item.materialId !== material.materialId);
+  //   setDetails(updatedDetails);
+  // }, [details]);
+  // const columns = useMemo(() => getMaterialColumns({ onEdit, onDelete }), []);
   return (
     <div className="px-4">
       <div className="flex flex-col gap-4">
@@ -73,7 +70,7 @@ const ImportRequestDetails = (props: Props) => {
           </div>
         </div>
       
-        <DataTable data={details} columns={columns}/>
+        {/* <DataTable data={details} columns={columns}/> */}
 
     </div>
   );

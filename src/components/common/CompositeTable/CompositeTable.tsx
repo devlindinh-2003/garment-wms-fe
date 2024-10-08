@@ -1,3 +1,4 @@
+import { TableProps } from '@/types/CompositeTable';
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -5,10 +6,10 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useEffect } from 'react';
-import { TableProps } from '@/types/CompositeTable';
+import Loading from '../Loading';
+import { DataTableToolbar } from './DataTableToolbar';
 import TanStackBasicTableTableComponent from './TableComponent';
 import TanStackBasicTablePaginationNavigationComponent from './TablePagnationNavigation';
-import { DataTableToolbar } from './DataTableToolbar';
 
 export default function TanStackBasicTable<TData, TValue>({
   isTableDataLoading,
@@ -70,10 +71,10 @@ export default function TanStackBasicTable<TData, TValue>({
     <div className="p-8 ">
       <div className="flex flex-col md:flex-row justify-evenly gap-4"></div>
       {isTableDataLoading ? (
-        <div>Loading Data ...</div>
+        <div><Loading/></div>
       ) : (
         <>
-          {/* <h1 className="text-2xl font-bold mb-4">User Lists</h1> */}
+
           <DataTableToolbar table={table} />
           <div className="rounded-md border mb-8">
             <TanStackBasicTableTableComponent table={table} columns={columns} />

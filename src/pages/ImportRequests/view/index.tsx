@@ -13,13 +13,20 @@ import ImportRequestStatus from './components/ImportRequestStatus';
 
 type Props = {};
 
+
 const ViewImportRequest = (props: Props) => {
   // const [importRequest, setImportRequest] = useState<ImportRequest>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  
   const [error, setError] = useState<string>('');
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { toast } = useToast()
+  const { toast } = useToast();
+  const breadcrumbItems = [
+
+    { href: "/purchase-staff/import-request", label: "Import Request" },
+    { href: `/purchase-staff/import-request/${id}`, label: `Details of Request` }
+  ];
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true); // Start loading
@@ -72,7 +79,7 @@ const ViewImportRequest = (props: Props) => {
       ) : (
         <div className="w-full bg-white rounded-xl shadow-sm border">
           <div className="flex flex-col gap-3 px-4">
-            <BreadcrumbResponsive />
+            <BreadcrumbResponsive  breadcrumbItems={breadcrumbItems} itemsToDisplay={2}/>
             <div className="flex flex-col lg:grid lg:grid-cols-8 gap-4">
               <div className="lg:col-span-6 order-2 lg:order-none">
                 <ImportRequestSheet />

@@ -1,7 +1,3 @@
-"use client"
-
-import * as React from "react"
-import { useMediaQuery } from 'usehooks-ts'
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -10,8 +6,8 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/Breadcrumb"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/Breadcrumb";
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -21,40 +17,52 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/Drawer"
+} from "@/components/ui/Drawer";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu"
-import { Link } from "react-router-dom"
+} from "@/components/ui/DropdownMenu";
+import * as React from "react";
+import { Link } from "react-router-dom";
+import { useMediaQuery } from 'usehooks-ts';
 
-const items = [
-  { href: "#", label: "Home" },
-  { href: "#", label: "Documentation" },
-  { href: "#", label: "Building Your Application" },
-  { href: "#", label: "Data Fetching" },
-  { label: "Caching and Revalidating" },
-]
+type BreadcrumbItemType = {
+  href?: string;
+  label: string;
+};
 
-const ITEMS_TO_DISPLAY = 3
+type BreadcrumbResponsiveProps = {
+  breadcrumbItems: BreadcrumbItemType[];
+  itemsToDisplay?: number;
+};
 
-export function BreadcrumbResponsive() {
-  const [open, setOpen] = React.useState(false)
-  const isDesktop = useMediaQuery("(min-width: 768px)")
+export function BreadcrumbResponsive({
+  breadcrumbItems,
+  itemsToDisplay = 3,
+}: BreadcrumbResponsiveProps) {
+  const [open, setOpen] = React.useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
-    <Breadcrumb
-    className="w-full py-2"
-    >
+    <Breadcrumb className="w-full py-2">
       <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href={items[0].href}>{items[0].label}</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        {items.length > ITEMS_TO_DISPLAY ? (
+        {breadcrumbItems.length > 0 && (
           <>
+            {/* Render first item */}
+            <BreadcrumbItem>
+              <BreadcrumbLink href={breadcrumbItems[0].href}>
+                {breadcrumbItems[0].label}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+          </>
+        )}
+
+        {breadcrumbItems.length > itemsToDisplay ? (
+          <>
+            {/* Render Ellipsis for hidden items */}
             <BreadcrumbItem>
               {isDesktop ? (
                 <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -65,7 +73,7 @@ export function BreadcrumbResponsive() {
                     <BreadcrumbEllipsis className="h-4 w-4" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start">
-                    {items.slice(1, -2).map((item, index) => (
+                    {breadcrumbItems.slice(1, -itemsToDisplay + 1).map((item, index) => (
                       <DropdownMenuItem key={index}>
                         <Link to={item.href ? item.href : "#"}>
                           {item.label}
@@ -87,7 +95,7 @@ export function BreadcrumbResponsive() {
                       </DrawerDescription>
                     </DrawerHeader>
                     <div className="grid gap-1 px-4">
-                      {items.slice(1, -2).map((item, index) => (
+                      {breadcrumbItems.slice(1, -itemsToDisplay + 1).map((item, index) => (
                         <Link
                           key={index}
                           to={item.href ? item.href : "#"}
@@ -109,7 +117,9 @@ export function BreadcrumbResponsive() {
             <BreadcrumbSeparator />
           </>
         ) : null}
-        {items.slice(-ITEMS_TO_DISPLAY + 1).map((item, index) => (
+
+        {/* Render the last few items */}
+        {breadcrumbItems.slice(-itemsToDisplay + 1).map((item, index) => (
           <BreadcrumbItem key={index}>
             {item.href ? (
               <>
@@ -130,5 +140,5 @@ export function BreadcrumbResponsive() {
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  )
+  );
 }

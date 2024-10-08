@@ -1,13 +1,14 @@
-import {
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    useReactTable,
-  } from '@tanstack/react-table';
-  import { useEffect } from 'react';
-  import { TableProps } from '@/types/CompositeTable';
 import TanStackBasicTableTableComponent from '@/components/common/CompositeTable/TableComponent';
 import TanStackBasicTablePaginationNavigationComponent from '@/components/common/CompositeTable/TablePagnationNavigation';
+import Loading from '@/components/common/Loading';
+import { TableProps } from '@/types/CompositeTable';
+import {
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+import { useEffect } from 'react';
 import { DataTableToolbar } from './DataTableToolBar';
 
   
@@ -71,7 +72,7 @@ import { DataTableToolbar } from './DataTableToolBar';
       <div className="p-8 ">
         <div className="flex flex-col md:flex-row justify-evenly gap-4"></div>
         {isTableDataLoading ? (
-          <div>Loading Data ...</div>
+          <div><Loading/></div>
         ) : (
           <>
             <h1 className="text-2xl font-bold mb-4">Import Request Lists</h1>
