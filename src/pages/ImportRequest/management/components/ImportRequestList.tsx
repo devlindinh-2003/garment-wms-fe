@@ -48,18 +48,27 @@ const { importRequestData, isimportRequestLoading  } = useGetImportRequests({
   const importRequestColumn: CustomColumnDef<ImportRequest>[] = [
     {
       header: 'Import request ID',
-      accessorKey: 'code',
-      enableColumnFilter: false
+      accessorKey: 'id',
+      enableColumnFilter: false,
+      cell: ({ row }) => {
+        return (
+          <div>
+            <div>{row.original.id.slice(0,8)}</div>
+          </div>
+        );
+      }
     },
     {
       header: 'Delivery ID',
       accessorKey: 'poDeliveryId',
-      enableColumnFilter: false
-    },
-    {
-      header: 'Supplier',
-      accessorKey: 'from',
-      enableColumnFilter: false
+      enableColumnFilter: false,
+      cell: ({ row }) => {
+        return (
+          <div>
+            <div>{row.original.id.slice(0,8)}</div>
+          </div>
+        );
+      }
     },
     {
       header: 'Import Request Type',

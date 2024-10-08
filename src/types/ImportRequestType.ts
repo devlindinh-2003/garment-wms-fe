@@ -9,7 +9,7 @@ export interface ImportRequest {
   updatedAt?: string;
   finishAt?: string;
   importRequestDetail?: ImportRequestDetails[];
-  status?: ImportRequestStatus;
+  status?: string;
 }
 export interface poDelivery{
   id: string,

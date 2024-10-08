@@ -17,7 +17,7 @@ const ImportRequestSheet = (props: Props) => {
     let purchaseOrder = importRequest?.poDelivery?.purchaseOrder.poNumber
     let planDeliveryDate = importRequest?.poDelivery?.expectedDeliverDate
     let actualDeliveryDate = importRequest?.poDelivery?.deliverDate
-    
+    const status = importRequest?.status as string
   return (
     <div className='flex flex-col gap-4 border-2 shadow-sm rounded-xl px-4'>
         <div className='font-primary text-3xl flex justify-center items-center font-bold my-5'>
@@ -54,7 +54,7 @@ const ImportRequestSheet = (props: Props) => {
             <Textarea placeholder='Note' className='w-full h-20 mt-2'/>
         </div>
         <SupplierWarehouseInfo/>
-        <Process/>
+        <Process currentStatus={'IMPORTING'}/>
         <ImportRequestDetails/>
     </div>
   )
