@@ -18,7 +18,7 @@ export interface PODeliveryDetail {
 // PO Delivery
 export interface PODelivery {
   id: string;
-  poDeliveryId: string;
+  purchaseOrderId: string;
   totalAmount: number | null;
   taxAmount: number | null;
   orderDate: string | null;
@@ -44,7 +44,7 @@ interface PageMeta {
 // Purchase Order Response
 export interface PurchaseOrderResponse {
   statusCode: number;
-  data?: PurchaseOrder[] | PurchaseOrder | null;
+  data?: PurchaseOrder | PurchaseOrder[] | null;
   message: string;
   errors: any;
 }

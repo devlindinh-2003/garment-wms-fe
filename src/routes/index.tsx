@@ -15,7 +15,6 @@ import ImportPurchaseOrder from '@/pages/demoPO';
 import DeliveryNotesManagement from '@/pages/Delivery Notes/management';
 import Demo from '@/pages/demo';
 import PurchaseOrderManagement from '@/pages/Purchase Order/management';
-import PurchaseOrderPreview from '@/pages/Purchase Order/preview';
 import StepperDemo from '@/pages/demoStepper';
 import PurchaseOrderDetails from '@/pages/Purchase Order/detail';
 import PurchaseOrderDeliveryDetails from '@/pages/Purchase Order Delivery/detail';
@@ -97,15 +96,11 @@ const RouterComponent: React.FC = () => {
               element: <PurchaseOrderManagement />
             },
             {
-              path: '/purchase-staff/purchase-order/detail',
-              element: <PurchaseOrderDetails />
-            },
-            {
               path: '/purchase-staff/purchase-order/detail/:id',
               element: <PurchaseOrderDetails />
             },
             {
-              path: '/purchase-staff/purchase-order/detail/delivery',
+              path: '/purchase-staff/purchase-order/delivery/:deliveryId',
               element: <PurchaseOrderDeliveryDetails />
             }
           ]

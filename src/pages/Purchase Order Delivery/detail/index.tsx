@@ -1,35 +1,15 @@
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, Truck } from 'lucide-react';
-import materialSample from '@/assets/images/material.jpg';
-
-const MaterialList = () => {
-  return (
-    <main className="flex items-center justify-between pb-4">
-      <div className="flex items-center gap-4">
-        <img
-          src={materialSample}
-          alt="Material Image"
-          className="w-16 h-16 object-cover rounded-lg"
-        />
-        <div className="flex flex-col">
-          <h1 className="text-lg font-semibold">Cotton Fabric Roll</h1>
-          <div className="text-gray-500 text-sm flex gap-2">
-            <span>Fabric</span>
-            <span>| 100 meters</span>
-            <span>| 50 kg</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col items-end">
-        <span className="text-xl font-semibold">200.000 VND</span>
-        <span className="text-gray-500 text-sm">Quantity: 6</span>
-      </div>
-    </main>
-  );
-};
+import { useLocation } from 'react-router-dom';
+import { PODelivery } from '@/types/GetPurchaseOrder';
+import { convertDate } from '@/helpers/convertDate';
+import MaterialList from './components/MaterialList';
+import { PoDeliveryDetail } from '@/types/PurchaseOrderDeliveryDetail';
 
 const PurchaseOrderDeliveryDetails = () => {
+  const location = useLocation();
+  const { delivery } = location.state as { delivery: PODelivery };
+  console.log(delivery);
   return (
     <main className="w-full h-full bg-white rounded-md  px-6  pt-3 pb-7">
       {/* Header */}
@@ -37,31 +17,33 @@ const PurchaseOrderDeliveryDetails = () => {
         <div className="flex flex-col gap-3 ">
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-semibold">Purchase Order Delivery ID: </h1>
-            <h1 className="text-2xl text-primaryDark font-semibold">3354654654526</h1>
+            <h1 className="text-2xl text-primaryDark font-semibold">{delivery.purchaseOrderId}</h1>
           </div>
 
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <Calendar className="text-gray-500 text-sm" />
               <span className="text-gray-700 text-sm ">Order date:</span>
-              <span className="ml-3 font-semibold">15/10/2024</span>
+              <span className="ml-3 font-semibold">{convertDate(delivery.orderDate)}</span>
             </div>
 
             <div className="flex items-center gap-2 text-green-600">
               <Truck className="text-sm" />
               <span className="text-sm ">Estimated delivery:</span>
-              <span className="ml-3 font-semibold">05/03/2025</span>
+              <span className="ml-3 font-semibold">
+                {convertDate(delivery.expectedDeliverDate)}
+              </span>
             </div>
           </div>
         </div>
 
-        <Badge className="bg-yellow-500 text-xl capitalize">pending</Badge>
+        <Badge className="bg-yellow-500 text-xl capitalize">{delivery.status}</Badge>
       </section>
       {/* Material List */}
       <section className="flex flex-col gap-3 border-b-2 border-slate-300 pb-4 mb-4">
-        <MaterialList />
-        <MaterialList />
-        <MaterialList />
+        {delivery.poDeliveryDetail.map((detail: PoDeliveryDetail) => (
+          <MaterialList detail={detail} />
+        ))}
       </section>
       {/* Purchaser Info */}
       <section className="flex items-center justify-between border-b-2 border-slate-300 pb-4 mb-4 ">
@@ -99,7 +81,7 @@ const PurchaseOrderDeliveryDetails = () => {
 
         <div className="flex justify-between">
           <span className="text-gray-600">Total</span>
-          <span className="text-black font-semibold">350.000 VND</span>
+          <span className="text-black font-semibold">{delivery.totalAmount}</span>
         </div>
       </section>
     </main>

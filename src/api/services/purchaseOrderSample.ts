@@ -6,6 +6,7 @@ const BACKEND_HOST = 'http://localhost:8000';
 
 export const getAllPurchaseOrders: () => Promise<PurchaseOrderResponse> = async () => {
   const res = await axios.get(`${BACKEND_HOST}/purchase-order`);
+  console.log(res.data);
   return res.data;
 };
 

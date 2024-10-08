@@ -9,6 +9,7 @@ import { DialogTitle } from '@radix-ui/react-dialog';
 import { Step, Stepper } from 'react-form-stepper';
 import { uploadPurchaseOrderExcel } from '@/api/services/purchaseOrderSample';
 import { AxiosProgressEvent } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const MAX_FILE_SIZE_KB = 100;
 
@@ -29,12 +30,14 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
   continueButtonLabel = 'Open File',
   triggerButtonLabel = 'Import'
 }) => {
+  const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isUploadComplete, setIsUploadComplete] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [poId, setPoID] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState(1);
 
@@ -98,10 +101,19 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
         }
         console.error('Error from server:', response.message);
         setActiveStep(1);
+      } else if (response.statusCode === 409) {
+        setUploadError(
+          `A unique constraint was violated. Please ensure the Purchase Order (PO) number is unique.`
+        );
+        console.error('Unique constraint violation:', response.message);
+        setActiveStep(1);
       } else {
         console.log('Server response:', response);
         setIsUploadComplete(true);
         setActiveStep(2);
+        if (response?.data?.data?.id) {
+          setPoID(response?.data?.data?.id);
+        }
       }
     } catch (error) {
       setUploadError('Failed to upload file. Please try again.');
@@ -293,7 +305,9 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
             <Button
               className="w-32"
               onClick={() => {
-                onContinue();
+                if (poId) {
+                  navigate(`/purchase-staff/purchase-order/detail/${poId}`);
+                }
               }}>
               Open file
             </Button>

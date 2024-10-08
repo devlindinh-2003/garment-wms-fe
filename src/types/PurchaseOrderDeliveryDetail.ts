@@ -4,7 +4,7 @@ export interface PoDeliveryDetail {
   id: string;
   poDeliveryId: string;
   createdAt: string | null;
-  updatedAt: string;
+  updatedAt: string | null;
   deletedAt: string | null;
   quantityByPack: number;
   materialVariantId: string;
