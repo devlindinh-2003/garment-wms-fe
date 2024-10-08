@@ -54,7 +54,7 @@ const ImportRequestSheet = (props: Props) => {
             <Textarea placeholder='Note' className='w-full h-20 mt-2'/>
         </div>
         <SupplierWarehouseInfo/>
-        <Process currentStatus={'IMPORTING'}/>
+        <Process currentStatus={status}/>
         <ImportRequestDetails/>
     </div>
   )

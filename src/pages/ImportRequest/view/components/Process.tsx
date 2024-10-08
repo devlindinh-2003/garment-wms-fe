@@ -45,18 +45,13 @@ const Process = ({ currentStatus }: Props) => {
   
   const getDisplayStatus = (itemStates: string[]) => {
     const currentStatusIndex = statusOrder.indexOf(currentStatus);
-
-    // Go through the states and determine which should be displayed
     for (let i = itemStates.length - 1; i >= 0; i--) {
       const status = itemStates[i];
       const statusIndex = statusOrder.indexOf(status);
-      // If the current status is after this step, show it
       if (statusIndex <= currentStatusIndex) {
         return status;
       }
     }
-
-    // If no earlier status matches, return "NOT YET"
     return "NOT YET";
   };
 
