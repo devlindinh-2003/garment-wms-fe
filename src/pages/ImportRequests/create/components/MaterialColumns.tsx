@@ -15,9 +15,7 @@ export const getMaterialColumns = ({}: any): CustomColumnDef<ImportRequestDetail
     header: ({ column }) => (
       <DataTableColumnHeader className="text-center" column={column} title="Name" />
     ),
-    cell: ({ row }) => <div className="text-center">{row.original.materialVariant.name}</div>,
-    isEditable: true,
-    isPopover: true
+    cell: ({ row }) => <div className="text-center">{row.original.materialVariant.name}</div>
   },
   {
     accessorKey: 'packUnit',
@@ -57,7 +55,7 @@ export const getMaterialColumns = ({}: any): CustomColumnDef<ImportRequestDetail
       <DataTableColumnHeader className="text-center" column={column} title="Planned Quantity" />
     ),
     cell: ({ row }) => <div className="text-center">{row.original.plannedQuantity}</div>,
-    isEditable: true,
+
     validation: z.number().nonnegative('Planned Quantity must be equal or  greater than 0')
   },
   {

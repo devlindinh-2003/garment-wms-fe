@@ -35,6 +35,7 @@ import { CalendarIcon, CaretSortIcon } from '@radix-ui/react-icons';
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
 import { CheckIcon } from 'lucide-react';
 import { PODelivery, PODeliveryDetail, PurchaseOrder } from '@/types/purchaseOrder';
+import { Textarea } from '@/components/ui/TextArea';
 
 type Props = {};
 
@@ -43,7 +44,8 @@ const formSchema = z.object({
   purchaseOrderBatch: z.string().min(1, 'Please select a supplier batch.'),
   deliveryDate: z.date({
     required_error: 'A date of delivery is required.'
-  })
+  }),
+  description: z.string().optional()
 });
 interface DeliveryFormProps {
   form: UseFormReturn<z.infer<typeof formSchema>>;
@@ -70,6 +72,7 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
     form.setValue('purchaseOrder', currentValue === field.value ? '' : currentValue);
     setSelectedPO(item);
     setPODelivery(item.poDelivery);
+
     setOpen(false);
   };
   return (
@@ -184,9 +187,12 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
                         setSelectedPoDelivery(selectedDelivery);
                         setPoDeliverydetails(selectedDelivery.poDeliveryDetail);
                       }
-                    }}>
+                    }}
+                    disabled={poDelivery.length <= 0}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Choose supplier" />
+                      <SelectValue
+                        placeholder={`${poDelivery.length > 0 ? `Choose a delivery Batch` : `Please choose Purchase order first`}`}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {poDelivery.map((delivery, index) => (
@@ -203,24 +209,19 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
             )}
           />
 
-          {/* <FormField
+          <FormField
             control={form.control}
-            name="productionPlan"
+            name="description"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel className="text-sm">Production plan</FormLabel>
+                <FormLabel className="text-sm">Description</FormLabel>
                 <FormControl>
-                  <Select {...field} value={field.value || ''} onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose supplier" />
-                    </SelectTrigger>
-                    <SelectContent>123</SelectContent>
-                  </Select>
+                  <Textarea value={field.value} onChange={(e) => field.onChange(e.target.value)} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
+          />
         </form>
       </Form>
     </div>

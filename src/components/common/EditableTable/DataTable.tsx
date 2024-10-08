@@ -212,7 +212,7 @@ const DataTable = <TData, TValue>({
               </TableCell>
             </TableRow>
           )}
-          {isEdit && (
+          {/* {isEdit && (
             <TableRow>
               <TableCell>
                 <Popover
@@ -234,7 +234,7 @@ const DataTable = <TData, TValue>({
                 <TableCell key={column.id}></TableCell>
               ))}
             </TableRow>
-          )}
+          )} */}
         </TableBody>
         <TableFooter>
           {table.getFooterGroups().map((footerGroup) => {

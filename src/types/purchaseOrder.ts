@@ -13,6 +13,8 @@ export interface PODeliveryDetail {
   expiredDate: string | null;
   totalAmount: number;
   materialVariant: MaterialVariant;
+  plannedQuantity?: number;
+  actualQuantity?: number;
 }
 
 // PO Delivery

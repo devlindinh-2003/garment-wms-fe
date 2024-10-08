@@ -1,14 +1,16 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { getMaterialColumns } from './MaterialColumns';
 import DataTable from '@/components/common/EditableTable/DataTable';
 import { Button } from '@/components/ui/button';
 import { PODeliveryDetail } from '@/types/purchaseOrder';
+import { useToast } from '@/hooks/use-toast';
 type Props = {
   data: PODeliveryDetail[] | undefined;
   setPoDeliverydetails: React.Dispatch<React.SetStateAction<PODeliveryDetail[] | undefined>>;
 };
 
 const ImportRequestDetails = ({ data, setPoDeliverydetails }: Props) => {
+  const { toast } = useToast();
   const initializeDetails = (data: PODeliveryDetail[] | undefined) => {
     // Map through the data and add plannedQuantity and actualQuantity fields
     return (data || []).map((item) => ({
@@ -19,9 +21,18 @@ const ImportRequestDetails = ({ data, setPoDeliverydetails }: Props) => {
   };
   const [details, setDetails] = useState(initializeDetails(data));
   const [isEditDetail, setEditDetail] = useState<Boolean>(false);
-
+  // Use effect to update details when data changes
+  useEffect(() => {
+    setDetails(initializeDetails(data));
+  }, [data]);
   const handleToogleDialog = () => {
-    if (isEditDetail) {
+    if (initializeDetails(data).length <= 0) {
+      toast({
+        variant: 'destructive',
+        title: 'Please choose a Purchase Order and Purchase Order batch first',
+        description: ''
+      });
+    } else if (isEditDetail) {
       setDetails(initializeDetails(data)); // Reset details to the original data, handling undefined case
       setEditDetail(false);
     } else {
