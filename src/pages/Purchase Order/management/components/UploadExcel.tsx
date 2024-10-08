@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/Dialog';
+import { Dialog, DialogContent, DialogTrigger, DialogFooter } from '@/components/ui/Dialog';
 import { Progress } from '@/components/ui/progress';
 import { CircleCheckBig, FileUp, Trash, XCircle } from 'lucide-react';
 import Colors from '@/constants/color';
@@ -36,7 +36,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
   const [isUploadComplete, setIsUploadComplete] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(1);
 
   // Handle file change when user selects a file
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -243,22 +243,6 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
             <h2>Your file has been uploaded successfully</h2>
           </div>
         </div>
-        <div className="flex justify-end items-center gap-5 mt-6">
-          <Button
-            className="bg-white text-red-500 ring-1 ring-red-500 "
-            onClick={() => {
-              handleDeleteFile();
-              setActiveStep(0);
-            }}>
-            Cancel
-          </Button>
-          <Button
-            onClick={() => {
-              onContinue();
-            }}>
-            Preview
-          </Button>
-        </div>
       </main>
     );
   };
@@ -302,6 +286,19 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
         {activeStep === 0 && renderProductionPlan()}
         {activeStep === 1 && renderUploadExcel()}
         {activeStep === 2 && renderUploadSuccessfully()}
+
+        {activeStep === 2 && (
+          <div className="flex justify-center items-center gap-5 mt-6">
+            <Button className="bg-white text-red-500 ring-1 ring-red-500 w-32">Close</Button>
+            <Button
+              className="w-32"
+              onClick={() => {
+                onContinue();
+              }}>
+              Open file
+            </Button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

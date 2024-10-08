@@ -101,6 +101,10 @@ const RouterComponent: React.FC = () => {
               element: <PurchaseOrderDetails />
             },
             {
+              path: '/purchase-staff/purchase-order/detail/:id',
+              element: <PurchaseOrderDetails />
+            },
+            {
               path: '/purchase-staff/purchase-order/detail/delivery',
               element: <PurchaseOrderDeliveryDetails />
             }

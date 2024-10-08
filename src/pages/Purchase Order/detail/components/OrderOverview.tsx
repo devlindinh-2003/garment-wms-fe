@@ -1,10 +1,20 @@
 import { Badge } from '@/components/ui/Badge';
 import { Label } from '@/components/ui/Label';
+import { convertDate } from '@/helpers/convertDate';
 import React from 'react';
 
 interface KeyValueDisplayProps {
   name: string;
   value: string;
+}
+
+interface OrderOverviewProps {
+  poNumber: string;
+  totalAmount: number;
+  orderDate: string;
+  expectedFinishDate: string;
+  status: string;
+  currency: string;
 }
 
 const KeyValueDisplay: React.FC<KeyValueDisplayProps> = ({ name, value }) => {
@@ -16,7 +26,14 @@ const KeyValueDisplay: React.FC<KeyValueDisplayProps> = ({ name, value }) => {
   );
 };
 
-const OrderOverview = () => {
+const OrderOverview: React.FC<OrderOverviewProps> = ({
+  poNumber,
+  totalAmount,
+  orderDate,
+  expectedFinishDate,
+  status,
+  currency
+}) => {
   return (
     <div>
       <div className="flex items-center justify-between gap-2">
@@ -25,21 +42,19 @@ const OrderOverview = () => {
       <section className="flex flex-col space-y-5">
         <div className="mt-5 flex items-center justify-between ">
           <div className="flex flex-col gap-3">
-            <KeyValueDisplay name="Purchase Order" value="PO #12" />
-            <KeyValueDisplay name="Purchase Order Date" value="Oct 03, 2024" />
+            <KeyValueDisplay name="Purchase Order" value={poNumber} />
+            <KeyValueDisplay name="Purchase Order Date" value={convertDate(orderDate)} />
             <KeyValueDisplay name="Production Plan: " value="PL #12" />
           </div>
           <div className="flex flex-col gap-3">
-            <KeyValueDisplay name="Shipping amount" value="23" />
-            <KeyValueDisplay name="Expected finished Date" value="Sept 09, 2024" />
-          </div>
-        </div>
-        <div className="grid w-full gap-1.5">
-          <Label htmlFor="message">Note</Label>
-          <div
-            id="message"
-            className="min-h-[5rem] bg-gray-200 px-3 py-2 rounded-md text-slate-500">
-            I have a computer
+            <KeyValueDisplay
+              name="Shipping amount"
+              value={`${totalAmount.toLocaleString()} ${currency}`}
+            />
+            <KeyValueDisplay
+              name="Expected finished Date"
+              value={convertDate(expectedFinishDate)}
+            />
           </div>
         </div>
       </section>

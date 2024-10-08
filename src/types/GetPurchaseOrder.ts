@@ -1,18 +1,6 @@
 import { MaterialVariant } from './MaterialVariant';
 import { PurchaseOrder } from './PurchaseOrder';
 
-export interface Supplier {
-  id: string;
-  supplier_name: string;
-  address: string;
-  email: string;
-  phone: string;
-  fax: string | null;
-  tax_number: string | null;
-  created_at: string;
-  updated_at: string | null;
-  deleted_at: string | null;
-}
 // PO Delivery Detail
 export interface PODeliveryDetail {
   id: string;
@@ -30,7 +18,7 @@ export interface PODeliveryDetail {
 // PO Delivery
 export interface PODelivery {
   id: string;
-  purchaseOrderId: string;
+  poDeliveryId: string;
   totalAmount: number | null;
   taxAmount: number | null;
   orderDate: string | null;
@@ -56,10 +44,7 @@ interface PageMeta {
 // Purchase Order Response
 export interface PurchaseOrderResponse {
   statusCode: number;
-  data?: {
-    data: PurchaseOrder[];
-    pageMeta: PageMeta;
-  } | null;
+  data?: PurchaseOrder[] | PurchaseOrder | null;
   message: string;
   errors: any;
 }

@@ -52,7 +52,13 @@ const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders })
     {
       header: 'PO Number',
       accessorKey: 'poNumber',
-      cell: ({ getValue }) => <div className="ml-2 font-semibold">{getValue<string>()}</div>,
+      cell: ({ row }) => (
+        <div
+          className="ml-2 font-semibold cursor-pointer text-primary underline hover:opacity-50"
+          onClick={() => navigate(`/purchase-staff/purchase-order/detail/${row.original.id}`)}>
+          {row.original.poNumber}
+        </div>
+      ),
       enableColumnFilter: false
     },
     {

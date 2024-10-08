@@ -11,6 +11,6 @@ export interface Material {
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null;
-  uom: UnitOfMeasurement;
+  materialUom: UnitOfMeasurement;
   materialType: MaterialType;
 }

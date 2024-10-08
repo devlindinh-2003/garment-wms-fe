@@ -24,7 +24,8 @@ export default [
       'prefer-const': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
       'react/prop-types': 'off',
-      'react/jsx-key': 'off'
+      'react/jsx-key': 'off',
+      '@typescript-eslint/no-non-null-asserted-optional-chain': 'off'
     }
   }
 ];

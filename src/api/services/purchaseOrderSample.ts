@@ -5,47 +5,24 @@ const backend_url = 'https://garment-wms-be.onrender.com';
 const BACKEND_HOST = 'http://localhost:8000';
 
 export const getAllPurchaseOrders: () => Promise<PurchaseOrderResponse> = async () => {
-  const res = await axios.get(`${backend_url}/purchase-order`);
+  const res = await axios.get(`${BACKEND_HOST}/purchase-order`);
   return res.data;
 };
 
-// export const uploadPurchaseOrderExcel: (file: File) => Promise<PurchaseOrderResponse> = async (
-//   file
-// ) => {
-//   const formData = new FormData();
-//   formData.append('file', file);
-//   try {
-//     const response = await axios.post(`${BACKEND_HOST}/purchase-order`, formData, {
-//       headers: {
-//         'Content-Type': 'multipart/form-data'
-//       }
-//     });
-//     return {
-//       statusCode: response.status,
-//       data: response.data?.data || null,
-//       message: response.data?.message || 'Upload successful',
-//       errors: null
-//     } as PurchaseOrderResponse;
-//   } catch (error: any) {
-//     console.error('Failed to upload file:', error);
+export const getPurchaseOrderByID: (id: string) => Promise<PurchaseOrderResponse> = async (id) => {
+  try {
+    const res = await axios.get(`${BACKEND_HOST}/purchase-order/${id}`);
+    return res.data;
+  } catch (error: any) {
+    console.error('Failed to get Purchase Order by ID:', error);
 
-//     if (axios.isAxiosError(error) && error.response) {
-//       return {
-//         statusCode: error.response.status,
-//         data: null,
-//         message: error.response.data?.message || 'Invalid format',
-//         errors: error.response.data?.errors || null
-//       } as PurchaseOrderResponse;
-//     }
+    if (axios.isAxiosError(error) && error.response) {
+      return error.response.data;
+    }
 
-//     return {
-//       statusCode: 500,
-//       data: null,
-//       message: 'Something went wrong during file upload',
-//       errors: null
-//     } as PurchaseOrderResponse;
-//   }
-// };
+    throw new Error('Something went wrong');
+  }
+};
 
 export const uploadPurchaseOrderExcel: (
   file: File,
@@ -58,7 +35,7 @@ export const uploadPurchaseOrderExcel: (
       headers: {
         'Content-Type': 'multipart/form-data'
       },
-      onUploadProgress // Use the onUploadProgress callback if provided
+      onUploadProgress
     });
 
     return {
