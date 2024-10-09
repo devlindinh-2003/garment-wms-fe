@@ -66,7 +66,7 @@ const PurchaseOrderDetails: React.FC = () => {
           totalAmount={totalAmount}
           orderDate={orderDate}
           expectedFinishDate={expectedFinishDate}
-          status={purchaseOrder.status}
+          status={purchaseOrder?.status}
           currency={currency}
         />
         {/* Order to details */}

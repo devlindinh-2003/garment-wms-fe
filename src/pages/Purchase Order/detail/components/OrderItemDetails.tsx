@@ -16,13 +16,13 @@ const OrderItemDetails: React.FC<OrderItemDetailsProps> = ({ poDelivery }) => {
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case 'PENDING':
-        return 'bg-yellow-500';
+        return 'bg-yellow-500 text-white';
       case 'FINISHED':
-        return 'bg-green-500';
+        return 'bg-green-500 text-white';
       case 'CANCELLED':
-        return 'bg-red-500';
+        return 'bg-red-500 text-white';
       default:
-        return 'bg-gray-300';
+        return 'bg-gray-300 text-white';
     }
   };
 
@@ -33,48 +33,41 @@ const OrderItemDetails: React.FC<OrderItemDetailsProps> = ({ poDelivery }) => {
   };
 
   return (
-    <div>
-      <h1 className="text-xl font-semibold text-primaryDark">Purchase Delivery</h1>
-      <div className="mt-5 flex flex-col gap-7">
-        {poDelivery.map((delivery) => {
-          return (
-            <ExpandableSectionCustom
-              key={delivery.id}
-              title={convertDate(delivery.expectedDeliverDate)}
-              status={
-                <Badge className={`${getStatusBadgeClass(delivery.status)} text-lg text-center`}>
-                  {delivery.status}
-                </Badge>
-              }
-              defaultOpen={false}>
-              <div className="flex items-center justify-between mt-5 gap-3">
-                <Link
-                  to={{
-                    pathname: `/purchase-staff/purchase-order/delivery/${delivery.id}`
-                  }}
-                  state={{ delivery }}
-                  className="flex items-center gap-2 text-primaryDark hover:opacity-50 cursor-pointer">
-                  <div
-                    className="flex items-center gap-2 text-primaryDark hover:opacity-50 cursor-pointer"
-                    onClick={() => handleNavigateToDeliveryDetail(delivery)}>
-                    <h1 className="text-xl font-semibold">View details</h1>
-                    <ExternalLink size={20} />
-                  </div>
-                </Link>
-                <div className="flex items-center gap-3">
-                  <span>Total amount: </span>{' '}
-                  <span className="font-semibold">
-                    {delivery.totalAmount?.toLocaleString() || '0'}
-                    <span className="text-slate-500 ml-2 text-sm">VND</span>
-                  </span>
-                </div>
-              </div>
+    <div className="mt-8">
+      <h1 className="text-2xl font-bold text-primaryDark">Purchase Delivery</h1>
+      <div className="mt-5 flex flex-col gap-6">
+        {poDelivery.map((delivery) => (
+          <ExpandableSectionCustom
+            key={delivery.id}
+            title={convertDate(delivery.expectedDeliverDate)}
+            status={
+              <Badge className={`${getStatusBadgeClass(delivery.status)} text-center`}>
+                {delivery.status}
+              </Badge>
+            }
+            defaultOpen={false}>
+            <div className="flex items-center justify-between mt-5 gap-3">
+              <Link
+                to={`/purchase-staff/purchase-order/delivery/${delivery.id}`}
+                state={{ delivery }}
+                className="flex items-center gap-2 text-primaryDark hover:opacity-80">
+                <h1 className="text-xl font-semibold">View details</h1>
+                <ExternalLink size={20} />
+              </Link>
 
-              {/* Render table for matẻial details */}
-              <MaterialTable poDeliveryDetail={delivery.poDeliveryDetail} />
-            </ExpandableSectionCustom>
-          );
-        })}
+              <div className="flex items-center gap-3">
+                <span className="text-gray-600">Total amount:</span>{' '}
+                <span className="font-semibold">
+                  {delivery.totalAmount?.toLocaleString() || '0'}
+                  <span className="text-slate-500 ml-2 text-sm">VND</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Render table for material details */}
+            <MaterialTable poDeliveryDetail={delivery.poDeliveryDetail} />
+          </ExpandableSectionCustom>
+        ))}
       </div>
     </div>
   );

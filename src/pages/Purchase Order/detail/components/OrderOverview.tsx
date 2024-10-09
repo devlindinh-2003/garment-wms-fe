@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/Badge';
-import { Label } from '@/components/ui/Label';
 import { convertDate } from '@/helpers/convertDate';
+import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/types/PurchaseOrderStatus';
 import React from 'react';
 
 interface KeyValueDisplayProps {
@@ -13,16 +13,40 @@ interface OrderOverviewProps {
   totalAmount: number;
   orderDate: string;
   expectedFinishDate: string;
-  status: string;
+  status: PurchaseOrderStatus;
   currency: string;
 }
 
 const KeyValueDisplay: React.FC<KeyValueDisplayProps> = ({ name, value }) => {
   return (
-    <div className="flex items-center gap-2">
-      <span className="">{name}:</span>
-      <span className="font-semibold ">{value}</span>
+    <div className="flex items-center justify-between gap-2">
+      <span className="font-medium text-gray-600">{name}:</span>
+      <span className="font-semibold text-primaryDark">{value}</span>
     </div>
+  );
+};
+
+const StatusBadge: React.FC<{ status: PurchaseOrderStatus }> = ({ status }) => {
+  let colorClass = '';
+
+  switch (status) {
+    case PurchaseOrderStatus.IN_PROGRESS:
+      colorClass = 'bg-blue-500 text-white';
+      break;
+    case PurchaseOrderStatus.CANCELLED:
+      colorClass = 'bg-red-500 text-white';
+      break;
+    case PurchaseOrderStatus.FINISHED:
+      colorClass = 'bg-green-500 text-white';
+      break;
+    default:
+      colorClass = 'bg-gray-500 text-white';
+  }
+
+  return (
+    <Badge className={`px-4 py-1 rounded-lg text-lg ${colorClass}`}>
+      {PurchaseOrderStatusLabels[status]}
+    </Badge>
   );
 };
 
@@ -35,29 +59,28 @@ const OrderOverview: React.FC<OrderOverviewProps> = ({
   currency
 }) => {
   return (
-    <div>
-      <div className="flex items-center justify-between gap-2">
-        <h1 className="text-xl font-semibold text-primaryDark">Purchase Order Overview</h1>
+    <div className="bg-white p-6 rounded-md shadow-lg space-y-5">
+      {/* Title and Status Badge */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-semibold text-primaryDark">Purchase Order Overview</h1>
+        <StatusBadge status={status} />
       </div>
-      <section className="flex flex-col space-y-5">
-        <div className="mt-5 flex items-center justify-between ">
-          <div className="flex flex-col gap-3">
-            <KeyValueDisplay name="Purchase Order" value={poNumber} />
-            <KeyValueDisplay name="Purchase Order Date" value={convertDate(orderDate)} />
-            <KeyValueDisplay name="Production Plan: " value="PL #12" />
-          </div>
-          <div className="flex flex-col gap-3">
-            <KeyValueDisplay
-              name="Shipping amount"
-              value={`${totalAmount.toLocaleString()} ${currency}`}
-            />
-            <KeyValueDisplay
-              name="Expected finished Date"
-              value={convertDate(expectedFinishDate)}
-            />
-          </div>
+
+      {/* Key Details - Order Info */}
+      <div className="grid grid-cols-2 gap-10">
+        <div className="space-y-3">
+          <KeyValueDisplay name="Purchase Order" value={poNumber} />
+          <KeyValueDisplay name="Production Plan" value="PL #12" />
+          <KeyValueDisplay name="Purchase Order Date" value={convertDate(orderDate)} />
         </div>
-      </section>
+        <div className="space-y-3 text-right">
+          <KeyValueDisplay name="Expected finished Date" value={convertDate(expectedFinishDate)} />
+          <KeyValueDisplay
+            name="Shipping amount"
+            value={`${totalAmount.toLocaleString()} ${currency}`}
+          />
+        </div>
+      </div>
     </div>
   );
 };

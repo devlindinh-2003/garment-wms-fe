@@ -9,79 +9,101 @@ import { PoDeliveryDetail } from '@/types/PurchaseOrderDeliveryDetail';
 const PurchaseOrderDeliveryDetails = () => {
   const location = useLocation();
   const { delivery } = location.state as { delivery: PODelivery };
-  console.log(delivery);
+
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case 'PENDING':
+        return 'bg-yellow-500 text-white';
+      case 'FINISHED':
+        return 'bg-green-500 text-white';
+      case 'CANCELLED':
+        return 'bg-red-500 text-white';
+      default:
+        return 'bg-gray-300 text-white';
+    }
+  };
+
   return (
-    <main className="w-full h-full bg-white rounded-md  px-6  pt-3 pb-7">
+    <main className="w-full h-full bg-white rounded-md shadow-lg px-8 pt-6 pb-8 pl-5">
       {/* Header */}
-      <section className="flex items-center justify-between border-b-2 border-slate-300 pb-4 mb-4">
-        <div className="flex flex-col gap-3 ">
+      <section className="flex items-center justify-between border-b border-gray-200 pb-5 mb-6">
+        <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold">Purchase Order Delivery ID: </h1>
-            <h1 className="text-2xl text-primaryDark font-semibold">{delivery.purchaseOrderId}</h1>
+            <h1 className="text-lg font-medium text-gray-700">Purchase Order Delivery ID:</h1>
+            <h1 className="text-2xl font-bold text-primaryDark">{delivery.purchaseOrderId}</h1>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8">
             <div className="flex items-center gap-2">
               <Calendar className="text-gray-500 text-sm" />
-              <span className="text-gray-700 text-sm ">Order date:</span>
-              <span className="ml-3 font-semibold">{convertDate(delivery.orderDate)}</span>
+              <span className="text-gray-600 text-sm">Order Date:</span>
+              <span className="ml-3 font-semibold text-gray-700">
+                {delivery.orderDate ? convertDate(delivery.orderDate) : 'N/A'}
+              </span>
             </div>
 
             <div className="flex items-center gap-2 text-green-600">
               <Truck className="text-sm" />
-              <span className="text-sm ">Estimated delivery:</span>
-              <span className="ml-3 font-semibold">
-                {convertDate(delivery.expectedDeliverDate)}
+              <span className="text-sm t">Estimated Delivery:</span>
+              <span className="ml-3 font-semibold ">
+                {delivery.expectedDeliverDate ? convertDate(delivery.expectedDeliverDate) : 'N/A'}
               </span>
             </div>
           </div>
         </div>
 
-        <Badge className="bg-yellow-500 text-xl capitalize">{delivery.status}</Badge>
+        <Badge className={`px-3 py-2 rounded-md text-lg ${getStatusBadgeClass(delivery.status)}`}>
+          {delivery.status}
+        </Badge>
       </section>
+
       {/* Material List */}
-      <section className="flex flex-col gap-3 border-b-2 border-slate-300 pb-4 mb-4">
+      <section className="flex flex-col gap-6 border-b border-gray-200 pb-6 mb-6">
+        <h2 className="text-xl font-semibold text-primaryDark">Materials</h2>
         {delivery.poDeliveryDetail.map((detail: PoDeliveryDetail) => (
-          <MaterialList detail={detail} />
+          <MaterialList key={detail.id} detail={detail} />
         ))}
       </section>
+
       {/* Purchaser Info */}
-      <section className="flex items-center justify-between border-b-2 border-slate-300 pb-4 mb-4 ">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-lg font-semibold">Purchasing Staff</h1>
+      <section className="flex items-center justify-between border-b border-gray-200 pb-6 mb-6">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-lg font-semibold text-gray-700">Purchasing Staff</h1>
           <div className="flex items-center gap-2">
-            <span className=" text-slate-500">Staff ID: </span>
-            <span className=" font-semibold">3890428394823</span>
+            <span className="text-slate-500">Staff ID:</span>
+            <span className="font-semibold text-gray-700">3890428394823</span>
           </div>
-          <div className="flex items-center gap-2  ">
-            <span className=" text-slate-500">Staff name: </span>
-            <span className=" font-semibold">Huy Long</span>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-500">Staff Name:</span>
+            <span className="font-semibold text-gray-700">Huy Long</span>
           </div>
         </div>
-        <div className="flex flex-col gap-1 w-64">
-          <h1 className="text-lg font-semibold">Address</h1>
-          Lo E2a-7, Duong D1, D. D1, Long Thanh My, Thanh Pho Thu Duc
-          <span className=" text-slate-500"></span>
+        <div className="flex flex-col gap-2 w-72">
+          <h1 className="text-lg font-semibold text-gray-700">Delivery Address</h1>
+          <p className="text-gray-600 leading-relaxed">
+            Lo E2a-7, Duong D1, D. D1, Long Thanh My, Thanh Pho Thu Duc
+          </p>
         </div>
       </section>
+
       {/* Price Order Summary */}
       <section>
-        <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
+        <h2 className="text-lg font-semibold text-primaryDark mb-4">Order Summary</h2>
         <div className="flex justify-between">
           <span className="text-gray-600">Overall</span>
-          <span>200.000 VND</span>
+          <span className="font-semibold text-gray-700">200.000 VND</span>
         </div>
 
-        <div className="flex justify-between mt-2">
+        <div className="flex justify-between mt-3">
           <span className="text-gray-600">Tax</span>
-          <span className="text-green-600 font-semibold">+ 150.000VND</span>
+          <span className="font-semibold text-green-600">+ 150.000 VND</span>
         </div>
 
-        <hr className="my-4 border-gray-300" />
+        <hr className="my-4 border-gray-200" />
 
         <div className="flex justify-between">
           <span className="text-gray-600">Total</span>
-          <span className="text-black font-semibold">{delivery.totalAmount}</span>
+          <span className="font-semibold text-black">{delivery.totalAmount} VND</span>
         </div>
       </section>
     </main>
