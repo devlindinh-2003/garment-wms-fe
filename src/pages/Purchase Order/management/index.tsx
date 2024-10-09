@@ -37,7 +37,7 @@ const PurchaseOrderManagement = () => {
       {/* Progress List */}
       <ProgressList />
       {/* Table */}
-      <PurchaseOrderList purchaseOrders={poList} />
+      <PurchaseOrderList purchaseOrders={poList} isLoading={loading} />
     </div>
   );
 };

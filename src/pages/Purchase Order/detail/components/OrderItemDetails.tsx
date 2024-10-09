@@ -26,12 +26,6 @@ const OrderItemDetails: React.FC<OrderItemDetailsProps> = ({ poDelivery }) => {
     }
   };
 
-  const handleNavigateToDeliveryDetail = (delivery: PODelivery) => {
-    navigate(`/purchase-staff/purchase-order/delivery/${delivery.id}`, {
-      state: { delivery }
-    });
-  };
-
   return (
     <div className="mt-8">
       <h1 className="text-2xl font-bold text-primaryDark">Purchase Delivery</h1>
@@ -46,7 +40,7 @@ const OrderItemDetails: React.FC<OrderItemDetailsProps> = ({ poDelivery }) => {
               </Badge>
             }
             defaultOpen={false}>
-            <div className="flex items-center justify-between mt-5 gap-3">
+            <div className="flex items-center justify-end mt-5 gap-3">
               <Link
                 to={`/purchase-staff/purchase-order/delivery/${delivery.id}`}
                 state={{ delivery }}
@@ -54,18 +48,18 @@ const OrderItemDetails: React.FC<OrderItemDetailsProps> = ({ poDelivery }) => {
                 <h1 className="text-xl font-semibold">View details</h1>
                 <ExternalLink size={20} />
               </Link>
-
-              <div className="flex items-center gap-3">
-                <span className="text-gray-600">Total amount:</span>{' '}
-                <span className="font-semibold">
-                  {delivery.totalAmount?.toLocaleString() || '0'}
-                  <span className="text-slate-500 ml-2 text-sm">VND</span>
-                </span>
-              </div>
             </div>
 
             {/* Render table for material details */}
             <MaterialTable poDeliveryDetail={delivery.poDeliveryDetail} />
+            <div className="flex justify-end items-center space-x-3">
+              <div className="text-right flex items-center gap-2">
+                <div className="text-sm text-slate-500">Total amount: </div>
+                <div className="text-lg font-bold text-primary">
+                  {delivery.totalAmount?.toLocaleString() || '0'} VND
+                </div>
+              </div>
+            </div>
           </ExpandableSectionCustom>
         ))}
       </div>

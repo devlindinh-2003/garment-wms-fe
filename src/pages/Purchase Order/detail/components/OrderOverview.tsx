@@ -31,20 +31,20 @@ const StatusBadge: React.FC<{ status: PurchaseOrderStatus }> = ({ status }) => {
 
   switch (status) {
     case PurchaseOrderStatus.IN_PROGRESS:
-      colorClass = 'bg-blue-500 text-white text-sm';
+      colorClass = 'bg-blue-500 text-white ';
       break;
     case PurchaseOrderStatus.CANCELLED:
-      colorClass = 'bg-red-500 text-white text-sm';
+      colorClass = 'bg-red-500 text-white ';
       break;
     case PurchaseOrderStatus.FINISHED:
-      colorClass = 'bg-green-500 text-white text-sm';
+      colorClass = 'bg-green-500 text-white ';
       break;
     default:
-      colorClass = 'bg-gray-500 text-white text-sm';
+      colorClass = 'bg-gray-500 text-white ';
   }
 
   return (
-    <Badge className={`px-4 py-1 rounded-lg text-lg ${colorClass}`}>
+    <Badge className={`px-4 py-1 rounded-lg text-sm uppercase ${colorClass}`}>
       {PurchaseOrderStatusLabels[status]}
     </Badge>
   );
