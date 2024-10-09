@@ -54,8 +54,16 @@ const PurchaseOrderDetails: React.FC = () => {
   console.log('PO Details');
   console.log(purchaseOrder);
 
-  const { poNumber, totalAmount, orderDate, expectedFinishDate, supplier, poDelivery, currency } =
-    purchaseOrder;
+  const {
+    poNumber,
+    totalAmount,
+    orderDate,
+    expectedFinishDate,
+    supplier,
+    poDelivery,
+    currency,
+    status
+  } = purchaseOrder;
 
   return (
     <section className="h-full w-full px-4 bg-slate-200 py-3 flex flex-col space-y-7">
@@ -66,7 +74,7 @@ const PurchaseOrderDetails: React.FC = () => {
           totalAmount={totalAmount}
           orderDate={orderDate}
           expectedFinishDate={expectedFinishDate}
-          status={purchaseOrder?.status}
+          status={status}
           currency={currency}
         />
         {/* Order to details */}

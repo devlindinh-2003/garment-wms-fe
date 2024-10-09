@@ -14,9 +14,10 @@ type SheetData = Record<string, (string | number | null | undefined)[][]>;
 
 interface PurchaseOrderListProps {
   purchaseOrders: PurchaseOrder[];
+  isLoading: boolean;
 }
 
-const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders }) => {
+const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders, isLoading }) => {
   const [sheetsData, setSheetsData] = useState<SheetData>({});
   const navigate = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -144,7 +145,7 @@ const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders })
         />
       </div>
       <TanStackBasicTable
-        isTableDataLoading={false}
+        isTableDataLoading={isLoading}
         paginatedTableData={purchaseOrdersList}
         columns={purchaseOrderColumns}
         pagination={pagination}
