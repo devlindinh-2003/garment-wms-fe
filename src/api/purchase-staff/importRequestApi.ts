@@ -1,5 +1,4 @@
-import { UseUsersInput } from "@/types/DemoUser";
-import { UseImportRequestsResponse } from "@/types/ImportRequestType";
+import { UseImportRequestsInput, UseImportRequestsResponse } from "@/types/ImportRequestType";
 import { FilterBuilder, FilterOperationType } from '@chax-at/prisma-filter-common';
 import axios from "axios";
 import { get } from "../ApiCaller";
@@ -8,16 +7,16 @@ let importRequestUrl = "/import-request";
 
 export const importRequestApi = {
   getOne: (id: string) => get(`${importRequestUrl}/${id}`),
-  getAll: (queryString: string) => get(`${importRequestUrl}?${queryString}`),
+  getAll: (queryString: string) => get(`${importRequestUrl}${queryString}`),
 };
 
 export const getAllImportRequestFn = async ({
   sorting,
   columnFilters,
   pagination,
-}: UseUsersInput): Promise<UseImportRequestsResponse> => {
+}: UseImportRequestsInput): Promise<UseImportRequestsResponse> => {
   const limit = pagination.pageSize;
-  const offset = pagination.pageIndex;
+  const offset = pagination.pageIndex * pagination.pageSize;
 
   // Initialize filter and order arrays
   const filter: any[] = [];

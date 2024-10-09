@@ -16,101 +16,92 @@ interface TanStackBasicTablePaginationNavigationComponentProps<TData> {
 export default function TanStackBasicTablePaginationNavigationComponent<TData>({
   table,
 }: TanStackBasicTablePaginationNavigationComponentProps<TData>) {
+  const currentPage = table.getState().pagination.pageIndex + 1; // Current page (1-based index)
+  const totalPages = table.getPageCount();
+  const isFirstPage = currentPage === 1;
+  const isLastPage = currentPage === totalPages;
   return (
     <Pagination>
       <PaginationContent>
-        <PaginationItem className="bg-slate-100 rounded-md hover:cursor-pointer">
-          <PaginationPrevious onClick={() => table.previousPage()} />
-        </PaginationItem>
-        {table.getState().pagination.pageIndex + 1 >= 4 && (
+        {!isFirstPage && (
           <PaginationItem className="bg-slate-100 rounded-md hover:cursor-pointer">
-            <PaginationLink onClick={() => table.setPageIndex(0)}>
-              1
-            </PaginationLink>
+            <PaginationPrevious onClick={() => table.previousPage()} />
           </PaginationItem>
         )}
-        {table.getState().pagination.pageIndex + 1 >= 5 && (
+
+        {currentPage >= 4 && (
+          <PaginationItem className="bg-slate-100 rounded-md hover:cursor-pointer">
+            <PaginationLink onClick={() => table.setPageIndex(0)}>1</PaginationLink>
+          </PaginationItem>
+        )}
+
+        {currentPage >= 5 && (
           <PaginationItem className="bg-slate-100 rounded-md hover:cursor-pointer">
             <PaginationEllipsis />
           </PaginationItem>
         )}
+
         {/* 2 pages before */}
-        {table.getState().pagination.pageIndex + 1 - 2 > 0 && (
+        {currentPage - 2 > 0 && (
           <PaginationItem className="bg-slate-100 rounded-md hover:cursor-pointer">
-            <PaginationLink
-              onClick={() =>
-                table.setPageIndex(table.getState().pagination.pageIndex - 2)
-              }
-            >
-              {table.getState().pagination.pageIndex + 1 - 2}
+            <PaginationLink onClick={() => table.setPageIndex(currentPage - 3)}>
+              {currentPage - 2}
             </PaginationLink>
           </PaginationItem>
         )}
+
         {/* 1 page before */}
-        {table.getState().pagination.pageIndex + 1 - 1 > 0 && (
+        {currentPage - 1 > 0 && (
           <PaginationItem className="bg-slate-100 rounded-md hover:cursor-pointer">
-            <PaginationLink
-              onClick={() =>
-                table.setPageIndex(table.getState().pagination.pageIndex - 1)
-              }
-            >
-              {table.getState().pagination.pageIndex + 1 - 1}
+            <PaginationLink onClick={() => table.setPageIndex(currentPage - 2)}>
+              {currentPage - 1}
             </PaginationLink>
           </PaginationItem>
         )}
-        {/* Current page */}
-        <PaginationItem className="bg-gray-100 rounded-md">
-          <PaginationLink>
-            {table.getState().pagination.pageIndex + 1}
-          </PaginationLink>
+
+        {/* Current page with bg-slate-300 */}
+        <PaginationItem className="bg-bluePrimary rounded-md text-white">
+          <PaginationLink>{currentPage}</PaginationLink>
         </PaginationItem>
+
         {/* 1 page after */}
-        {table.getState().pagination.pageIndex + 1 + 1 <=
-          table?.getPageCount() && (
+        {currentPage + 1 <= totalPages && (
           <PaginationItem className="bg-slate-100 rounded-md hover:cursor-pointer">
-            <PaginationLink
-              onClick={() =>
-                table.setPageIndex(table.getState().pagination.pageIndex + 1)
-              }
-            >
-              {table.getState().pagination.pageIndex + 1 + 1}
+            <PaginationLink onClick={() => table.setPageIndex(currentPage)}>
+              {currentPage + 1}
             </PaginationLink>
           </PaginationItem>
         )}
-        {/* 2 page after */}
-        {table.getState().pagination.pageIndex + 1 + 2 <=
-          table?.getPageCount() && (
+
+        {/* 2 pages after */}
+        {currentPage + 2 <= totalPages && (
           <PaginationItem className="bg-slate-100 rounded-md hover:cursor-pointer">
-            <PaginationLink
-              onClick={() =>
-                table.setPageIndex(table.getState().pagination.pageIndex + 2)
-              }
-            >
-              {table.getState().pagination.pageIndex + 1 + 2}
+            <PaginationLink onClick={() => table.setPageIndex(currentPage + 1)}>
+              {currentPage + 2}
             </PaginationLink>
           </PaginationItem>
         )}
-        {table.getState().pagination.pageIndex + 1 + 2 <
-          table?.getPageCount() - 1 && (
+
+        {currentPage + 2 < totalPages - 1 && (
           <PaginationItem className="bg-slate-100 rounded-md">
             <PaginationEllipsis />
           </PaginationItem>
         )}
-        {table.getState().pagination.pageIndex + 1 + 2 <
-          table?.getPageCount() && (
+
+        {currentPage + 2 < totalPages && (
           <>
             <PaginationItem className="bg-slate-100 rounded-md hover:cursor-pointer">
-              <PaginationLink
-                onClick={() => table.setPageIndex(table?.getPageCount())}
-              >
-                {table?.getPageCount()}
+              <PaginationLink onClick={() => table.setPageIndex(totalPages - 1)}>
+                {totalPages}
               </PaginationLink>
             </PaginationItem>
           </>
         )}
-        <PaginationItem className="bg-slate-100 rounded-md hover:cursor-pointer">
-          <PaginationNext onClick={() => table.nextPage()} />
-        </PaginationItem>
+        {!isLastPage  && (
+          <PaginationItem className="bg-slate-100 rounded-md hover:cursor-pointer">
+            <PaginationNext onClick={() => table.nextPage()} />
+          </PaginationItem>
+        )}
       </PaginationContent>
     </Pagination>
   );

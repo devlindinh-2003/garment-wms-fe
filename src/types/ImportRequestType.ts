@@ -1,8 +1,10 @@
+import { ColumnFiltersState, PaginationState, SortingState } from "@tanstack/react-table";
 
 export interface ImportRequest {
   id: string;
   poDelivery?: poDelivery;
   warehouseStaffName?: string;
+  type: string
   supplier?: string;
   deliveryType?: string;
   createdAt?: string;
@@ -66,11 +68,21 @@ enum ImportRequestStatus {
 }
 
 export interface UseImportRequestsResponse {
+  pageMeta: PageMetaData;
+  data: ImportRequest[];
+}
+
+export interface UseImportRequestsInput {
+  sorting: SortingState;
+  columnFilters: ColumnFiltersState;
+  pagination: PaginationState;
+}
+export interface PageMetaData{
+  totalItems: number;
+  offset: number;
   limit: number;
   page: number;
-  total: number;
-  totalFiltered: number;
-  data: ImportRequest[];
+  totalPages: number;
 }
 // export const importRequestsData: UseGetTableResponseType<ImportRequest> = {
 //     limit: 10,

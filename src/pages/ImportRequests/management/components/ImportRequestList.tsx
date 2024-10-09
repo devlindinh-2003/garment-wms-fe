@@ -1,34 +1,52 @@
 import { Badge } from '@/components/ui/Badge';
+import { badgeVariants } from "@/components/ui/Badge"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger
-} from "@/components/ui/DropdownMenu";
+} from '@/components/ui/DropdownMenu';
 import { Button } from '@/components/ui/button';
 import { useDebounce } from '@/hooks/useDebouce';
 import { useGetImportRequests } from '@/hooks/useGetImportRequest';
 import { CustomColumnDef } from '@/types/CompositeTable';
 import { ImportRequest } from '@/types/ImportRequestType';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
-import {
-  ColumnFiltersState,
-  PaginationState,
-  SortingState
-} from '@tanstack/react-table';
+import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TanStackBasicTable from './CompositeTable';
 type Props = {};
+type StatusVariant = 'info' | 'danger' | 'success' | 'warning' | 'default';
 
-const   ImportRequestList = (props: Props) => {
-  const navigate = useNavigate();  
+const Status: { label: string; value: string; variant: StatusVariant }[] = [
+  { label: 'Arrived', value: 'ARRIVED', variant: 'info' },
+  { label: 'Rejected', value: 'REJECTED', variant: 'danger' },
+  { label: 'Approved', value: 'APPROVED', variant: 'success' },
+  { label: 'Inspecting', value: 'INSPECTING', variant: 'warning' },
+  { label: 'Inspected', value: 'INSPECTED', variant: 'success' },
+  { label: 'Importing', value: 'IMPORTING', variant: 'warning' },
+  { label: 'Imported', value: 'IMPORTED', variant: 'success' },
+  { label: 'Canceled', value: 'CANCELED', variant: 'danger' }
+];
+
+const DeliveryType = [
+  { label: 'Material By Po', value: 'MATERIAL_BY_PO' },
+  { label: 'Material Return', value: 'MATERIAL_RETURN' },
+  { label: 'Material Not By Po', value: 'MATERIAL_NOT_BY_PO' },
+  { label: 'Product By Mo', value: 'PRODUCT_BY_MO' },
+  { label: 'Product Rerutn', value: 'PRODUCT_RETURN' },
+  { label: 'Product Not By Mo', value: 'PRODUCT_NOT_BY_MO' }
+];
+const ImportRequestList = (props: Props) => {
+  const navigate = useNavigate();
   const location = useLocation();
 
   const handleViewClick = (requestId: string) => {
     const basePath = location.pathname.split('/import-request')[0]; // Get base path (either manager or purchase-staff)
-    
+
     // Navigate to the new route
     navigate(`${basePath}/import-request/${requestId}`);
   };
@@ -46,12 +64,36 @@ const   ImportRequestList = (props: Props) => {
     pageSize: 10 //default page size
   });
 
+  const { pageMeta, importRequestData, isimportRequestLoading } = useGetImportRequests({
+    sorting,
+    columnFilters: debouncedColumnFilters,
+    pagination
+  });
 
-const { importRequestData, isimportRequestLoading  } = useGetImportRequests({
-  sorting,
-  columnFilters: debouncedColumnFilters,
-  pagination})
-  
+  const paginatedTableData =
+    importRequestData && pageMeta
+      ? {
+          data: importRequestData,
+          limit: pageMeta.limit,
+          page: pageMeta.page,
+          total: pageMeta.totalItems,
+          totalFiltered: pageMeta.totalItems
+        }
+      : undefined;
+
+  function formatString(input: string): string {
+    return input
+      .toLowerCase() // Convert the entire string to lowercase first
+      .split('_') // Split by underscores
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter of each word
+      .join(' '); // Join the words back with spaces
+  }
+  const getStatusBadgeVariant = (status: string) => {
+    const statusObj = Status.find(s => s.value === status);
+    console.log('getStatusBadgeVariant',statusObj);
+    return statusObj ? statusObj.variant : 'default'; // Default variant if no match is found
+  };
+
 
   const importRequestColumn: CustomColumnDef<ImportRequest>[] = [
     {
@@ -61,7 +103,7 @@ const { importRequestData, isimportRequestLoading  } = useGetImportRequests({
       cell: ({ row }) => {
         return (
           <div>
-            <div>{row.original.id.slice(0,8)}</div>
+            <div>{row.original.id.slice(0, 8)}</div>
           </div>
         );
       }
@@ -73,7 +115,7 @@ const { importRequestData, isimportRequestLoading  } = useGetImportRequests({
       cell: ({ row }) => {
         return (
           <div>
-            <div>{row.original.id.slice(0,8)}</div>
+            <div>{row.original.id.slice(0, 8)}</div>
           </div>
         );
       }
@@ -82,14 +124,11 @@ const { importRequestData, isimportRequestLoading  } = useGetImportRequests({
       header: 'Import Request Type',
       accessorKey: 'type',
       enableColumnFilter: true,
-      filterOptions: [
-        { label: 'MATERIAL_BY_PO', value: 'MATERIAL_BY_PO' },
-        { label: 'MATERIAL_RETURN', value: 'MATERIAL_RETURN' },
-        { label: 'MATERIAL_NOT_BY_PO', value: 'MATERIAL_NOT_BY_PO' },
-        { label: 'PRODUCT_BY_MO', value: 'PRODUCT_BY_MO' },
-        { label: 'PRODUCT_RETURN', value: 'PRODUCT_RETURN' },
-        { label: 'PRODUCT_NOT_BY_MO', value: 'PRODUCT_NOT_BY_MO' },
-      ]
+      filterOptions: DeliveryType.map((delivery) => ({
+        label: delivery.label,
+        value: delivery.value
+      })),
+      cell: ({ row }) => <div>{formatString(row.original.type ?? 'N/A')}</div>
     },
     {
       header: 'Create date',
@@ -98,48 +137,38 @@ const { importRequestData, isimportRequestLoading  } = useGetImportRequests({
       cell: ({ row }) => {
         const dateString = row.original.createdAt;
         if (!dateString) {
-          return <div>N/A</div>; 
+          return <div>N/A</div>;
         }
         const date = new Date(dateString);
         const formattedDate = date.toLocaleDateString('en-US', {
           year: 'numeric',
           month: '2-digit',
-          day: '2-digit',
+          day: '2-digit'
         });
         return (
           <div>
             <div>{formattedDate}</div>
           </div>
         );
-      },
-      
+      }
     },
     {
       header: 'Status',
       accessorKey: 'status',
       enableColumnFilter: true,
-      cell: ({ row }) => 
-      (
-      <Badge variant={'default'}> 
-      {row.original.status}
-      </Badge>),
-      filterOptions: [
-        { label: 'PENDING', value: 'PENDING' },
-        { label: 'REJECTED', value: 'REJECTED' },
-        { label: 'APPROVED', value: 'APPROVED' },
-        { label: 'INSPECTING', value: 'INSPECTING' },
-        { label: 'INSPECTED', value: 'INSPECTED' },
-        { label: 'IMPORTING', value: 'IMPORTING' },
-        { label: 'IMPORTED', value: 'IMPORTED' },
-        { label: 'CANCELED', value: 'CANCELED' },
-      ]
+      cell: ({ row }) => (
+        <div className={badgeVariants({ variant: getStatusBadgeVariant(row.original.status ?? '') })}>
+          {formatString(row.original.status ?? 'N/A')}
+        </div>
+      ),
+      filterOptions: Status.map((status) => ({ label: status.label, value: status.value }))
     },
     {
-      id: "actions",
+      id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        const request = row.original
-   
+        const request = row.original;
+
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -150,14 +179,12 @@ const { importRequestData, isimportRequestLoading  } = useGetImportRequests({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-               onClick={() => handleViewClick(request.id)}
-              >View</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleViewClick(request.id)}>View</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        )
-      },
-    },
+        );
+      }
+    }
   ];
 
   return (
@@ -165,7 +192,7 @@ const { importRequestData, isimportRequestLoading  } = useGetImportRequests({
       <div className="mb-4 w-auto bg-white rounded-xl shadow-sm border">
         <TanStackBasicTable
           isTableDataLoading={isimportRequestLoading}
-          paginatedTableData={importRequestData ?? undefined}
+          paginatedTableData={paginatedTableData ?? undefined}
           columns={importRequestColumn}
           pagination={pagination}
           setPagination={setPagination}
