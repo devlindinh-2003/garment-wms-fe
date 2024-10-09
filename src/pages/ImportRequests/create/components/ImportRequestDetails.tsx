@@ -6,10 +6,17 @@ import { PODeliveryDetail } from '@/types/purchaseOrder';
 import { useToast } from '@/hooks/use-toast';
 type Props = {
   data: PODeliveryDetail[] | undefined;
-  setPoDeliverydetails: React.Dispatch<React.SetStateAction<PODeliveryDetail[] | undefined>>;
+  setPoDeliverydetails: React.Dispatch<React.SetStateAction<PODeliveryDetail[]>>;
+  setEditDetail: React.Dispatch<React.SetStateAction<Boolean>>;
+  isEditDetail: Boolean;
 };
 
-const ImportRequestDetails = ({ data, setPoDeliverydetails }: Props) => {
+const ImportRequestDetails = ({
+  data,
+  setPoDeliverydetails,
+  setEditDetail,
+  isEditDetail
+}: Props) => {
   const { toast } = useToast();
   const initializeDetails = (data: PODeliveryDetail[] | undefined) => {
     // Map through the data and add plannedQuantity and actualQuantity fields
@@ -20,7 +27,7 @@ const ImportRequestDetails = ({ data, setPoDeliverydetails }: Props) => {
     }));
   };
   const [details, setDetails] = useState(initializeDetails(data));
-  const [isEditDetail, setEditDetail] = useState<Boolean>(false);
+
   // Use effect to update details when data changes
   useEffect(() => {
     setDetails(initializeDetails(data));

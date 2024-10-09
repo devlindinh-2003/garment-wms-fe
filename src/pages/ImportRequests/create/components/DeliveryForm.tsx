@@ -3,6 +3,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/TextArea';
 import {
   Select,
   SelectContent,
@@ -27,15 +28,14 @@ import {
   CommandList
 } from '@/components/ui/Command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
-
 import { Calendar } from '@/components/ui/Calendar';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { CalendarIcon, CaretSortIcon } from '@radix-ui/react-icons';
-import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
 import { CheckIcon } from 'lucide-react';
+
+import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
 import { PODelivery, PODeliveryDetail, PurchaseOrder } from '@/types/purchaseOrder';
-import { Textarea } from '@/components/ui/TextArea';
 
 type Props = {};
 
@@ -47,6 +47,7 @@ const formSchema = z.object({
   }),
   description: z.string().optional()
 });
+
 interface DeliveryFormProps {
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: (data: z.infer<typeof formSchema>) => void;
@@ -54,8 +55,9 @@ interface DeliveryFormProps {
   selectedPO: PurchaseOrder | undefined;
   setSelectedPO: React.Dispatch<React.SetStateAction<PurchaseOrder | undefined>>;
   setSelectedPoDelivery: React.Dispatch<React.SetStateAction<PODelivery | undefined>>;
-  setPoDeliverydetails: React.Dispatch<React.SetStateAction<PODeliveryDetail[] | undefined>>;
+  setPoDeliverydetails: React.Dispatch<React.SetStateAction<PODeliveryDetail[]>>;
 }
+
 const DeliveryForm: React.FC<DeliveryFormProps> = ({
   form,
   onSubmit,
@@ -66,15 +68,15 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
   setPoDeliverydetails
 }) => {
   const [open, setOpen] = useState(false);
-
   const [poDelivery, setPODelivery] = useState<PODelivery[]>([]);
+
   const handlePOSelection = (currentValue: any, field: any, item: PurchaseOrder) => {
     form.setValue('purchaseOrder', currentValue === field.value ? '' : currentValue);
     setSelectedPO(item);
     setPODelivery(item.poDelivery);
-
     setOpen(false);
   };
+
   return (
     <div className="pr-4 pb-4">
       <Form {...form}>
@@ -196,8 +198,7 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
                     </SelectTrigger>
                     <SelectContent>
                       {poDelivery.map((delivery, index) => (
-                        <SelectItem value={delivery.id}>
-                          {' '}
+                        <SelectItem key={delivery.id} value={delivery.id}>
                           {`Delivery Batch #${index} - ${format(new Date(delivery.expectedDeliverDate), 'MM/dd/yyyy')}`}
                         </SelectItem>
                       ))}
@@ -208,7 +209,6 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="description"
