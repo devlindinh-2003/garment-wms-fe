@@ -10,8 +10,10 @@ import PurchaseStaffRoute from './PurchaseStaffRoute';
 import PurchaseStaffLayout from '@/layouts/PurchaseStaffLayout';
 import ProductionStaffRoute from './ProductionStaffRoute';
 import ProductionStaffLayout from '@/layouts/ProductionStaffLayout';
-import DeliveryNotesManagement from '@/pages/Delivery Notes/management';
+import ImportRequestManagement from '@/pages/ImportRequests/management';
 import Demo from '@/pages/demo';
+import CreateImportRequest from '@/pages/ImportRequests/create';
+import CreateImportRequestMenu from '@/pages/ImportRequests/menu';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -74,20 +76,38 @@ const RouterComponent: React.FC = () => {
           children: [
             {
               path: '/purchase-staff/home',
-              element: <Home />,
-            },
-          ],
+              element: <Home />
+            }
+          ]
         },
         {
           element: <PurchaseStaffLayout />,
           children: [
             {
-              path: '/purchase-staff/delivery-note',
-              element: <DeliveryNotesManagement />,
-            },
-          ],
+              path: '/purchase-staff/import-request',
+              element: <ImportRequestManagement />
+            }
+          ]
         },
-      ],
+        {
+          element: <PurchaseStaffLayout />,
+          children: [
+            {
+              path: '/purchase-staff/import-request/create/material',
+              element: <CreateImportRequest />
+            }
+          ]
+        },
+        {
+          element: <PurchaseStaffLayout />,
+          children: [
+            {
+              path: '/purchase-staff/import-request/create',
+              element: <CreateImportRequestMenu />
+            }
+          ]
+        }
+      ]
     },
     {
       path: '/',

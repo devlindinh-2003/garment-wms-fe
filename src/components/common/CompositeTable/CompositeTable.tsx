@@ -2,7 +2,7 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  useReactTable,
+  useReactTable
 } from '@tanstack/react-table';
 import { useEffect } from 'react';
 import { TableProps } from '@/types/CompositeTable';
@@ -16,13 +16,13 @@ export default function TanStackBasicTable<TData, TValue>({
   columns,
   pagination = {
     pageIndex: 0,
-    pageSize: 20,
+    pageSize: 20
   },
   sorting = [],
   setSorting,
   setPagination,
   columnFilters = [],
-  setColumnFilters,
+  setColumnFilters
 }: TableProps<TData, TValue>) {
   const table = useReactTable({
     data: paginatedTableData?.data || [],
@@ -43,17 +43,16 @@ export default function TanStackBasicTable<TData, TValue>({
     // pagination config
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
-    rowCount: paginatedTableData?.total_filtered,
+    rowCount: paginatedTableData?.totalFiltered,
     pageCount: Math.ceil(
-      (paginatedTableData?.total_filtered || 0) /
-        (paginatedTableData?.limit || 1)
+      (paginatedTableData?.totalFiltered || 0) / (paginatedTableData?.limit || 1)
     ),
     manualPagination: true,
     state: {
       sorting,
       pagination,
-      columnFilters,
-    },
+      columnFilters
+    }
   });
 
   // to reset page index to first page
@@ -61,19 +60,18 @@ export default function TanStackBasicTable<TData, TValue>({
     if (setPagination) {
       setPagination((pagination) => ({
         pageIndex: 0,
-        pageSize: pagination.pageSize,
+        pageSize: pagination.pageSize
       }));
     }
   }, [columnFilters, setPagination]);
 
   return (
-    <div className="p-8">
-      <div className="flex flex-col md:flex-row justify-evenly gap-4 mb-8"></div>
+    <div className="p-8 ">
+      <div className="flex flex-col md:flex-row justify-evenly gap-4"></div>
       {isTableDataLoading ? (
         <div>Loading Data ...</div>
       ) : (
         <>
-          <h1 className="text-2xl font-bold mb-4">User Lists</h1>
           <DataTableToolbar table={table} />
           <div className="rounded-md border mb-8">
             <TanStackBasicTableTableComponent table={table} columns={columns} />
