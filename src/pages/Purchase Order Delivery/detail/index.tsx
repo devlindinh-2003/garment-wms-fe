@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/Badge';
-import { Calendar, Truck } from 'lucide-react';
+import { Truck } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { PODelivery } from '@/types/GetPurchaseOrder';
 import { convertDate } from '@/helpers/convertDate';
@@ -9,6 +9,15 @@ import { PoDeliveryDetail } from '@/types/PurchaseOrderDeliveryDetail';
 const PurchaseOrderDeliveryDetails = () => {
   const location = useLocation();
   const { delivery } = location.state as { delivery: PODelivery };
+
+  const totalMaterialAmount = delivery.poDeliveryDetail.reduce(
+    (sum, detail) => sum + (detail.totalAmount || 0),
+    0
+  );
+  const totalQuantity = delivery.poDeliveryDetail.reduce(
+    (sum, detail) => sum + (detail.quantityByPack || 0),
+    0
+  );
 
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
@@ -33,22 +42,12 @@ const PurchaseOrderDeliveryDetails = () => {
             <h1 className="text-2xl font-bold text-primaryDark">{delivery.purchaseOrderId}</h1>
           </div>
 
-          <div className="flex items-center gap-8">
-            <div className="flex items-center gap-2">
-              <Calendar className="text-gray-500 text-sm" />
-              <span className="text-gray-600 text-sm">Order Date:</span>
-              <span className="ml-3 font-semibold text-gray-700">
-                {delivery.orderDate ? convertDate(delivery.orderDate) : 'N/A'}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2 text-green-600">
-              <Truck className="text-sm" />
-              <span className="text-sm t">Estimated Delivery:</span>
-              <span className="ml-3 font-semibold ">
-                {delivery.expectedDeliverDate ? convertDate(delivery.expectedDeliverDate) : 'N/A'}
-              </span>
-            </div>
+          <div className="flex items-center gap-2 text-green-600">
+            <Truck className="text-sm" />
+            <span className="text-sm">Estimated Delivery:</span>
+            <span className="ml-3 font-semibold">
+              {delivery.expectedDeliverDate ? convertDate(delivery.expectedDeliverDate) : 'N/A'}
+            </span>
           </div>
         </div>
 
@@ -86,24 +85,23 @@ const PurchaseOrderDeliveryDetails = () => {
         </div>
       </section>
 
-      {/* Price Order Summary */}
-      <section>
-        <h2 className="text-lg font-semibold text-primaryDark mb-4">Order Summary</h2>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Overall</span>
-          <span className="font-semibold text-gray-700">200.000 VND</span>
-        </div>
+      {/* Order Summary */}
+      <section className="border-t border-gray-200 pt-6 mt-8">
+        <h2 className="text-xl font-semibold text-primaryDark mb-4">Order Summary</h2>
 
-        <div className="flex justify-between mt-3">
-          <span className="text-gray-600">Tax</span>
-          <span className="font-semibold text-green-600">+ 150.000 VND</span>
-        </div>
+        <div className="flex justify-between items-center text-lg">
+          {/* Flexbox for aligning Total Quantity and Total Amount on the same line */}
+          <div className="flex items-center gap-2">
+            <span className="text-gray-500 block">Total Quantity: </span>
+            <span className="text-gray-700 font-medium">{totalQuantity} items</span>
+          </div>
 
-        <hr className="my-4 border-gray-200" />
-
-        <div className="flex justify-between">
-          <span className="text-gray-600">Total</span>
-          <span className="font-semibold text-black">{delivery.totalAmount} VND</span>
+          <div className="text-right">
+            <span className="text-gray-500 block">Total Amount</span>
+            <span className="text-4xl font-bold text-blue-600">
+              {totalMaterialAmount.toLocaleString()} VND
+            </span>
+          </div>
         </div>
       </section>
     </main>

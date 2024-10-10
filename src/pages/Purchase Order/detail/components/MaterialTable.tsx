@@ -1,6 +1,6 @@
 import TanStackBasicTable from '@/components/common/CompositeTable';
 import { CustomColumnDef, UseGetTableResponseType } from '@/types/CompositeTable';
-import { PODeliveryDetail } from '@/types/GetPurchaseOrder';
+import { PODeliveryDetail } from '@/types/PurchaseOrder';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
 import React, { useState } from 'react';
 
@@ -19,7 +19,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({ poDeliveryDetail }) => {
     limit: 10,
     page: 1,
     total: 20,
-    total_filtered: 10,
+    totalFiltered: 10,
     data: poDeliveryDetail
   };
   const purchaseOrderDeliveryDetailsColumns: CustomColumnDef<PODeliveryDetail>[] = [

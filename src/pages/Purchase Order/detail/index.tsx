@@ -5,6 +5,13 @@ import OrderToDetails from './components/OrderToDetails';
 import { useParams } from 'react-router-dom';
 import { getPurchaseOrderByID } from '@/api/services/purchaseOrderSample';
 import { PurchaseOrder } from '@/types/PurchaseOrder';
+import { PurchaseOrderStatus } from '@/types/PurchaseOrderStatus';
+
+const statusMap: Record<string, PurchaseOrderStatus> = {
+  IN_PROGRESS: PurchaseOrderStatus.IN_PROGRESS,
+  CANCELLED: PurchaseOrderStatus.CANCELLED,
+  FINISHED: PurchaseOrderStatus.FINISHED
+};
 
 const PurchaseOrderDetails: React.FC = () => {
   const { id } = useParams();
@@ -77,7 +84,7 @@ const PurchaseOrderDetails: React.FC = () => {
           subTotalAmount={subTotalAmount}
           orderDate={orderDate}
           expectedFinishDate={expectedFinishDate}
-          status={status}
+          status={statusMap[status]}
           currency={currency}
           taxAmount={taxAmount}
           shippingAmount={shippingAmount}
