@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { ImportRequest } from '@/types/ImportRequestType';
 
 import { useSelector } from 'react-redux';
-import importRequestSelector from '../../create/slice/selector';
+import importRequestSelector from '../../slice/selector';
+import { getStatusBadgeVariant } from '../../management/components/ImportRequestList';
 
 type Props = {};
 
@@ -39,7 +40,7 @@ const ImportRequestStatus = (props: Props) => {
 
       <div className="flex flex-col gap-2 items-start">
         <div className="flex justify-center items-center gap-2 font-primary  text-sm">
-          Status: <Badge color="blue">{status}</Badge>
+          Status: {status ? <Badge variant={getStatusBadgeVariant(status)}>{status}</Badge> : 'N/A'}
         </div>
         <div className="flex justify-center items-center  gap-2 font-primary text-sm">
           Created at: <div className="font-primary text-xs text-bluePrimary">{createdDate}</div>

@@ -1,6 +1,6 @@
 import { ImportRequest } from '@/types/ImportRequestType';
 import { useSelector } from 'react-redux';
-import importRequestSelector from '../../create/slice/selector';
+import importRequestSelector from '../../slice/selector';
 
 type Props = {}
 const WarehouseInfo = {

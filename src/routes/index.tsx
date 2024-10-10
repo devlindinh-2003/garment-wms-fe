@@ -14,8 +14,7 @@ import Loading from '@/components/common/Loading';
 import ImportRequestManagement from '@/pages/ImportRequests/management';
 import ViewImportRequest from '@/pages/ImportRequests/view';
 import Demo from '@/pages/demo';
-import CreateImportRequest from '@/pages/ImportRequests/create';
-import CreateImportRequestMenu from '@/pages/ImportRequests/menu';
+
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -77,14 +76,6 @@ const RouterComponent: React.FC = () => {
         {
           element: <PurchaseStaffLayout />,
           children: [
-            {
-              path: '/purchase-staff/import-request/create/material',
-              element: <CreateImportRequest />
-            },
-            {
-              path: '/purchase-staff/import-request/create',
-              element: <CreateImportRequestMenu />
-            },
             {
               path: '/purchase-staff/import-request/:id',
               element: <ViewImportRequest/>,

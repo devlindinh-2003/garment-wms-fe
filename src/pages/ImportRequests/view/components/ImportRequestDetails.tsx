@@ -2,7 +2,7 @@ import { DataTable } from '@/components/ui/DataTable';
 import { CustomColumnDef } from '@/types/CompositeTable';
 import { ImportRequest } from '@/types/ImportRequestType';
 import { useSelector } from 'react-redux';
-import importRequestSelector from '../../create/slice/selector';
+import importRequestSelector from '../../slice/selector';
 
 type Props = {};
 
@@ -38,7 +38,6 @@ const ImportRequestDetails = (props: Props) => {
     });
   }
 
-  console.log(formattedDetails);
   const DetailsColumn: CustomColumnDef<ColumnType>[] = [
     {
       header: 'Variant code',

@@ -6,10 +6,10 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { actions } from '../create/slice';
 import Disscussion from './components/Disscussion';
 import ImportRequestSheet from './components/ImportRequestSheet';
 import ImportRequestStatus from './components/ImportRequestStatus';
+import { actions } from '../slice';
 
 type Props = {};
 

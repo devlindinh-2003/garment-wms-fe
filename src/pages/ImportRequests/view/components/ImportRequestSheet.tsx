@@ -2,10 +2,10 @@ import { Textarea } from '@/components/ui/Textarea'
 import { ImportRequest } from '@/types/ImportRequestType'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import importRequestSelector from '../../create/slice/selector'
 import ImportRequestDetails from './ImportRequestDetails'
 import Process from './Process'
 import SupplierWarehouseInfo from './SupplierWarehouseInfo'
+import importRequestSelector from '../../slice/selector'
 
 
 type Props = {}

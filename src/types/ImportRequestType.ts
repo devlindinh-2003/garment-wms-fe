@@ -59,18 +59,30 @@ export interface MaterialType{
   name: string;
   code: string;
 }
-enum ImportRequestStatus {
-  PENDING,
-  REJECTED,
-  APPROVED,
-  IN_PROGRESS,
-  FINISHED
-}
-
+export const Status: { label: string; value: string; variant: StatusVariant }[] = [
+  { label: 'Arrived', value: 'ARRIVED', variant: 'info' },
+  { label: 'Rejected', value: 'REJECTED', variant: 'danger' },
+  { label: 'Approved', value: 'APPROVED', variant: 'success' },
+  { label: 'Inspecting', value: 'INSPECTING', variant: 'warning' },
+  { label: 'Inspected', value: 'INSPECTED', variant: 'success' },
+  { label: 'Importing', value: 'IMPORTING', variant: 'warning' },
+  { label: 'Imported', value: 'IMPORTED', variant: 'success' },
+  { label: 'Canceled', value: 'CANCELED', variant: 'danger' }
+];
+type StatusVariant = 'info' | 'danger' | 'success' | 'warning' | 'default';
 export interface UseImportRequestsResponse {
   pageMeta: PageMetaData;
   data: ImportRequest[];
 }
+
+export const DeliveryType = [
+  { label: 'Material with Purchase Order', value: 'MATERIAL_BY_PO' },
+  { label: 'Return Material', value: 'MATERIAL_RETURN' },
+  { label: 'Material without Purchase Order', value: 'MATERIAL_NOT_BY_PO' },
+  { label: 'Product with Manufacturing Order', value: 'PRODUCT_BY_MO' },
+  { label: 'Return Product', value: 'PRODUCT_RETURN' },
+  { label: 'Product without Manufacturing Order', value: 'PRODUCT_NOT_BY_MO' }
+];
 
 export interface UseImportRequestsInput {
   sorting: SortingState;

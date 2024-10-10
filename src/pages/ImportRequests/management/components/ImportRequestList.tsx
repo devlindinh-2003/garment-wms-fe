@@ -12,34 +12,20 @@ import { Button } from '@/components/ui/button';
 import { useDebounce } from '@/hooks/useDebouce';
 import { useGetImportRequests } from '@/hooks/useGetImportRequest';
 import { CustomColumnDef } from '@/types/CompositeTable';
-import { ImportRequest } from '@/types/ImportRequestType';
+import { DeliveryType, ImportRequest, Status } from '@/types/ImportRequestType';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
 import {  useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TanStackBasicTable from './CompositeTable';
 type Props = {};
-type StatusVariant = 'info' | 'danger' | 'success' | 'warning' | 'default';
 
-const Status: { label: string; value: string; variant: StatusVariant }[] = [
-  { label: 'Arrived', value: 'ARRIVED', variant: 'info' },
-  { label: 'Rejected', value: 'REJECTED', variant: 'danger' },
-  { label: 'Approved', value: 'APPROVED', variant: 'success' },
-  { label: 'Inspecting', value: 'INSPECTING', variant: 'warning' },
-  { label: 'Inspected', value: 'INSPECTED', variant: 'success' },
-  { label: 'Importing', value: 'IMPORTING', variant: 'warning' },
-  { label: 'Imported', value: 'IMPORTED', variant: 'success' },
-  { label: 'Canceled', value: 'CANCELED', variant: 'danger' }
-];
+export const getStatusBadgeVariant = (status: string) => {
+  const statusObj = Status.find(s => s.value === status);
+  console.log('getStatusBadgeVariant',statusObj);
+  return statusObj ? statusObj.variant : 'default'; // Default variant if no match is found
+};
 
-const DeliveryType = [
-  { label: 'Material with Purchase Order', value: 'MATERIAL_BY_PO' },
-  { label: 'Return Material', value: 'MATERIAL_RETURN' },
-  { label: 'Material without Purchase Order', value: 'MATERIAL_NOT_BY_PO' },
-  { label: 'Product with Manufacturing Order', value: 'PRODUCT_BY_MO' },
-  { label: 'Return Product', value: 'PRODUCT_RETURN' },
-  { label: 'Product without Manufacturing Order', value: 'PRODUCT_NOT_BY_MO' }
-];
 const ImportRequestList = (props: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -89,11 +75,6 @@ const ImportRequestList = (props: Props) => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter of each word
       .join(' '); // Join the words back with spaces
   }
-  const getStatusBadgeVariant = (status: string) => {
-    const statusObj = Status.find(s => s.value === status);
-    console.log('getStatusBadgeVariant',statusObj);
-    return statusObj ? statusObj.variant : 'default'; // Default variant if no match is found
-  };
 
   const getLabelOfImportType= (type:string)=>{
     const typeObj = DeliveryType.find(s => s.value === type);
