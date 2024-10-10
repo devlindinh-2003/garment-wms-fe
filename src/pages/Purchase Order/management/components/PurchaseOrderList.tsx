@@ -31,22 +31,13 @@ const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders, i
     limit: 10,
     page: 1,
     total: 20,
-    total_filtered: 10,
+    totalFiltered: 10,
     data: purchaseOrders
   };
 
   const handleUploadComplete = (data: SheetData) => {
     setSheetsData(data);
     console.log('Uploaded sheets data:', data);
-  };
-
-  const handleContinue = () => {
-    if (Object.keys(sheetsData).length > 0) {
-      console.log('Proceeding with uploaded sheets:', sheetsData);
-      navigate('/purchase-staff/purchase-order/detail', { state: { sheetsData } });
-    } else {
-      console.log('No data available. Cannot proceed.');
-    }
   };
 
   const purchaseOrderColumns: CustomColumnDef<PurchaseOrder>[] = [
@@ -83,7 +74,7 @@ const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders, i
       header: 'Total Amount',
       accessorKey: 'totalAmount',
       cell: ({ row }) => {
-        const totalAmount = row.original.totalAmount;
+        const totalAmount = row.original.subTotalAmount;
         const currency = row.original.currency;
 
         return (

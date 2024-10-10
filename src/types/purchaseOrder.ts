@@ -21,9 +21,7 @@ export interface PODeliveryDetail {
 export interface PODelivery {
   id: string;
   purchaseOrderId: string;
-  totalAmount: number | null;
   taxAmount: number | null;
-  orderDate: string | null;
   expectedDeliverDate: string;
   deliverDate: string | null;
   status: string;
@@ -41,8 +39,10 @@ export interface PurchaseOrder {
   quarterlyProductionPlanId: string | null;
   purchasingStaffId: string | null;
   currency: string;
-  totalAmount: number;
+  subTotalAmount: number;
   taxAmount: number;
+  shippingAmount: number;
+  otherAmount: number;
   orderDate: string;
   expectedFinishDate: string;
   finishDate: string | null;

@@ -3,7 +3,6 @@ import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/TextArea';
 import {
   Select,
   SelectContent,
@@ -35,7 +34,8 @@ import { CalendarIcon, CaretSortIcon } from '@radix-ui/react-icons';
 import { CheckIcon } from 'lucide-react';
 
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
-import { PODelivery, PODeliveryDetail, PurchaseOrder } from '@/types/purchaseOrder';
+import { PODelivery, PODeliveryDetail, PurchaseOrder } from '@/types/PurchaseOrder';
+import { Textarea } from '@/components/ui/textarea';
 
 type Props = {};
 

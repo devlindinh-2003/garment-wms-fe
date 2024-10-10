@@ -10,7 +10,10 @@ interface KeyValueDisplayProps {
 
 interface OrderOverviewProps {
   poNumber: string;
-  totalAmount: number;
+  subTotalAmount: number | null;
+  taxAmount: number | null;
+  shippingAmount: number | null;
+  otherAmount: number | null;
   orderDate: string;
   expectedFinishDate: string;
   status: PurchaseOrderStatus;
@@ -20,7 +23,7 @@ interface OrderOverviewProps {
 const KeyValueDisplay: React.FC<KeyValueDisplayProps> = ({ name, value }) => {
   return (
     <div className="flex items-center justify-between gap-2">
-      <span className="font-medium text-gray-600">{name}:</span>
+      <span className="font-medium text-gray-500">{name}:</span>
       <span className="font-semibold text-primaryDark">{value}</span>
     </div>
   );
@@ -31,16 +34,16 @@ const StatusBadge: React.FC<{ status: PurchaseOrderStatus }> = ({ status }) => {
 
   switch (status) {
     case PurchaseOrderStatus.IN_PROGRESS:
-      colorClass = 'bg-blue-500 text-white ';
+      colorClass = 'bg-blue-500 text-white';
       break;
     case PurchaseOrderStatus.CANCELLED:
-      colorClass = 'bg-red-500 text-white ';
+      colorClass = 'bg-red-500 text-white';
       break;
     case PurchaseOrderStatus.FINISHED:
-      colorClass = 'bg-green-500 text-white ';
+      colorClass = 'bg-green-500 text-white';
       break;
     default:
-      colorClass = 'bg-gray-500 text-white ';
+      colorClass = 'bg-gray-500 text-white';
   }
 
   return (
@@ -52,37 +55,44 @@ const StatusBadge: React.FC<{ status: PurchaseOrderStatus }> = ({ status }) => {
 
 const OrderOverview: React.FC<OrderOverviewProps> = ({
   poNumber,
-  totalAmount,
+  subTotalAmount,
+  taxAmount,
+  shippingAmount,
+  otherAmount,
   orderDate,
   expectedFinishDate,
   status,
   currency
 }) => {
+  // Ensure all values are numbers and default to 0 if null/undefined
+  const totalAmount =
+    (subTotalAmount || 0) + (taxAmount || 0) + (shippingAmount || 0) + (otherAmount || 0);
+
   return (
-    <div className="bg-white p-6 rounded-md shadow-lg space-y-5">
+    <div className="bg-white p-6 rounded-md shadow-md space-y-5">
       {/* Title and Status Badge */}
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold text-primaryDark">Purchase Order Overview</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-primaryDark">Purchase Order Overview</h1>
         <StatusBadge status={status} />
       </div>
 
       {/* Key Details - Order Info */}
-      <div className="grid grid-cols-2 gap-6">
-        <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-8">
+        <div className="space-y-4">
           <KeyValueDisplay name="Purchase Order" value={poNumber} />
           <KeyValueDisplay name="Production Plan" value="PL #12" />
         </div>
-        <div className=" flex flex-col space-y-3 text-right">
+        <div className="space-y-4 text-right">
           <KeyValueDisplay name="Purchase Order Date" value={convertDate(orderDate)} />
           <KeyValueDisplay name="Expected Finished Date" value={convertDate(expectedFinishDate)} />
         </div>
       </div>
 
       {/* Order Amount Section */}
-      <div className="flex justify-end items-center space-x-3">
+      <div className="flex justify-end items-center space-x-3 mt-6">
         <div className="text-right">
           <div className="text-sm text-slate-500">Total Amount</div>
-          <div className="text-lg font-bold text-primary">
+          <div className="text-2xl font-extrabold text-blue-600">
             {totalAmount.toLocaleString()} {currency}
           </div>
         </div>

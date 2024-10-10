@@ -3,8 +3,8 @@ import OrderItemDetails from './components/OrderItemDetails';
 import OrderOverview from './components/OrderOverview';
 import OrderToDetails from './components/OrderToDetails';
 import { useParams } from 'react-router-dom';
-import { PurchaseOrder } from '@/types/PurchaseOrder';
 import { getPurchaseOrderByID } from '@/api/services/purchaseOrderSample';
+import { PurchaseOrder } from '@/types/PurchaseOrder';
 
 const PurchaseOrderDetails: React.FC = () => {
   const { id } = useParams();
@@ -56,13 +56,16 @@ const PurchaseOrderDetails: React.FC = () => {
 
   const {
     poNumber,
-    totalAmount,
+    subTotalAmount,
     orderDate,
     expectedFinishDate,
     supplier,
     poDelivery,
     currency,
-    status
+    status,
+    taxAmount,
+    shippingAmount,
+    otherAmount
   } = purchaseOrder;
 
   return (
@@ -71,11 +74,14 @@ const PurchaseOrderDetails: React.FC = () => {
         {/* Order overview */}
         <OrderOverview
           poNumber={poNumber}
-          totalAmount={totalAmount}
+          subTotalAmount={subTotalAmount}
           orderDate={orderDate}
           expectedFinishDate={expectedFinishDate}
           status={status}
           currency={currency}
+          taxAmount={taxAmount}
+          shippingAmount={shippingAmount}
+          otherAmount={otherAmount}
         />
         {/* Order to details */}
         <OrderToDetails supplier={supplier} />

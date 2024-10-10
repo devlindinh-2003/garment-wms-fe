@@ -1,4 +1,4 @@
-import { PurchaseOrderResponse } from '@/types/purchaseOrder';
+import { PurchaseOrderResponse } from '@/types/PurchaseOrder';
 import axios from 'axios';
 
 const backend_url = 'https://garment-wms-be.onrender.com';
