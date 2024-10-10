@@ -12,6 +12,7 @@ import { User } from '@/types/DemoUser';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { Badge } from '@/components/ui/Badge';
 import { CustomColumnDef } from '@/types/CompositeTable';
+import Introduction from '../ImportRequests/management/components/Introduction';
 
 function Demo() {
   // sorting state of the table
@@ -129,7 +130,10 @@ function Demo() {
   ];
 
   return (
-    <>
+    <div>
+      <div>
+        <Introduction/>
+      </div>
       <TanStackBasicTable
         isTableDataLoading={isAllUsersDataLoading}
         paginatedTableData={allUsersData}
@@ -141,7 +145,7 @@ function Demo() {
         columnFilters={columnFilters}
         setColumnFilters={setColumnFilters}
       />
-    </>
+    </div>
   );
 }
 export default Demo;

@@ -15,7 +15,7 @@ import { CustomColumnDef } from '@/types/CompositeTable';
 import { ImportRequest } from '@/types/ImportRequestType';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
-import { useState } from 'react';
+import {  useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TanStackBasicTable from './CompositeTable';
 type Props = {};
@@ -33,12 +33,12 @@ const Status: { label: string; value: string; variant: StatusVariant }[] = [
 ];
 
 const DeliveryType = [
-  { label: 'Material By Po', value: 'MATERIAL_BY_PO' },
-  { label: 'Material Return', value: 'MATERIAL_RETURN' },
-  { label: 'Material Not By Po', value: 'MATERIAL_NOT_BY_PO' },
-  { label: 'Product By Mo', value: 'PRODUCT_BY_MO' },
-  { label: 'Product Rerutn', value: 'PRODUCT_RETURN' },
-  { label: 'Product Not By Mo', value: 'PRODUCT_NOT_BY_MO' }
+  { label: 'Material with Purchase Order', value: 'MATERIAL_BY_PO' },
+  { label: 'Return Material', value: 'MATERIAL_RETURN' },
+  { label: 'Material without Purchase Order', value: 'MATERIAL_NOT_BY_PO' },
+  { label: 'Product with Manufacturing Order', value: 'PRODUCT_BY_MO' },
+  { label: 'Return Product', value: 'PRODUCT_RETURN' },
+  { label: 'Product without Manufacturing Order', value: 'PRODUCT_NOT_BY_MO' }
 ];
 const ImportRequestList = (props: Props) => {
   const navigate = useNavigate();
@@ -58,14 +58,15 @@ const ImportRequestList = (props: Props) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const debouncedColumnFilters: ColumnFiltersState = useDebounce(columnFilters, 1000);
 
+  const debouncedSorting: SortingState = useDebounce(sorting, 1000);
   // pagination state of the table
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0, //initial page index
     pageSize: 10 //default page size
   });
 
-  const { pageMeta, importRequestData, isimportRequestLoading } = useGetImportRequests({
-    sorting,
+  const { pageMeta, importRequestData, isimportRequestLoading, isFetching } = useGetImportRequests({
+    sorting: debouncedSorting,
     columnFilters: debouncedColumnFilters,
     pagination
   });
@@ -94,6 +95,10 @@ const ImportRequestList = (props: Props) => {
     return statusObj ? statusObj.variant : 'default'; // Default variant if no match is found
   };
 
+  const getLabelOfImportType= (type:string)=>{
+    const typeObj = DeliveryType.find(s => s.value === type);
+    return typeObj ? typeObj.label : 'N/A'; // Default variant if no match is found
+  }
 
   const importRequestColumn: CustomColumnDef<ImportRequest>[] = [
     {
@@ -128,7 +133,7 @@ const ImportRequestList = (props: Props) => {
         label: delivery.label,
         value: delivery.value
       })),
-      cell: ({ row }) => <div>{formatString(row.original.type ?? 'N/A')}</div>
+      cell: ({ row }) => <div>{getLabelOfImportType(row.original.type)}</div>
     },
     {
       header: 'Create date',
@@ -189,19 +194,19 @@ const ImportRequestList = (props: Props) => {
 
   return (
     <div className="pb-4">
-      <div className="mb-4 w-auto bg-white rounded-xl shadow-sm border">
-        <TanStackBasicTable
-          isTableDataLoading={isimportRequestLoading}
-          paginatedTableData={paginatedTableData ?? undefined}
-          columns={importRequestColumn}
-          pagination={pagination}
-          setPagination={setPagination}
-          sorting={sorting}
-          setSorting={setSorting}
-          columnFilters={columnFilters}
-          setColumnFilters={setColumnFilters}
-        />
-      </div>
+        <div className="mb-4 w-auto bg-white rounded-xl shadow-sm border">
+          <TanStackBasicTable
+            isTableDataLoading={isimportRequestLoading} // Use the persistent loading state
+            paginatedTableData={paginatedTableData ?? undefined}
+            columns={importRequestColumn}
+            pagination={pagination}
+            setPagination={setPagination}
+            sorting={sorting}
+            setSorting={setSorting}
+            columnFilters={columnFilters}
+            setColumnFilters={setColumnFilters}
+          />
+        </div>
     </div>
   );
 };
