@@ -11,10 +11,11 @@ import WarehouseManagerRoute from './WarehouseManagerRoute';
 import WarehouseStaffRoute from './WarehouseStaffRoute';
 
 import Loading from '@/components/common/Loading';
-import Demo from '@/pages/demo';
-import CreateImportRequest from '@/pages/ImportRequests/create';
 import ImportRequestManagement from '@/pages/ImportRequests/management';
 import ViewImportRequest from '@/pages/ImportRequests/view';
+import Demo from '@/pages/demo';
+import CreateImportRequest from '@/pages/ImportRequests/create';
+import CreateImportRequestMenu from '@/pages/ImportRequests/menu';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -72,40 +73,26 @@ const RouterComponent: React.FC = () => {
       path: '/',
       element: <PurchaseStaffRoute />,
       children: [
+       
         {
           element: <PurchaseStaffLayout />,
           children: [
             {
-              path: '/purchase-staff/home',
-              element: <Home />,
+              path: '/purchase-staff/import-request/create/material',
+              element: <CreateImportRequest />
             },
-          ],
-        },
-        {
-          element: <PurchaseStaffLayout />,
-          children: [
-            {
-              path: '/purchase-staff/import-request',
-              element: <ImportRequestManagement />,
-            },
-          ],
-        },
-        {
-          element: <PurchaseStaffLayout />,
-          children: [
             {
               path: '/purchase-staff/import-request/create',
-              element: <CreateImportRequest />,
+              element: <CreateImportRequestMenu />
             },
-          ],
-        },
-        {
-          element: <PurchaseStaffLayout />,
-          children: [
             {
               path: '/purchase-staff/import-request/:id',
               element: <ViewImportRequest/>,
             },
+            {
+              path: '/purchase-staff/home',
+              element: <Home />
+            }
           ],
         },
       ],
