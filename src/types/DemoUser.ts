@@ -15,7 +15,7 @@ export interface UseUsersResponse {
   limit: number;
   page: number;
   total: number;
-  total_filtered: number;
+  totalFiltered: number;
   data: User[];
 }
 

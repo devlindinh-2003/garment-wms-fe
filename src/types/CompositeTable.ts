@@ -5,6 +5,7 @@ import {
   SortingState
 } from '@tanstack/react-table';
 import { Dispatch, SetStateAction } from 'react';
+import { Schema } from 'zod';
 
 export interface TableProps<TData, TValue> {
   isTableDataLoading: boolean;
@@ -22,13 +23,17 @@ export interface UseGetTableResponseType<TData> {
   limit: number;
   page: number;
   total: number;
-  total_filtered: number;
+  totalFiltered: number;
   data: TData[];
 }
 
 // Extend the ColumnDef type to include filterOptions
 export type CustomColumnDef<TData> = ColumnDef<TData> & {
   filterOptions?: FilterOption[]; // Add the filterOptions property here
+  isEditable?: boolean;
+  editableCell?: any;
+  isPopover?: boolean;
+  validation?: Schema;
 };
 type FilterOption = {
   label: string;

@@ -72,7 +72,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-slate-100 text-foreground;
+    @apply bg-slate-100 text-foreground h-full overflow-y-hidden;
   }
 }
 

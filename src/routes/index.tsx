@@ -12,12 +12,13 @@ import ProductionStaffRoute from './ProductionStaffRoute';
 import ProductionStaffLayout from '@/layouts/ProductionStaffLayout';
 import POPreview from '@/pages/poPreview';
 import ImportPurchaseOrder from '@/pages/demoPO';
-import DeliveryNotesManagement from '@/pages/Delivery Notes/management';
 import Demo from '@/pages/demo';
 import PurchaseOrderManagement from '@/pages/Purchase Order/management';
 import StepperDemo from '@/pages/demoStepper';
 import PurchaseOrderDetails from '@/pages/Purchase Order/detail';
 import PurchaseOrderDeliveryDetails from '@/pages/Purchase Order Delivery/detail';
+import CreateImportRequest from '@/pages/ImportRequests/create';
+import CreateImportRequestMenu from '@/pages/ImportRequests/menu';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -88,10 +89,6 @@ const RouterComponent: React.FC = () => {
           element: <PurchaseStaffLayout />,
           children: [
             {
-              path: '/purchase-staff/delivery-note',
-              element: <DeliveryNotesManagement />
-            },
-            {
               path: '/purchase-staff/purchase-order',
               element: <PurchaseOrderManagement />
             },
@@ -102,6 +99,14 @@ const RouterComponent: React.FC = () => {
             {
               path: '/purchase-staff/purchase-order/delivery/:deliveryId',
               element: <PurchaseOrderDeliveryDetails />
+            },
+            {
+              path: '/purchase-staff/import-request/create/material',
+              element: <CreateImportRequest />
+            },
+            {
+              path: '/purchase-staff/import-request/create',
+              element: <CreateImportRequestMenu />
             }
           ]
         }

@@ -43,9 +43,9 @@ export default function TanStackBasicTable<TData, TValue>({
     // pagination config
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
-    rowCount: paginatedTableData?.total_filtered,
+    rowCount: paginatedTableData?.totalFiltered,
     pageCount: Math.ceil(
-      (paginatedTableData?.total_filtered || 0) / (paginatedTableData?.limit || 1)
+      (paginatedTableData?.totalFiltered || 0) / (paginatedTableData?.limit || 1)
     ),
     manualPagination: true,
     state: {
@@ -66,8 +66,8 @@ export default function TanStackBasicTable<TData, TValue>({
   }, [columnFilters, setPagination]);
 
   return (
-    <div>
-      <div className="flex flex-col md:flex-row justify-evenly gap-4 mb-8"></div>
+    <div className="p-8 ">
+      <div className="flex flex-col md:flex-row justify-evenly gap-4"></div>
       {isTableDataLoading ? (
         <div>Loading Data ...</div>
       ) : (
