@@ -90,6 +90,10 @@ const RouterComponent: React.FC = () => {
               element: <ViewImportRequest/>,
             },
             {
+              path: '/purchase-staff/import-request',
+              element: <ImportRequestManagement/>,
+            },
+            {
               path: '/purchase-staff/home',
               element: <Home />
             }
