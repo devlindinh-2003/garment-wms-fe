@@ -7,17 +7,14 @@ import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
 
 const PurchaseOrderManagement = () => {
   const [poList, setPoList] = useState<PurchaseOrder[]>([]);
-  const { data, status } = useGetAllPurchaseOrder();
-  console.log('Use Tan Stack to get PO List');
-  console.log(data);
-
-  if (status === 'pending') {
+  const { data, isPending, isError, isSuccess } = useGetAllPurchaseOrder();
+  if (isPending) {
     return <p>Loading...</p>;
   }
-  if (status === 'error') {
+  if (isError) {
     return <p>Failed to fetch purchase orders</p>;
   }
-  if (status === 'success' && data?.data?.data && poList.length === 0) {
+  if (isSuccess && data?.data?.data && poList.length === 0) {
     setPoList(data.data.data);
   }
 
@@ -28,7 +25,7 @@ const PurchaseOrderManagement = () => {
       {/* Progress List */}
       <ProgressList />
       {/* Table */}
-      <PurchaseOrderList purchaseOrders={poList} isLoading={status === 'pending'} />
+      <PurchaseOrderList purchaseOrders={poList} isLoading={isPending} />
     </div>
   );
 };

@@ -13,12 +13,12 @@ const statusMap: Record<string, PurchaseOrderStatus> = {
 
 const PurchaseOrderDetails: React.FC = () => {
   const { id } = useParams();
-  const { data, status, error } = useGetPurchaseOrderById(id!);
-  if (status === 'pending') {
+  const { data, isPending, isError } = useGetPurchaseOrderById(id!);
+  if (isPending) {
     return <div>Loading...</div>;
   }
-  if (status === 'error') {
-    return <div>Error: {error?.message || 'Failed to load purchase order details'}</div>;
+  if (isError) {
+    return <div>Failed to load purchase order details</div>;
   }
   const purchaseOrder = data?.data;
   if (!purchaseOrder) {
