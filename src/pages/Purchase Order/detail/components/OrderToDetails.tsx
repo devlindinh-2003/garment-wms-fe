@@ -1,4 +1,4 @@
-import { Supplier } from '@/types/Supplier';
+import { Supplier } from '@/types/SupplierTypes';
 
 interface KeyValueDisplayProps {
   name: string;

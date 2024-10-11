@@ -1,8 +1,8 @@
-import { PoDeliveryDetail } from '@/types/PurchaseOrderDeliveryDetail';
 import materialSample from '@/assets/images/material.jpg';
+import { PODeliveryDetail } from '@/types/PurchaseOrder';
 
 interface MaterialListProps {
-  detail: PoDeliveryDetail;
+  detail: PODeliveryDetail;
 }
 
 const MaterialList: React.FC<MaterialListProps> = ({ detail }) => {

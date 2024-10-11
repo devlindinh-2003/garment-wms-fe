@@ -5,7 +5,7 @@ import { PurchaseOrderResponse } from '@/types/PurchaseOrder';
 
 export const useGetAllPurchaseOrder = () => {
   const { data: data, status: status } = useQuery<PurchaseOrderResponse, AxiosError>({
-    queryKey: ['users'],
+    queryKey: ['purchaseOrdersList'],
     queryFn: () => getAllPurchaseOrders()
   });
 

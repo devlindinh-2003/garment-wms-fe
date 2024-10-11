@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger, DialogFooter } from '@/components/ui/Dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/Dialog';
 import { Progress } from '@/components/ui/progress';
 import { CircleCheckBig, FileUp, Trash, XCircle } from 'lucide-react';
 import Colors from '@/constants/color';
@@ -77,7 +77,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
     }
   };
 
-  const uploadFileToServer = async (file: File) => {
+  /* const uploadFileToServer = async (file: File) => {
     try {
       const response = await uploadPurchaseOrderExcel(file, (progressEvent: AxiosProgressEvent) => {
         const total = progressEvent.total || 0;
@@ -85,7 +85,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
         setUploadProgress(progress);
       });
 
-      if (response.statusCode === 400) {
+      if (response.statusCode !== 201) {
         if (response.message === 'Invalid file format') {
           setUploadError('The file format is invalid. Please upload a valid Excel (.xlsx) file.');
         } else if (response.message === 'Invalid format') {
@@ -107,6 +107,47 @@ const UploadExcel: React.FC<UploadExcelProps> = ({
         );
         console.error('Unique constraint violation:', response.message);
         setActiveStep(1);
+      } else {
+        console.log('Server response:', response);
+        setIsUploadComplete(true);
+        setActiveStep(2);
+        if (response?.data?.data?.id) {
+          setPoID(response?.data?.data?.id);
+        }
+      }
+    } catch (error) {
+      setUploadError('Failed to upload file. Please try again.');
+      console.error('Failed to upload file:', error);
+      setActiveStep(1);
+    }
+  }; */
+  const uploadFileToServer = async (file: File) => {
+    try {
+      const response = await uploadPurchaseOrderExcel(file, (progressEvent: AxiosProgressEvent) => {
+        const total = progressEvent.total || 0;
+        const progress = Math.round((progressEvent.loaded * 100) / total);
+        setUploadProgress(progress);
+      });
+
+      if (response.statusCode === 400 && response.message === 'Invalid file format') {
+        setUploadError('Invalid file format. Please upload a valid Excel (.xlsx) file.');
+      } else if (response.statusCode === 415 && response.message === 'Invalid format') {
+        setUploadError(
+          'The uploaded file does not match the required purchase order format. Please ensure the file matches the correct template format and try again.'
+        );
+      } else if (
+        response.statusCode === 415 &&
+        response.message === 'Invalid format, POInfo table header is invalid'
+      ) {
+        setUploadError(
+          'The uploaded file contains an invalid POInfo table header. Please check the file and correct the table headers before uploading again.'
+        );
+      } else if (response.statusCode !== 201) {
+        setUploadError('An unknown error occurred. Please try again.');
+      } else if (response.statusCode === 409) {
+        setUploadError(
+          `A unique constraint was violated. Please ensure the Purchase Order (PO) number is unique.`
+        );
       } else {
         console.log('Server response:', response);
         setIsUploadComplete(true);

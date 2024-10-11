@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
 import OrderItemDetails from './components/OrderItemDetails';
 import OrderOverview from './components/OrderOverview';
 import OrderToDetails from './components/OrderToDetails';
 import { useParams } from 'react-router-dom';
-import { getPurchaseOrderByID } from '@/api/services/purchaseOrderSample';
-import { PurchaseOrder } from '@/types/PurchaseOrder';
 import { PurchaseOrderStatus } from '@/types/PurchaseOrderStatus';
+import { useGetPurchaseOrderById } from '@/hooks/useGetPurchaseOrderById';
 
 const statusMap: Record<string, PurchaseOrderStatus> = {
   IN_PROGRESS: PurchaseOrderStatus.IN_PROGRESS,
@@ -15,51 +13,17 @@ const statusMap: Record<string, PurchaseOrderStatus> = {
 
 const PurchaseOrderDetails: React.FC = () => {
   const { id } = useParams();
-  const [purchaseOrder, setPurchaseOrder] = useState<PurchaseOrder | undefined>(undefined);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchPurchaseOrder = async () => {
-      if (id) {
-        try {
-          setLoading(true);
-          const response = await getPurchaseOrderByID(id);
-          if (response.statusCode === 200 && response?.data) {
-            if (Array.isArray(response.data)) {
-              setError('Expected a single purchase order but received an array');
-            } else {
-              setPurchaseOrder(response.data);
-            }
-          } else {
-            setError('Failed to fetch purchase order details');
-          }
-        } catch (err) {
-          setError('Error fetching data');
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setError('No ID provided');
-      }
-    };
-
-    fetchPurchaseOrder();
-  }, [id]);
-
-  if (loading) {
+  const { data, status, error } = useGetPurchaseOrderById(id!);
+  if (status === 'pending') {
     return <div>Loading...</div>;
   }
-
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (status === 'error') {
+    return <div>Error: {error?.message || 'Failed to load purchase order details'}</div>;
   }
-
+  const purchaseOrder = data?.data;
   if (!purchaseOrder) {
     return <div>No data found</div>;
   }
-  console.log('PO Details');
-  console.log(purchaseOrder);
 
   const {
     poNumber,
@@ -69,7 +33,7 @@ const PurchaseOrderDetails: React.FC = () => {
     supplier,
     poDelivery,
     currency,
-    status,
+    status: poStatus,
     taxAmount,
     shippingAmount,
     otherAmount
@@ -84,7 +48,7 @@ const PurchaseOrderDetails: React.FC = () => {
           subTotalAmount={subTotalAmount}
           orderDate={orderDate}
           expectedFinishDate={expectedFinishDate}
-          status={statusMap[status]}
+          status={statusMap[poStatus]}
           currency={currency}
           taxAmount={taxAmount}
           shippingAmount={shippingAmount}

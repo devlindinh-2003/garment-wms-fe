@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/Badge';
 import ExpandableSectionCustom from './ExpandableSectionCustom';
 import { ExternalLink } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { convertDate } from '@/helpers/convertDate';
 import MaterialTable from './MaterialTable';
 import { PODelivery } from '@/types/PurchaseOrder';
@@ -30,7 +30,7 @@ const OrderItemDetails: React.FC<OrderItemDetailsProps> = ({ poDelivery }) => {
       <div className="mt-5 flex flex-col gap-6">
         {poDelivery.map((delivery) => {
           const totalMaterialAmount = delivery.poDeliveryDetail.reduce((sum, detail) => {
-            return sum + (detail.totalAmount || 0); // ensure totalAmount is a number
+            return sum + (detail.totalAmount || 0);
           }, 0);
           return (
             <ExpandableSectionCustom

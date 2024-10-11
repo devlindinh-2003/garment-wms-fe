@@ -1,34 +1,25 @@
-import { getAllPurchaseOrders } from '@/api/services/purchaseOrderSample';
 import Introduction from './components/Introduction';
 import ProgressList from './components/ProgressList';
 import PurchaseOrderList from './components/PurchaseOrderList';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { PurchaseOrder } from '@/types/PurchaseOrder';
+import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
 
 const PurchaseOrderManagement = () => {
   const [poList, setPoList] = useState<PurchaseOrder[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, status } = useGetAllPurchaseOrder();
+  console.log('Use Tan Stack to get PO List');
+  console.log(data);
 
-  useEffect(() => {
-    const fetchPurchaseOrders = async () => {
-      try {
-        setLoading(true);
-        const response = await getAllPurchaseOrders();
-        console.log(response.data);
-        setPoList(response?.data?.data! || []);
-      } catch (err) {
-        setError('Failed to fetch purchase orders');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPurchaseOrders();
-  }, []);
-
-  if (error) return <p>{error}</p>;
-  console.log(poList);
+  if (status === 'pending') {
+    return <p>Loading...</p>;
+  }
+  if (status === 'error') {
+    return <p>Failed to fetch purchase orders</p>;
+  }
+  if (status === 'success' && data?.data?.data && poList.length === 0) {
+    setPoList(data.data.data);
+  }
 
   return (
     <div className="h-full w-full px-4 bg-slate-200 py-3 flex flex-col space-y-3">
@@ -37,7 +28,7 @@ const PurchaseOrderManagement = () => {
       {/* Progress List */}
       <ProgressList />
       {/* Table */}
-      <PurchaseOrderList purchaseOrders={poList} isLoading={loading} />
+      <PurchaseOrderList purchaseOrders={poList} isLoading={status === 'pending'} />
     </div>
   );
 };

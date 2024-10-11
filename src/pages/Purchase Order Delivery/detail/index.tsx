@@ -1,10 +1,9 @@
 import { Badge } from '@/components/ui/Badge';
 import { Truck } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
-import { PODelivery } from '@/types/GetPurchaseOrder';
 import { convertDate } from '@/helpers/convertDate';
 import MaterialList from './components/MaterialList';
-import { PoDeliveryDetail } from '@/types/PurchaseOrderDeliveryDetail';
+import { PODelivery, PODeliveryDetail } from '@/types/PurchaseOrder';
 
 const PurchaseOrderDeliveryDetails = () => {
   const location = useLocation();
@@ -59,7 +58,7 @@ const PurchaseOrderDeliveryDetails = () => {
       {/* Material List */}
       <section className="flex flex-col gap-6 border-b border-gray-200 pb-6 mb-6">
         <h2 className="text-xl font-semibold text-primaryDark">Materials</h2>
-        {delivery.poDeliveryDetail.map((detail: PoDeliveryDetail) => (
+        {delivery.poDeliveryDetail.map((detail: PODeliveryDetail) => (
           <MaterialList key={detail.id} detail={detail} />
         ))}
       </section>

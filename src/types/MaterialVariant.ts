@@ -1,4 +1,4 @@
-import { Material } from './Material';
+import { Material } from './MaterialTypes';
 
 export interface MaterialVariant {
   id: string;
