@@ -1,12 +1,14 @@
 import { PurchaseOrderResponse } from '@/types/PurchaseOrder';
 import axios from 'axios';
+import { get } from './ApiCaller';
 
-const backend_url = 'https://garment-wms-be.onrender.com';
-const local_backend_url = 'http://localhost:8000';
-
-export const getAllPurchaseOrders: {
-  (): Promise<PurchaseOrderResponse>;
-} = async () => {
-  const res = await axios.get(`${local_backend_url}/purchase-order`);
-  return res.data;
+export const getAllPurchaseOrders = async (): Promise<PurchaseOrderResponse> => {
+  try {
+    const config = get('/purchase-order');
+    const response = await axios(config);
+    return response.data as PurchaseOrderResponse;
+  } catch (error) {
+    console.error('Error fetching purchase orders:', error);
+    throw new Error('Failed to fetch purchase orders');
+  }
 };
