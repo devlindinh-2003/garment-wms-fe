@@ -1,26 +1,39 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger, DialogClose } from '@/components/ui/Dialog';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/Dialog';
+import { Progress } from '@/components/ui/progress';
 import { CircleCheckBig, FileUp, Trash, XCircle } from 'lucide-react';
 import Colors from '@/constants/color';
 import ExcelIcon from '@/assets/images/ExcelFile_Icon.png';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { Step, Stepper } from 'react-form-stepper';
 import { importPurchaseOrder } from '@/api/services/importPurchaseOrder';
+import { AxiosProgressEvent } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
 
-const MAX_FILE_SIZE_KB = 500;
+const MAX_FILE_SIZE_KB = 100;
+
+type SheetRow = (string | number | null)[];
 
 type UploadExcelProps = {
   fileName: string;
+  onUploadComplete: (sheets: Record<string, SheetRow[]>) => void;
+  continueButtonLabel?: string;
+  onContinue: () => void;
   triggerButtonLabel?: string;
 };
 
-const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel = 'Import' }) => {
+const UploadExcel: React.FC<UploadExcelProps> = ({
+  fileName,
+  onUploadComplete,
+  onContinue,
+  continueButtonLabel = 'Open File',
+  triggerButtonLabel = 'Import'
+}) => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isUploadComplete, setIsUploadComplete] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -28,7 +41,6 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
   const [poNumber, setPoNumber] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState(1);
-  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
@@ -65,6 +77,8 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
   const uploadFileToServer = async (file: File) => {
     try {
       const response = await importPurchaseOrder(file);
+      console.log(response);
+
       if (response.statusCode !== 201) {
         handleUploadErrors(response);
         setActiveStep(1);
@@ -73,9 +87,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
         setActiveStep(2);
         if (response?.data?.data?.id) {
           setPoID(response?.data?.data?.id);
-        }
-        if (response?.data?.data?.poNumber) {
-          setPoNumber(response?.data?.data?.poNumber);
+          setPoNumber(response?.data?.data?.poNumber); // Save PO number
         }
       }
     } catch (error) {
@@ -112,29 +124,11 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
   const handleDeleteFile = () => {
     setSelectedFile(null);
     setIsUploadComplete(false);
+    setUploadProgress(0);
     setUploadError(null);
     setActiveStep(0);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
-    }
-  };
-
-  const handleReset = () => {
-    setSelectedFile(null);
-    setIsUploadComplete(false);
-    setUploadError(null);
-    setPoID(null);
-    setActiveStep(0);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const handleClose = () => {
-    if (activeStep === 0 || activeStep === 1) {
-      setShowConfirmation(true);
-    } else {
-      handleReset();
     }
   };
 
@@ -191,9 +185,9 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
               onClick={handleDeleteFile}
             />
           </div>
-          <div className="px-4 w-full">
+          <div className="px-4 w-full ">
             {isUploading ? (
-              <div>Loading...</div>
+              <Progress value={uploadProgress} className="h-2 bg-gray-200 mt-2 w-full" />
             ) : uploadError ? (
               <p className="text-red-600 mt-2">Upload failed</p>
             ) : (
@@ -234,13 +228,13 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
   );
 
   const renderUploadSuccessfully = () => (
-    <main className="flex flex-col justify-center items-center p-6 bg-white rounded-md shadow-md space-y-6">
-      <CircleCheckBig color={Colors.success} size={80} className="text-center mb-1" />
+    <main className="flex flex-col justify-center items-center p-6 bg-white rounded-md shadow-md space-y-4">
+      <CircleCheckBig color={Colors.success} size={80} className="text-center mb-2" />
       <div className="text-center">
-        <h1 className="font-bold text-xl text-green-600">
-          Purchase Order: {poNumber} uploaded successfully!
+        <h1 className="font-bold text-3xl text-green-600 mb-2 whitespace-nowrap">
+          PO {poNumber} Uploaded Successfully!
         </h1>
-        <p className=" text-gray-500 mt-2">
+        <p className="text-sm text-gray-600 leading-relaxed max-w-md">
           Your purchase order has been uploaded successfully. You can now proceed to view or manage
           it.
         </p>
@@ -258,25 +252,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
           e.preventDefault();
         }}>
         <DialogTitle>
-          <div className="flex justify-between items-center">
-            <h1 className="text-xl font-semibold capitalize ">Upload {fileName}</h1>
-            <Popover open={showConfirmation} onOpenChange={setShowConfirmation}>
-              <PopoverTrigger asChild>
-                <DialogClose onClick={handleClose} />
-              </PopoverTrigger>
-              <PopoverContent className="p-4 bg-white rounded-md shadow-md">
-                <p>Are you sure you want to close? This will reset everything.</p>
-                <div className="flex justify-between mt-4">
-                  <Button variant="secondary" onClick={() => setShowConfirmation(false)}>
-                    Cancel
-                  </Button>
-                  <Button variant="destructive" onClick={handleReset}>
-                    Close Anyway
-                  </Button>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
+          <h1 className="text-xl font-semibold capitalize ">Upload {fileName}</h1>
         </DialogTitle>
 
         <Stepper
@@ -306,20 +282,15 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
 
         {activeStep === 2 && (
           <div className="flex justify-center items-center gap-5 mt-6">
+            <Button className="bg-white text-red-500 ring-1 ring-red-500 w-32">Close</Button>
             <Button
-              className="bg-white text-red-500 ring-1 ring-red-500 w-32"
-              onClick={handleReset}>
-              Close
-              <DialogClose />
-            </Button>
-            <Button
-              className="w-40"
+              className="w-32"
               onClick={() => {
                 if (poId) {
                   navigate(`/purchase-staff/purchase-order/detail/${poId}`);
                 }
               }}>
-              View purchase order
+              Open file
             </Button>
           </div>
         )}

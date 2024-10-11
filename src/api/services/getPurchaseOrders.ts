@@ -8,6 +8,5 @@ export const getAllPurchaseOrders: {
   (): Promise<PurchaseOrderResponse>;
 } = async () => {
   const res = await axios.get(`${local_backend_url}/purchase-order`);
-
   return res.data;
 };
