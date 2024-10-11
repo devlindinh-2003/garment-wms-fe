@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { getAllPurchaseOrders } from '@/api/services/getPurchaseOrders';
-import { PurchaseOrderResponse } from '@/types/PurchaseOrder';
+import { getAllPurchaseOrders } from '@/api/services/purchaseOrder';
+import { ApiResponse } from '@/types/ApiResponse';
 
 export const useGetAllPurchaseOrder = () => {
   const {
@@ -10,7 +10,7 @@ export const useGetAllPurchaseOrder = () => {
     isPending,
     isError,
     isSuccess
-  } = useQuery<PurchaseOrderResponse, AxiosError>({
+  } = useQuery<ApiResponse, AxiosError>({
     queryKey: ['purchaseOrdersList'],
     queryFn: () => getAllPurchaseOrders()
   });

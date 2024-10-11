@@ -32,7 +32,7 @@ const PurchaseOrderDeliveryDetails = () => {
   };
 
   return (
-    <main className="w-full h-full bg-white rounded-md shadow-lg px-8 pt-6 pb-8 pl-5">
+    <main className="w-full h-screen bg-white rounded-md shadow-lg px-8 pt-6 pb-8 pl-5">
       {/* Header */}
       <section className="flex items-center justify-between border-b border-gray-200 pb-5 mb-6">
         <div className="flex flex-col gap-4">

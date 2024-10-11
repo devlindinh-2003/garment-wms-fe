@@ -6,9 +6,9 @@ import Colors from '@/constants/color';
 import ExcelIcon from '@/assets/images/ExcelFile_Icon.png';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { Step, Stepper } from 'react-form-stepper';
-import { importPurchaseOrder } from '@/api/services/importPurchaseOrder';
 import { useNavigate } from 'react-router-dom';
 import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
+import { importPurchaseOrder } from '@/api/services/purchaseOrder';
 
 const MAX_FILE_SIZE_KB = 500;
 
@@ -65,17 +65,18 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
   const uploadFileToServer = async (file: File) => {
     try {
       const response = await importPurchaseOrder(file);
+      console.log(response);
       if (response.statusCode !== 201) {
         handleUploadErrors(response);
         setActiveStep(1);
       } else {
         setIsUploadComplete(true);
         setActiveStep(2);
-        if (response?.data?.data?.id) {
-          setPoID(response?.data?.data?.id);
+        if (response.data?.id) {
+          setPoID(response.data?.id);
         }
-        if (response?.data?.data?.poNumber) {
-          setPoNumber(response?.data?.data?.poNumber);
+        if (response?.data?.poNumber) {
+          setPoNumber(response?.data?.poNumber);
         }
       }
     } catch (error) {
