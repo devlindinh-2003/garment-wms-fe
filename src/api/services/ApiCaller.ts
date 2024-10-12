@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 const defaultURL = 'https://garment-wms-be.onrender.com';
+const serverURL = 'http://localhost:8000';
 export interface ApiCallerParams {
   method: string;
   url: string;

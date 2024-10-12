@@ -6,6 +6,14 @@ import Home from '@/pages/home';
 import TestPage from '@/pages/test';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import ProductionStaffRoute from './ProductionStaffRoute';
+import ImportPurchaseOrder from '@/pages/demoPO';
+import Demo from '@/pages/demo';
+import PurchaseOrderManagement from '@/pages/Purchase Order/management';
+import StepperDemo from '@/pages/demoStepper';
+import PurchaseOrderDetails from '@/pages/Purchase Order/detail';
+import PurchaseOrderDeliveryDetails from '@/pages/Purchase Order Delivery/detail';
+import CreateImportRequest from '@/pages/ImportRequests/create';
+import CreateImportRequestMenu from '@/pages/ImportRequests/menu';
 import PurchaseStaffRoute from './PurchaseStaffRoute';
 import WarehouseManagerRoute from './WarehouseManagerRoute';
 import WarehouseStaffRoute from './WarehouseStaffRoute';
@@ -13,8 +21,6 @@ import WarehouseStaffRoute from './WarehouseStaffRoute';
 import Loading from '@/components/common/Loading';
 import ImportRequestManagement from '@/pages/ImportRequests/management';
 import ViewImportRequest from '@/pages/ImportRequests/view';
-import Demo from '@/pages/demo';
-
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -72,25 +78,49 @@ const RouterComponent: React.FC = () => {
       path: '/',
       element: <PurchaseStaffRoute />,
       children: [
-       
         {
           element: <PurchaseStaffLayout />,
           children: [
             {
               path: '/purchase-staff/import-request/:id',
-              element: <ViewImportRequest/>,
+              element: <ViewImportRequest />
             },
             {
               path: '/purchase-staff/import-request',
-              element: <ImportRequestManagement/>,
+              element: <ImportRequestManagement />
             },
             {
               path: '/purchase-staff/home',
               element: <Home />
             }
-          ],
+          ]
         },
-      ],
+        {
+          element: <PurchaseStaffLayout />,
+          children: [
+            {
+              path: '/purchase-staff/purchase-order',
+              element: <PurchaseOrderManagement />
+            },
+            {
+              path: '/purchase-staff/purchase-order/detail/:id',
+              element: <PurchaseOrderDetails />
+            },
+            {
+              path: '/purchase-staff/purchase-order/delivery/:deliveryId',
+              element: <PurchaseOrderDeliveryDetails />
+            },
+            {
+              path: '/purchase-staff/import-request/create/material',
+              element: <CreateImportRequest />
+            },
+            {
+              path: '/purchase-staff/import-request/create',
+              element: <CreateImportRequestMenu />
+            }
+          ]
+        }
+      ]
     },
     {
       path: '/',
@@ -106,6 +136,16 @@ const RouterComponent: React.FC = () => {
           ]
         }
       ]
+    },
+
+    {
+      path: '/PODemo',
+      element: <ImportPurchaseOrder />
+    },
+
+    {
+      path: '/stepperdemo',
+      element: <StepperDemo />
     }
 
     // { path: '*', element: <ErrorPage /> },

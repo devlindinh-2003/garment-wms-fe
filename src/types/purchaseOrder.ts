@@ -1,5 +1,7 @@
+import { PurchaseOrderStatus } from '@/enums/purchaseOrderStatus';
 import { MaterialVariant } from './MaterialTypes';
 import { Supplier } from './SupplierTypes';
+import { PurchaseOrderDeliveryStatus } from '@/enums/purchaseOrderDeliveryStatus';
 
 // PO Delivery Detail
 export interface PODeliveryDetail {
@@ -21,12 +23,10 @@ export interface PODeliveryDetail {
 export interface PODelivery {
   id: string;
   purchaseOrderId: string;
-  totalAmount: number | null;
   taxAmount: number | null;
-  orderDate: string | null;
   expectedDeliverDate: string;
   deliverDate: string | null;
-  status: string;
+  status: PurchaseOrderDeliveryStatus;
   isExtra: boolean;
   createdAt: string | null;
   updatedAt: string | null;
@@ -41,12 +41,14 @@ export interface PurchaseOrder {
   quarterlyProductionPlanId: string | null;
   purchasingStaffId: string | null;
   currency: string;
-  totalAmount: number;
+  subTotalAmount: number;
   taxAmount: number;
+  shippingAmount: number;
+  otherAmount: number;
   orderDate: string;
   expectedFinishDate: string;
   finishDate: string | null;
-  status: string;
+  status: PurchaseOrderStatus;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -69,9 +71,17 @@ export interface PageMeta {
 export interface PurchaseOrderResponse {
   statusCode: number;
   data: {
-    data: PurchaseOrder[];
-    pageMeta: PageMeta;
+    data: PurchaseOrder[] | null;
+    pageMeta: PageMeta | null;
   };
+  message: string;
+  errors: any;
+}
+
+// Purchase Order Response for Single Order
+export interface PurchaseOrderSingleResponse {
+  statusCode: number;
+  data: PurchaseOrder | null;
   message: string;
   errors: any;
 }
