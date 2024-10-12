@@ -1,15 +1,11 @@
-import Loading from '@/components/Loading';
+import ProductionStaffLayout from '@/layouts/ProductionStaffLayout';
+import PurchaseStaffLayout from '@/layouts/PurchaseStaffLayout';
+import WarehouseManagerLayout from '@/layouts/WarehouseManagerLayout';
+import WarehouseStaffLayout from '@/layouts/WarehouseStaffLayout';
 import Home from '@/pages/home';
 import TestPage from '@/pages/test';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
-import WarehouseManagerRoute from './WarehouseManagerRoute';
-import WarehouseManagerLayout from '@/layouts/WarehouseManagerLayout';
-import WarehouseStaffRoute from './WarehouseStaffRoute';
-import WarehouseStaffLayout from '@/layouts/WarehouseStaffLayout';
-import PurchaseStaffRoute from './PurchaseStaffRoute';
-import PurchaseStaffLayout from '@/layouts/PurchaseStaffLayout';
 import ProductionStaffRoute from './ProductionStaffRoute';
-import ProductionStaffLayout from '@/layouts/ProductionStaffLayout';
 import POPreview from '@/pages/poPreview';
 import ImportPurchaseOrder from '@/pages/demoPO';
 import Demo from '@/pages/demo';
@@ -19,6 +15,13 @@ import PurchaseOrderDetails from '@/pages/Purchase Order/detail';
 import PurchaseOrderDeliveryDetails from '@/pages/Purchase Order Delivery/detail';
 import CreateImportRequest from '@/pages/ImportRequests/create';
 import CreateImportRequestMenu from '@/pages/ImportRequests/menu';
+import PurchaseStaffRoute from './PurchaseStaffRoute';
+import WarehouseManagerRoute from './WarehouseManagerRoute';
+import WarehouseStaffRoute from './WarehouseStaffRoute';
+
+import Loading from '@/components/common/Loading';
+import ImportRequestManagement from '@/pages/ImportRequests/management';
+import ViewImportRequest from '@/pages/ImportRequests/view';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -79,6 +82,14 @@ const RouterComponent: React.FC = () => {
         {
           element: <PurchaseStaffLayout />,
           children: [
+            {
+              path: '/purchase-staff/import-request/:id',
+              element: <ViewImportRequest />
+            },
+            {
+              path: '/purchase-staff/import-request',
+              element: <ImportRequestManagement />
+            },
             {
               path: '/purchase-staff/home',
               element: <Home />
