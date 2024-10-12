@@ -9,12 +9,37 @@ import { Step, Stepper } from 'react-form-stepper';
 import { useNavigate } from 'react-router-dom';
 import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
 import { importPurchaseOrder } from '@/api/services/purchaseOrder';
+import Loading from '@/components/common/Loading';
 
 const MAX_FILE_SIZE_KB = 500;
 
 type UploadExcelProps = {
   fileName: string;
   triggerButtonLabel?: string;
+};
+
+const errorMessages = {
+  invalidFileType: {
+    statusCode: 400,
+    message: 'Invalid file format',
+    clientMessage: 'The file type is invalid. Please upload a valid Excel (.xlsx) file.'
+  },
+  invalidFormat: {
+    statusCode: 415,
+    message: 'Invalid format',
+    clientMessage:
+      'The uploaded file format does not match the required template. Please use the correct template and try again.'
+  },
+  invalidPOInfoHeader: {
+    statusCode: 415,
+    message: 'Invalid format, POInfo table header is invalid',
+    clientMessage: 'The uploaded file contains invalid data. The POInfo table header is incorrect.'
+  },
+  errorInFile: {
+    message: 'There is error in the file',
+    clientMessage:
+      'We found issues in the uploaded file. <a href="{errors}" target="_blank" class="underline text-blue-600">Click here</a> to download the file with errors and correct them.'
+  }
 };
 
 const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel = 'Import' }) => {
@@ -66,7 +91,7 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
     try {
       const response = await importPurchaseOrder(file);
       console.log(response);
-      if (response.statusCode !== 201) {
+      if (response.statusCode !== 200 && response.statusCode !== 201) {
         handleUploadErrors(response);
         setActiveStep(1);
       } else {
@@ -78,6 +103,8 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
         if (response?.data?.poNumber) {
           setPoNumber(response?.data?.poNumber);
         }
+        console.log('Import success ');
+        console.log(response.data);
       }
     } catch (error) {
       setUploadError('Failed to upload file. Please try again.');
@@ -88,23 +115,23 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
   };
 
   const handleUploadErrors = (response: any) => {
-    if (response.statusCode === 400 && response.message === 'Invalid file format') {
-      setUploadError('The file type is invalid. Please upload a valid Excel (.xlsx) file.');
-    } else if (response.statusCode === 415 && response.message === 'Invalid format') {
-      setUploadError(
-        'The uploaded file format does not match the required template. Please use the correct template and try again.'
-      );
-    } else if (
-      response.statusCode === 415 &&
-      response.message.includes('POInfo table header is invalid')
+    if (
+      response.statusCode === errorMessages.invalidFileType.statusCode &&
+      response.message === errorMessages.invalidFileType.message
     ) {
-      setUploadError(
-        'The uploaded file contains invalid data. The POInfo table header is incorrect'
-      );
-    } else if (response.message === 'There is error in the file' && response.errors) {
-      setUploadError(
-        `We found issues in the uploaded file. <a href="${response.errors}" target="_blank" class="underline text-blue-600">Click here</a> to download the file with errors and correct them.`
-      );
+      setUploadError(errorMessages.invalidFileType.clientMessage);
+    } else if (
+      response.statusCode === errorMessages.invalidFormat.statusCode &&
+      response.message === errorMessages.invalidFormat.message
+    ) {
+      setUploadError(errorMessages.invalidFormat.clientMessage);
+    } else if (
+      response.statusCode === errorMessages.invalidPOInfoHeader.statusCode &&
+      response.message.includes(errorMessages.invalidPOInfoHeader.message)
+    ) {
+      setUploadError(errorMessages.invalidPOInfoHeader.clientMessage);
+    } else if (response.message === errorMessages.errorInFile.message && response.errors) {
+      setUploadError(errorMessages.errorInFile.clientMessage.replace('{errors}', response.errors));
     } else {
       setUploadError('An unknown error occurred. Please try again.');
     }
@@ -194,7 +221,9 @@ const UploadExcel: React.FC<UploadExcelProps> = ({ fileName, triggerButtonLabel 
           </div>
           <div className="px-4 w-full">
             {isUploading ? (
-              <div>Loading...</div>
+              <div className="flex justify-center items-center ">
+                <Loading />
+              </div>
             ) : uploadError ? (
               <p className="text-red-600 mt-2">Upload failed</p>
             ) : (

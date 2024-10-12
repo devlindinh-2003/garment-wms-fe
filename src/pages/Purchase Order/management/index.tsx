@@ -2,15 +2,21 @@ import Introduction from './components/Introduction';
 import ProgressList from './components/ProgressList';
 import PurchaseOrderList from './components/PurchaseOrderList';
 import { useState } from 'react';
-import { PurchaseOrder } from '@/types/PurchaseOrder';
+import { PurchaseOrder } from '@/types/purchaseOrder';
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
+import Loading from '@/components/common/Loading';
 
 const PurchaseOrderManagement = () => {
   const [poList, setPoList] = useState<PurchaseOrder[]>([]);
   const { data, isPending, isError, isSuccess } = useGetAllPurchaseOrder();
   if (isPending) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loading />
+      </div>
+    );
   }
+
   if (isError) {
     return <p>Failed to fetch purchase orders</p>;
   }

@@ -1,5 +1,5 @@
 import materialSample from '@/assets/images/material.jpg';
-import { PODeliveryDetail } from '@/types/PurchaseOrder';
+import { PODeliveryDetail } from '@/types/purchaseOrder';
 
 interface MaterialListProps {
   detail: PODeliveryDetail;

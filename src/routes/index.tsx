@@ -6,7 +6,6 @@ import Home from '@/pages/home';
 import TestPage from '@/pages/test';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import ProductionStaffRoute from './ProductionStaffRoute';
-import POPreview from '@/pages/poPreview';
 import ImportPurchaseOrder from '@/pages/demoPO';
 import Demo from '@/pages/demo';
 import PurchaseOrderManagement from '@/pages/Purchase Order/management';
@@ -142,11 +141,6 @@ const RouterComponent: React.FC = () => {
     {
       path: '/PODemo',
       element: <ImportPurchaseOrder />
-    },
-
-    {
-      path: '/popreview',
-      element: <POPreview />
     },
 
     {

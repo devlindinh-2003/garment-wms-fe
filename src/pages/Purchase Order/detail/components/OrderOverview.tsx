@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/Badge';
+import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/enums/purchaseOrderStatus';
 import { convertDate } from '@/helpers/convertDate';
-import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/types/PurchaseOrderStatus';
+
 import React from 'react';
 
 interface KeyValueDisplayProps {

@@ -7,8 +7,8 @@ import { useState } from 'react';
 import UploadExcel from './UploadExcel';
 import { useNavigate } from 'react-router-dom';
 import { convertDate } from '@/helpers/convertDate';
-import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/types/PurchaseOrderStatus';
-import { PurchaseOrder } from '@/types/PurchaseOrder';
+import { PurchaseOrder } from '@/types/purchaseOrder';
+import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/enums/purchaseOrderStatus';
 
 type SheetData = Record<string, (string | number | null | undefined)[][]>;
 
@@ -33,11 +33,6 @@ const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders, i
     total: 20,
     totalFiltered: 10,
     data: purchaseOrders
-  };
-
-  const handleUploadComplete = (data: SheetData) => {
-    setSheetsData(data);
-    console.log('Uploaded sheets data:', data);
   };
 
   const purchaseOrderColumns: CustomColumnDef<PurchaseOrder>[] = [
@@ -125,15 +120,7 @@ const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders, i
     <div className="flex flex-col px-3 pt-3 pb-4 w-auto bg-white rounded-xl shadow-sm border">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-primaryLight">Purchase Order Lists</h1>
-        <UploadExcel
-          fileName="purchase order"
-          onUploadComplete={handleUploadComplete}
-          continueButtonLabel="Proceed to Review"
-          onContinue={() =>
-            navigate('/purchase-staff/purchase-order/detail', { state: { sheetsData } })
-          }
-          triggerButtonLabel="Import a purchase order"
-        />
+        <UploadExcel fileName="purchase order" triggerButtonLabel="Import a purchase order" />
       </div>
       <TanStackBasicTable
         isTableDataLoading={isLoading}

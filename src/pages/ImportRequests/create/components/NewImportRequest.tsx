@@ -19,7 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import DeliveryForm from './DeliveryForm';
 import ImportRequestDetails from './ImportRequestDetails';
-import { PODelivery, PODeliveryDetail, PurchaseOrder } from '@/types/PurchaseOrder';
+import { PODelivery, PODeliveryDetail, PurchaseOrder } from '@/types/purchaseOrder';
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
 
 type Props = {};

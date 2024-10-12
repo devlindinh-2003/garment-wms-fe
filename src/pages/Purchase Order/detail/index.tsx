@@ -2,8 +2,9 @@ import OrderItemDetails from './components/OrderItemDetails';
 import OrderOverview from './components/OrderOverview';
 import OrderToDetails from './components/OrderToDetails';
 import { useParams } from 'react-router-dom';
-import { PurchaseOrderStatus } from '@/types/PurchaseOrderStatus';
 import { useGetPurchaseOrderById } from '@/hooks/useGetPurchaseOrderById';
+import Loading from '@/components/common/Loading';
+import { PurchaseOrderStatus } from '@/enums/purchaseOrderStatus';
 
 const statusMap: Record<string, PurchaseOrderStatus> = {
   IN_PROGRESS: PurchaseOrderStatus.IN_PROGRESS,
@@ -15,7 +16,11 @@ const PurchaseOrderDetails: React.FC = () => {
   const { id } = useParams();
   const { data, isPending, isError } = useGetPurchaseOrderById(id!);
   if (isPending) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loading />
+      </div>
+    );
   }
   if (isError) {
     return <div>Failed to load purchase order details</div>;

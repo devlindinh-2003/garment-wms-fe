@@ -34,7 +34,7 @@ import { CalendarIcon, CaretSortIcon } from '@radix-ui/react-icons';
 import { CheckIcon } from 'lucide-react';
 
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
-import { PODelivery, PODeliveryDetail, PurchaseOrder } from '@/types/PurchaseOrder';
+import { PODelivery, PODeliveryDetail, PurchaseOrder } from '@/types/purchaseOrder';
 import { Textarea } from '@/components/ui/textarea';
 
 type Props = {};

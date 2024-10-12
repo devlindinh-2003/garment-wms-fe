@@ -1,6 +1,6 @@
 import TanStackBasicTable from '@/components/common/CompositeTable';
 import { CustomColumnDef, UseGetTableResponseType } from '@/types/CompositeTable';
-import { PODeliveryDetail } from '@/types/PurchaseOrder';
+import { PODeliveryDetail } from '@/types/purchaseOrder';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
 import React, { useState } from 'react';
 

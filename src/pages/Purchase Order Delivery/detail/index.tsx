@@ -3,7 +3,7 @@ import { Truck } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { convertDate } from '@/helpers/convertDate';
 import MaterialList from './components/MaterialList';
-import { PODelivery, PODeliveryDetail } from '@/types/PurchaseOrder';
+import { PODelivery, PODeliveryDetail } from '@/types/purchaseOrder';
 
 const PurchaseOrderDeliveryDetails = () => {
   const location = useLocation();

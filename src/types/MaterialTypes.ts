@@ -1,4 +1,4 @@
-import { PageMeta } from './PurchaseOrder';
+import { PageMeta } from './purchaseOrder';
 
 // Unit of Measure (UOM)
 export interface UOM {

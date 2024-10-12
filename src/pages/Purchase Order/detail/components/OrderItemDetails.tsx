@@ -4,7 +4,7 @@ import { ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { convertDate } from '@/helpers/convertDate';
 import MaterialTable from './MaterialTable';
-import { PODelivery } from '@/types/PurchaseOrder';
+import { PODelivery } from '@/types/purchaseOrder';
 
 interface OrderItemDetailsProps {
   poDelivery: PODelivery[];
