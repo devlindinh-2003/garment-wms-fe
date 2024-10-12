@@ -1,5 +1,7 @@
+import { PurchaseOrderStatus } from '@/enums/purchaseOrderStatus';
 import { MaterialVariant } from './MaterialTypes';
 import { Supplier } from './SupplierTypes';
+import { PurchaseOrderDeliveryStatus } from '@/enums/purchaseOrderDeliveryStatus';
 
 // PO Delivery Detail
 export interface PODeliveryDetail {
@@ -24,7 +26,7 @@ export interface PODelivery {
   taxAmount: number | null;
   expectedDeliverDate: string;
   deliverDate: string | null;
-  status: string;
+  status: PurchaseOrderDeliveryStatus;
   isExtra: boolean;
   createdAt: string | null;
   updatedAt: string | null;
@@ -46,7 +48,7 @@ export interface PurchaseOrder {
   orderDate: string;
   expectedFinishDate: string;
   finishDate: string | null;
-  status: string;
+  status: PurchaseOrderStatus;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

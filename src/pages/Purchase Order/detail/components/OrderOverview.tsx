@@ -1,7 +1,6 @@
 import { Badge } from '@/components/ui/Badge';
 import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/enums/purchaseOrderStatus';
 import { convertDate } from '@/helpers/convertDate';
-
 import React from 'react';
 
 interface KeyValueDisplayProps {
@@ -31,21 +30,18 @@ const KeyValueDisplay: React.FC<KeyValueDisplayProps> = ({ name, value }) => {
 };
 
 const StatusBadge: React.FC<{ status: PurchaseOrderStatus }> = ({ status }) => {
-  let colorClass = '';
-
-  switch (status) {
-    case PurchaseOrderStatus.IN_PROGRESS:
-      colorClass = 'bg-blue-500 text-white';
-      break;
-    case PurchaseOrderStatus.CANCELLED:
-      colorClass = 'bg-red-500 text-white';
-      break;
-    case PurchaseOrderStatus.FINISHED:
-      colorClass = 'bg-green-500 text-white';
-      break;
-    default:
-      colorClass = 'bg-gray-500 text-white';
-  }
+  const colorClass = (() => {
+    switch (status) {
+      case PurchaseOrderStatus.IN_PROGRESS:
+        return 'bg-blue-500 text-white';
+      case PurchaseOrderStatus.CANCELLED:
+        return 'bg-red-500 text-white';
+      case PurchaseOrderStatus.FINISHED:
+        return 'bg-green-500 text-white';
+      default:
+        return 'bg-gray-500 text-white';
+    }
+  })();
 
   return (
     <Badge className={`px-4 py-1 rounded-lg text-sm uppercase ${colorClass}`}>

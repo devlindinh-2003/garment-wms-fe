@@ -5,19 +5,23 @@ import { Link } from 'react-router-dom';
 import { convertDate } from '@/helpers/convertDate';
 import MaterialTable from './MaterialTable';
 import { PODelivery } from '@/types/purchaseOrder';
+import {
+  PurchaseOrderDeliveryStatusLabels,
+  PurchaseOrderDeliveryStatus
+} from '@/enums/purchaseOrderDeliveryStatus';
 
 interface OrderItemDetailsProps {
   poDelivery: PODelivery[];
 }
 
 const OrderItemDetails: React.FC<OrderItemDetailsProps> = ({ poDelivery }) => {
-  const getStatusBadgeClass = (status: string) => {
+  const getStatusBadgeClass = (status: PurchaseOrderDeliveryStatus) => {
     switch (status) {
-      case 'PENDING':
+      case PurchaseOrderDeliveryStatus.PENDING:
         return 'bg-yellow-500 text-white';
-      case 'FINISHED':
+      case PurchaseOrderDeliveryStatus.FINISHED:
         return 'bg-green-500 text-white';
-      case 'CANCELLED':
+      case PurchaseOrderDeliveryStatus.CANCELLED:
         return 'bg-red-500 text-white';
       default:
         return 'bg-gray-300 text-white';
@@ -38,7 +42,7 @@ const OrderItemDetails: React.FC<OrderItemDetailsProps> = ({ poDelivery }) => {
               title={convertDate(delivery.expectedDeliverDate)}
               status={
                 <Badge className={`${getStatusBadgeClass(delivery.status)} text-center`}>
-                  {delivery.status}
+                  {PurchaseOrderDeliveryStatusLabels[delivery.status]}
                 </Badge>
               }
               defaultOpen={false}>

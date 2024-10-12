@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { convertDate } from '@/helpers/convertDate';
 import MaterialList from './components/MaterialList';
 import { PODelivery, PODeliveryDetail } from '@/types/purchaseOrder';
+import { PurchaseOrderDeliveryStatus } from '@/enums/purchaseOrderDeliveryStatus';
 
 const PurchaseOrderDeliveryDetails = () => {
   const location = useLocation();
@@ -18,13 +19,13 @@ const PurchaseOrderDeliveryDetails = () => {
     0
   );
 
-  const getStatusBadgeClass = (status: string) => {
+  const getStatusBadgeClass = (status: PurchaseOrderDeliveryStatus) => {
     switch (status) {
-      case 'PENDING':
+      case PurchaseOrderDeliveryStatus.PENDING:
         return 'bg-yellow-500 text-white';
-      case 'FINISHED':
+      case PurchaseOrderDeliveryStatus.FINISHED:
         return 'bg-green-500 text-white';
-      case 'CANCELLED':
+      case PurchaseOrderDeliveryStatus.CANCELLED:
         return 'bg-red-500 text-white';
       default:
         return 'bg-gray-300 text-white';
