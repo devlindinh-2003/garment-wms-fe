@@ -10,6 +10,7 @@ import { DataTableToolbar } from './DataTableToolbar';
 import TanStackBasicTableTableComponent from './TableComponent';
 import TanStackBasicTablePaginationNavigationComponent from './TablePagnationNavigation';
 import Loading from '../Loading';
+import TableSkeleton from '../TableSekeleton';
 
 export default function TanStackBasicTable<TData, TValue>({
   isTableDataLoading,
@@ -70,9 +71,7 @@ export default function TanStackBasicTable<TData, TValue>({
     <div className="p-8 ">
       <div className="flex flex-col md:flex-row justify-evenly gap-4"></div>
       {isTableDataLoading ? (
-        <div className="flex justify-center items-center h-full">
-          <Loading />
-        </div>
+        <TableSkeleton />
       ) : (
         <>
           <DataTableToolbar table={table} />
