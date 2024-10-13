@@ -1,13 +1,64 @@
 import { get, post } from './ApiCaller';
 import axios from 'axios';
 import { ApiResponse } from '@/types/ApiResponse';
+import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
+import { FilterBuilder, FilterOperationType } from '@chax-at/prisma-filter-common';
+import { PurchaseOrderListResponse } from '@/types/PurchaseOrderListResponse';
 
-export const getAllPurchaseOrders = async (): Promise<ApiResponse> => {
+interface GetAllPurchaseOrdersInput {
+  sorting: SortingState;
+  columnFilters: ColumnFiltersState;
+  pagination: PaginationState;
+}
+
+export const getAllPurchaseOrders = async ({
+  sorting,
+  columnFilters,
+  pagination
+}: GetAllPurchaseOrdersInput): Promise<PurchaseOrderListResponse> => {
+  const limit = pagination.pageSize;
+  const offset = pagination.pageIndex * pagination.pageSize;
+
+  // Initialize filter and order arrays
+  const filter: any[] = [];
+  const order: any[] = [];
+
+  // Build filter array from columnFilters
+  columnFilters.forEach((filterItem) => {
+    const { id, value } = filterItem;
+
+    // Check the type of operation based on your requirement
+    let type: FilterOperationType;
+    if (Array.isArray(value)) {
+      type = FilterOperationType.InStrings;
+    } else if (value === null) {
+      type = FilterOperationType.NeNull;
+    } else {
+      type = FilterOperationType.Eq;
+    }
+
+    filter.push({ field: id, type, value });
+  });
+
+  // Build order array from sorting
+  sorting.forEach((sort) => {
+    const direction = sort.desc ? 'desc' : 'asc';
+    order.push({ field: sort.id, dir: direction });
+  });
+
+  // Construct the query string
+  const queryString = FilterBuilder.buildFilterQueryString({
+    limit,
+    offset,
+    filter,
+    order
+  });
+
+  // Make the API request
   try {
-    const config = get('/purchase-order');
+    const config = get(`/purchase-order?${queryString}`);
     const response = await axios(config);
-    console.log(response);
-    return response.data as ApiResponse;
+    return response.data.data as PurchaseOrderListResponse;
   } catch (error) {
     console.error('Error fetching purchase orders:', error);
     throw new Error('Failed to fetch purchase orders');

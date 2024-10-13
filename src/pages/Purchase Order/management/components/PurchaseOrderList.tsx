@@ -1,7 +1,7 @@
 import TanStackBasicTable from '@/components/common/CompositeTable';
 import { Badge } from '@/components/ui/Badge';
 import { useDebounce } from '@/hooks/useDebouce';
-import { CustomColumnDef, UseGetTableResponseType } from '@/types/CompositeTable';
+import { CustomColumnDef } from '@/types/CompositeTable';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
 import { useState } from 'react';
 import UploadExcel from './UploadExcel';
@@ -9,32 +9,35 @@ import { useNavigate } from 'react-router-dom';
 import { convertDate } from '@/helpers/convertDate';
 import { PurchaseOrder } from '@/types/purchaseOrder';
 import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/enums/purchaseOrderStatus';
+import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
 
-type SheetData = Record<string, (string | number | null | undefined)[][]>;
-
-interface PurchaseOrderListProps {
-  purchaseOrders: PurchaseOrder[];
-  isLoading: boolean;
-}
-
-const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders, isLoading }) => {
-  const [sheetsData, setSheetsData] = useState<SheetData>({});
+const PurchaseOrderList: React.FC = () => {
   const navigate = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const debouncedColumnFilters: ColumnFiltersState = useDebounce(columnFilters, 1000);
+  const debouncedSorting: SortingState = useDebounce(sorting, 1000);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 20
+    pageSize: 10
   });
-  const purchaseOrdersList: UseGetTableResponseType<PurchaseOrder> = {
-    limit: 10,
-    page: 1,
-    total: 20,
-    totalFiltered: 10,
-    data: purchaseOrders
-  };
+  const { isPending, purchaseOrderList, pageMeta } = useGetAllPurchaseOrder({
+    sorting: debouncedSorting,
+    columnFilters: debouncedColumnFilters,
+    pagination
+  });
+  const paginatedTableData =
+    purchaseOrderList && pageMeta
+      ? {
+          data: purchaseOrderList,
+          limit: pageMeta.limit,
+          page: pageMeta.page,
+          total: pageMeta.totalItems,
+          totalFiltered: pageMeta.totalItems
+        }
+      : undefined;
 
+  // Table columns definition
   const purchaseOrderColumns: CustomColumnDef<PurchaseOrder>[] = [
     {
       header: 'PO Number',
@@ -51,49 +54,53 @@ const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders, i
     {
       header: 'Production Plan ID',
       accessorKey: 'quarterlyProductionPlanId',
+      enableColumnFilter: false,
       cell: ({ getValue }) => {
         const value = getValue<string>();
-        return <div className="ml-5 font-semibold ">{value ? value : 'PL123'}</div>;
-      },
-      enableColumnFilter: false
+        return <div className="ml-5 font-semibold">{value ? value : 'PL123'}</div>;
+      }
     },
     {
       header: 'Supplier',
       accessorKey: 'supplier.supplierName',
+      enableColumnFilter: false,
       cell: ({ getValue }) => (
-        <div className="font-semibold text-primaryLight ">{getValue<string>()}</div>
-      ),
-      enableColumnFilter: false
+        <div className="font-semibold text-primaryLight">{getValue<string>()}</div>
+      )
     },
     {
       header: 'Total Amount',
       accessorKey: 'totalAmount',
+      enableColumnFilter: false,
       cell: ({ row }) => {
         const totalAmount = row.original.subTotalAmount;
         const currency = row.original.currency;
-
         return (
           <div className="ml-1 flex items-center gap-2">
             <span>{totalAmount.toLocaleString()}</span>
             <span className="text-slate-500">{currency}</span>
           </div>
         );
-      },
-      enableColumnFilter: false
+      }
     },
-
     {
       header: 'Order Date',
       accessorKey: 'orderDate',
+      enableColumnFilter: false,
       cell: ({ getValue }) => {
         const isoDate = getValue<string>();
         return <div className="ml-2">{convertDate(isoDate)}</div>;
-      },
-      enableColumnFilter: false
+      }
     },
     {
       header: 'Status',
       accessorKey: 'status',
+      enableColumnFilter: true,
+      filterOptions: Object.keys(PurchaseOrderStatus).map((key) => ({
+        label:
+          PurchaseOrderStatusLabels[PurchaseOrderStatus[key as keyof typeof PurchaseOrderStatus]],
+        value: PurchaseOrderStatus[key as keyof typeof PurchaseOrderStatus]
+      })),
       cell: ({ row }) => {
         const status = row.original.status as PurchaseOrderStatus;
         const statusLabel = PurchaseOrderStatusLabels[status];
@@ -123,8 +130,8 @@ const PurchaseOrderList: React.FC<PurchaseOrderListProps> = ({ purchaseOrders, i
         <UploadExcel fileName="purchase order" triggerButtonLabel="Import a purchase order" />
       </div>
       <TanStackBasicTable
-        isTableDataLoading={isLoading}
-        paginatedTableData={purchaseOrdersList}
+        isTableDataLoading={isPending}
+        paginatedTableData={paginatedTableData ?? undefined}
         columns={purchaseOrderColumns}
         pagination={pagination}
         setPagination={setPagination}
