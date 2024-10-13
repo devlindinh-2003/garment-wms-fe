@@ -21,6 +21,7 @@ import WarehouseStaffRoute from './WarehouseStaffRoute';
 import Loading from '@/components/common/Loading';
 import ImportRequestManagement from '@/pages/ImportRequests/management';
 import ViewImportRequest from '@/pages/ImportRequests/view';
+import Login from '@/pages/login';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -41,6 +42,10 @@ const RouterComponent: React.FC = () => {
       element: <TestPage />
     },
     {
+      path: '/login',
+      element: <Login />,
+    },
+    {
       element: <WarehouseManagerRoute />,
       children: [
         {
@@ -54,11 +59,6 @@ const RouterComponent: React.FC = () => {
         }
       ]
     },
-    // {
-    //   path: '/login',
-    //   element: <Login />,
-    // },
-
     {
       path: '/',
       element: <WarehouseStaffRoute />,
