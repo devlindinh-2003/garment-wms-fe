@@ -57,16 +57,14 @@ const PurchaseOrderList: React.FC = () => {
       enableColumnFilter: false,
       cell: ({ getValue }) => {
         const value = getValue<string>();
-        return <div className="ml-5 font-semibold">{value ? value : 'PL123'}</div>;
+        return <div className="ml-9 font-semibold">{value ? value : 'PL123'}</div>;
       }
     },
     {
       header: 'Supplier',
       accessorKey: 'supplier.supplierName',
       enableColumnFilter: false,
-      cell: ({ getValue }) => (
-        <div className="font-semibold text-primaryLight">{getValue<string>()}</div>
-      )
+      cell: ({ getValue }) => <div className="mr-5">{getValue<string>()}</div>
     },
     {
       header: 'Total Amount',
@@ -90,6 +88,23 @@ const PurchaseOrderList: React.FC = () => {
       cell: ({ getValue }) => {
         const isoDate = getValue<string>();
         return <div className="ml-2">{convertDate(isoDate)}</div>;
+      }
+    },
+    {
+      header: 'Finished Date',
+      accessorKey: 'finishDate',
+      enableColumnFilter: false,
+      cell: ({ getValue }) => {
+        const isoDate = getValue<string>();
+        return (
+          <div>
+            {isoDate ? (
+              <div className="ml-5">{convertDate(isoDate)}</div>
+            ) : (
+              <div className="ml-9 text-xl font-semibold">-</div>
+            )}
+          </div>
+        );
       }
     },
     {
