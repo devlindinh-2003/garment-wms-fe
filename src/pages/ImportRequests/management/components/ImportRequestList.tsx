@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/Badge';
-import { badgeVariants } from "@/components/ui/Badge"
+import { badgeVariants } from '@/components/ui/Badge';
 
 import {
   DropdownMenu,
@@ -15,14 +15,15 @@ import { CustomColumnDef } from '@/types/CompositeTable';
 import { DeliveryType, ImportRequest, Status } from '@/types/ImportRequestType';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
-import {  useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TanStackBasicTable from './CompositeTable';
+import { getLabelOfImportType } from '../helper';
 type Props = {};
 
 export const getStatusBadgeVariant = (status: string) => {
-  const statusObj = Status.find(s => s.value === status);
-  console.log('getStatusBadgeVariant',statusObj);
+  const statusObj = Status.find((s) => s.value === status);
+  console.log('getStatusBadgeVariant', statusObj);
   return statusObj ? statusObj.variant : 'default'; // Default variant if no match is found
 };
 
@@ -74,11 +75,6 @@ const ImportRequestList = (props: Props) => {
       .split('_') // Split by underscores
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter of each word
       .join(' '); // Join the words back with spaces
-  }
-
-  const getLabelOfImportType= (type:string)=>{
-    const typeObj = DeliveryType.find(s => s.value === type);
-    return typeObj ? typeObj.label : 'N/A'; // Default variant if no match is found
   }
 
   const importRequestColumn: CustomColumnDef<ImportRequest>[] = [
@@ -143,7 +139,8 @@ const ImportRequestList = (props: Props) => {
       accessorKey: 'status',
       enableColumnFilter: true,
       cell: ({ row }) => (
-        <div className={badgeVariants({ variant: getStatusBadgeVariant(row.original.status ?? '') })}>
+        <div
+          className={badgeVariants({ variant: getStatusBadgeVariant(row.original.status ?? '') })}>
           {formatString(row.original.status ?? 'N/A')}
         </div>
       ),
@@ -175,19 +172,19 @@ const ImportRequestList = (props: Props) => {
 
   return (
     <div className="pb-4">
-        <div className="mb-4 w-auto bg-white rounded-xl shadow-sm border">
-          <TanStackBasicTable
-            isTableDataLoading={isimportRequestLoading} // Use the persistent loading state
-            paginatedTableData={paginatedTableData ?? undefined}
-            columns={importRequestColumn}
-            pagination={pagination}
-            setPagination={setPagination}
-            sorting={sorting}
-            setSorting={setSorting}
-            columnFilters={columnFilters}
-            setColumnFilters={setColumnFilters}
-          />
-        </div>
+      <div className="mb-4 w-auto bg-white rounded-xl shadow-sm border">
+        <TanStackBasicTable
+          isTableDataLoading={isimportRequestLoading} // Use the persistent loading state
+          paginatedTableData={paginatedTableData ?? undefined}
+          columns={importRequestColumn}
+          pagination={pagination}
+          setPagination={setPagination}
+          sorting={sorting}
+          setSorting={setSorting}
+          columnFilters={columnFilters}
+          setColumnFilters={setColumnFilters}
+        />
+      </div>
     </div>
   );
 };
