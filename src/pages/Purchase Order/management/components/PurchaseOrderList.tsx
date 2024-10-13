@@ -10,7 +10,7 @@ import { convertDate } from '@/helpers/convertDate';
 import { PurchaseOrder } from '@/types/purchaseOrder';
 import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/enums/purchaseOrderStatus';
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
-import { useGetAllSupplier } from '@/hooks/useGetAllSupplier'; // Fetch suppliers
+import { useGetAllSupplier } from '@/hooks/useGetAllSupplier';
 import { Supplier } from '@/types/SupplierTypes';
 
 const PurchaseOrderList: React.FC = () => {
@@ -51,7 +51,7 @@ const PurchaseOrderList: React.FC = () => {
       cell: ({ row }) => (
         <div
           className="ml-2 font-semibold cursor-pointer text-primary underline hover:opacity-50"
-          onClick={() => navigate(`/purchase-staff/purchase-order/detail/${row.original.id}`)}>
+          onClick={() => navigate(`/purchase-staff/purchase-order/${row.original.id}`)}>
           {row.original.poNumber}
         </div>
       ),

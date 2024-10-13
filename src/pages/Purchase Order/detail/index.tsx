@@ -62,7 +62,7 @@ const PurchaseOrderDetails: React.FC = () => {
         {/* Order to details */}
         <OrderToDetails supplier={supplier} />
         {/* Order item details */}
-        <OrderItemDetails poDelivery={poDelivery} />
+        <OrderItemDetails poDelivery={poDelivery} poId={id} />
       </div>
     </section>
   );

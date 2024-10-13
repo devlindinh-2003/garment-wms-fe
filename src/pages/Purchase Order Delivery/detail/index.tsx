@@ -11,11 +11,11 @@ const PurchaseOrderDeliveryDetails = () => {
   const { delivery } = location.state as { delivery: PODelivery };
 
   const totalMaterialAmount = delivery.poDeliveryDetail.reduce(
-    (sum, detail) => sum + (detail.totalAmount || 0),
+    (sum: number, detail: PODeliveryDetail) => sum + (detail.totalAmount || 0),
     0
   );
   const totalQuantity = delivery.poDeliveryDetail.reduce(
-    (sum, detail) => sum + (detail.quantityByPack || 0),
+    (sum: number, detail: PODeliveryDetail) => sum + (detail.quantityByPack || 0),
     0
   );
 
@@ -39,7 +39,7 @@ const PurchaseOrderDeliveryDetails = () => {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <h1 className="text-lg font-medium text-gray-700">Purchase Order Delivery ID:</h1>
-            <h1 className="text-2xl font-bold text-primaryDark">{delivery.purchaseOrderId}</h1>
+            <h1 className="text-2xl font-bold text-primaryDark">{delivery.id}</h1>
           </div>
 
           <div className="flex items-center gap-2 text-green-600">

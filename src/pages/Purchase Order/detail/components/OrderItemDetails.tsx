@@ -4,7 +4,7 @@ import { ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { convertDate } from '@/helpers/convertDate';
 import MaterialTable from './MaterialTable';
-import { PODelivery } from '@/types/purchaseOrder';
+import { PODelivery, PODeliveryDetail } from '@/types/purchaseOrder';
 import {
   PurchaseOrderDeliveryStatusLabels,
   PurchaseOrderDeliveryStatus
@@ -12,9 +12,10 @@ import {
 
 interface OrderItemDetailsProps {
   poDelivery: PODelivery[];
+  poId: string | undefined;
 }
 
-const OrderItemDetails: React.FC<OrderItemDetailsProps> = ({ poDelivery }) => {
+const OrderItemDetails: React.FC<OrderItemDetailsProps> = ({ poDelivery, poId }) => {
   const getStatusBadgeClass = (status: PurchaseOrderDeliveryStatus) => {
     switch (status) {
       case PurchaseOrderDeliveryStatus.PENDING:
@@ -33,16 +34,23 @@ const OrderItemDetails: React.FC<OrderItemDetailsProps> = ({ poDelivery }) => {
       <h1 className="text-2xl font-bold text-primaryDark">Purchase Delivery</h1>
       <div className="mt-5 flex flex-col gap-6">
         {poDelivery.map((delivery) => {
-          const totalMaterialAmount = delivery.poDeliveryDetail.reduce((sum, detail) => {
-            return sum + (detail.totalAmount || 0);
-          }, 0);
+          const totalMaterialAmount = delivery.poDeliveryDetail.reduce(
+            (sum: number, detail: PODeliveryDetail) => {
+              return sum + (detail.totalAmount || 0);
+            },
+            0
+          );
           return (
             <ExpandableSectionCustom
               key={delivery.id}
               title={convertDate(delivery.expectedDeliverDate)}
               status={
                 <Badge className={`${getStatusBadgeClass(delivery.status)} text-center`}>
-                  {PurchaseOrderDeliveryStatusLabels[delivery.status]}
+                  {
+                    PurchaseOrderDeliveryStatusLabels[
+                      delivery.status as PurchaseOrderDeliveryStatus
+                    ]
+                  }
                 </Badge>
               }
               defaultOpen={false}>
@@ -58,7 +66,7 @@ const OrderItemDetails: React.FC<OrderItemDetailsProps> = ({ poDelivery }) => {
                 </div>
 
                 <Link
-                  to={`/purchase-staff/purchase-order/delivery/${delivery.id}`}
+                  to={`/purchase-staff/purchase-order/${poId}/po-delivery/${delivery.id}`}
                   state={{ delivery }}
                   className="flex items-center gap-2 text-primaryDark hover:opacity-80">
                   <h1 className="text-base font-semibold">View details</h1>
