@@ -10,6 +10,8 @@ import { convertDate } from '@/helpers/convertDate';
 import { PurchaseOrder } from '@/types/purchaseOrder';
 import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/enums/purchaseOrderStatus';
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
+import { useGetAllSupplier } from '@/hooks/useGetAllSupplier'; // Fetch suppliers
+import { Supplier } from '@/types/SupplierTypes';
 
 const PurchaseOrderList: React.FC = () => {
   const navigate = useNavigate();
@@ -18,29 +20,17 @@ const PurchaseOrderList: React.FC = () => {
   const debouncedColumnFilters: ColumnFiltersState = useDebounce(columnFilters, 1000);
   const debouncedSorting: SortingState = useDebounce(sorting, 1000);
 
-  // Pagination state
   const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0, // Initially starts on the first page
-    pageSize: 10 // Define the number of rows per page
+    pageIndex: 0,
+    pageSize: 10
   });
 
-  // Fetch purchase orders using the custom hook with sorting, filtering, and pagination
   const { isFetching, purchaseOrderList, pageMeta } = useGetAllPurchaseOrder({
     sorting: debouncedSorting,
     columnFilters: debouncedColumnFilters,
     pagination
   });
-
-  // Sync pagination state with the backend `pageMeta`
-  useEffect(() => {
-    if (pageMeta) {
-      setPagination((prev) => ({
-        ...prev,
-        pageIndex: pageMeta.page - 1, // Adjusting to zero-based index
-        pageSize: pageMeta.limit
-      }));
-    }
-  }, [pageMeta]);
+  const { data: supplierData, isFetching: isFetchingSuppliers } = useGetAllSupplier();
 
   const paginatedTableData =
     purchaseOrderList && pageMeta
@@ -78,9 +68,14 @@ const PurchaseOrderList: React.FC = () => {
     },
     {
       header: 'Supplier',
-      accessorKey: 'supplier.supplierName',
-      enableColumnFilter: false,
-      cell: ({ getValue }) => <div className="mr-5">{getValue<string>()}</div>
+      accessorKey: 'supplierId',
+      enableColumnFilter: true,
+      filterOptions: supplierData?.data.map((supplier: Supplier) => ({
+        label: supplier.supplierName,
+        value: supplier.id
+      })),
+
+      cell: ({ row }) => <div className="mr-5">{row.original.supplier?.supplierName}</div>
     },
     {
       header: 'Total Amount',
@@ -127,6 +122,7 @@ const PurchaseOrderList: React.FC = () => {
       header: 'Status',
       accessorKey: 'status',
       enableColumnFilter: true,
+      // Predefined filter options for status
       filterOptions: Object.keys(PurchaseOrderStatus).map((key) => ({
         label:
           PurchaseOrderStatusLabels[PurchaseOrderStatus[key as keyof typeof PurchaseOrderStatus]],
@@ -161,7 +157,7 @@ const PurchaseOrderList: React.FC = () => {
         <UploadExcel fileName="purchase order" triggerButtonLabel="Import" />
       </div>
       <TanStackBasicTable
-        isTableDataLoading={isFetching}
+        isTableDataLoading={isFetching || isFetchingSuppliers}
         paginatedTableData={paginatedTableData}
         columns={purchaseOrderColumns}
         pagination={pagination}
