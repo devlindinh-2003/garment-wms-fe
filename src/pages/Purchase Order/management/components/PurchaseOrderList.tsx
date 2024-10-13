@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/Badge';
 import { useDebounce } from '@/hooks/useDebouce';
 import { CustomColumnDef } from '@/types/CompositeTable';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import UploadExcel from './UploadExcel';
 import { useNavigate } from 'react-router-dom';
 import { convertDate } from '@/helpers/convertDate';
@@ -17,15 +17,31 @@ const PurchaseOrderList: React.FC = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const debouncedColumnFilters: ColumnFiltersState = useDebounce(columnFilters, 1000);
   const debouncedSorting: SortingState = useDebounce(sorting, 1000);
+
+  // Pagination state
   const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10
+    pageIndex: 0, // Initially starts on the first page
+    pageSize: 10 // Define the number of rows per page
   });
-  const { isPending, purchaseOrderList, pageMeta } = useGetAllPurchaseOrder({
+
+  // Fetch purchase orders using the custom hook with sorting, filtering, and pagination
+  const { isFetching, purchaseOrderList, pageMeta } = useGetAllPurchaseOrder({
     sorting: debouncedSorting,
     columnFilters: debouncedColumnFilters,
     pagination
   });
+
+  // Sync pagination state with the backend `pageMeta`
+  useEffect(() => {
+    if (pageMeta) {
+      setPagination((prev) => ({
+        ...prev,
+        pageIndex: pageMeta.page - 1, // Adjusting to zero-based index
+        pageSize: pageMeta.limit
+      }));
+    }
+  }, [pageMeta]);
+
   const paginatedTableData =
     purchaseOrderList && pageMeta
       ? {
@@ -142,11 +158,11 @@ const PurchaseOrderList: React.FC = () => {
     <div className="flex flex-col px-3 pt-3 pb-4 w-auto bg-white rounded-xl shadow-sm border">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-primaryLight">Purchase Order Lists</h1>
-        <UploadExcel fileName="purchase order" triggerButtonLabel="Import a purchase order" />
+        <UploadExcel fileName="purchase order" triggerButtonLabel="Import" />
       </div>
       <TanStackBasicTable
-        isTableDataLoading={isPending}
-        paginatedTableData={paginatedTableData ?? undefined}
+        isTableDataLoading={isFetching}
+        paginatedTableData={paginatedTableData}
         columns={purchaseOrderColumns}
         pagination={pagination}
         setPagination={setPagination}

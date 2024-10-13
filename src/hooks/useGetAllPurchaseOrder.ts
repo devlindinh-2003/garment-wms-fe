@@ -21,12 +21,13 @@ export const useGetAllPurchaseOrder = ({
     status,
     isLoading: isPending,
     isError,
-    isSuccess
+    isSuccess,
+    isFetching
   } = useQuery<PurchaseOrderListResponse, AxiosError>({
     queryKey: ['purchaseOrdersList', sorting, columnFilters, pagination],
     queryFn: () => getAllPurchaseOrders({ sorting, columnFilters, pagination })
   });
   const purchaseOrderList = data?.data;
   const pageMeta = data?.pageMeta;
-  return { data, status, isPending, isError, isSuccess, pageMeta, purchaseOrderList };
+  return { data, status, isPending, isFetching, isError, isSuccess, pageMeta, purchaseOrderList };
 };
