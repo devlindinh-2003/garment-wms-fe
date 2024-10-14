@@ -21,6 +21,7 @@ import WarehouseStaffRoute from './WarehouseStaffRoute';
 import Loading from '@/components/common/Loading';
 import ImportRequestManagement from '@/pages/ImportRequests/management';
 import ViewImportRequest from '@/pages/ImportRequests/view';
+import MaterialDetails from '@/pages/Material/MaterialDetails';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -39,6 +40,10 @@ const RouterComponent: React.FC = () => {
     {
       path: '/test',
       element: <TestPage />
+    },
+    {
+      path: '/material/:id',
+      element: <MaterialDetails/>
     },
     {
       element: <WarehouseManagerRoute />,
