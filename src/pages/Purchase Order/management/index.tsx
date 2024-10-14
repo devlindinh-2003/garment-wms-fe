@@ -1,14 +1,14 @@
 import Introduction from './components/Introduction';
-import ProgressList from './components/ProgressList';
 import PurchaseOrderList from './components/PurchaseOrderList';
+import ProgressChart from './components/ProgressChart';
 
 const PurchaseOrderManagement = () => {
   return (
-    <div className="h-full w-full px-4 bg-slate-200 py-3 flex flex-col space-y-3">
+    <div className="h-auto w-full px-4 bg-slate-200 py-3 flex flex-col space-y-3">
       {/* Introduction */}
       <Introduction />
-      {/* Progress List */}
-      <ProgressList />
+      {/* Pie Chart */}
+      <ProgressChart />
       {/* Table */}
       <PurchaseOrderList />
     </div>

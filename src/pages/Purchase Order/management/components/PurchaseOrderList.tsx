@@ -122,7 +122,6 @@ const PurchaseOrderList: React.FC = () => {
       header: 'Status',
       accessorKey: 'status',
       enableColumnFilter: true,
-      // Predefined filter options for status
       filterOptions: Object.keys(PurchaseOrderStatus).map((key) => ({
         label:
           PurchaseOrderStatusLabels[PurchaseOrderStatus[key as keyof typeof PurchaseOrderStatus]],
@@ -145,7 +144,7 @@ const PurchaseOrderList: React.FC = () => {
           default:
             colorVariant = 'bg-gray-200 text-black';
         }
-        return <Badge className={colorVariant}>{statusLabel}</Badge>;
+        return <Badge className={`mr-6 ${colorVariant}`}>{statusLabel}</Badge>;
       }
     }
   ];
