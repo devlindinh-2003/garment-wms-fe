@@ -152,7 +152,7 @@ const PurchaseOrderList: React.FC = () => {
   return (
     <div className="flex flex-col px-3 pt-3 pb-4 w-auto bg-white rounded-xl shadow-sm border">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-primaryLight">Purchase Order Lists</h1>
+        <h1 className="text-3xl font-bold text-primaryLight">Purchase Order Lists</h1>
         <UploadExcel fileName="purchase order" triggerButtonLabel="Import" />
       </div>
       <TanStackBasicTable
