@@ -13,7 +13,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Clock, FileSpreadsheet, MoreVertical, User } from 'lucide-react';
+import { CheckCircle, Clock, FileSpreadsheet, MoreVertical, User } from 'lucide-react';
+import WarehouseApproval from './ImportRequestApproval';
+import ImportRequestCreation from './ImportRequestCreation';
 
 interface Props {
   selectedStep: number | null;
@@ -27,46 +29,7 @@ const InspectionStep: React.FC<Props> = ({ selectedStep, setSelectedStep }) => {
   const stepsActions = [
     {
       title: '123',
-      content: (
-        <Card className="w-full max-w-md">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-2xl font-bold">Import Request #1234</CardTitle>
-            <Badge variant="success">Approved</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-4 mb-4">
-              <Avatar>
-                <AvatarImage src="/placeholder.svg?height=40&width=40" />
-                <AvatarFallback>JD</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium">Created by John Doe</p>
-                <p className="text-xs text-muted-foreground">john.doe@example.com</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center text-sm">
-                <Clock className="mr-2 h-4 w-4" />
-                Created on May 15, 2023 at 14:30 UTC
-              </div>
-              <div className="flex items-center text-sm">
-                <FileSpreadsheet className="mr-2 h-4 w-4" />
-                5,000 records to be imported
-              </div>
-              <div className="flex items-center text-sm">
-                <User className="mr-2 h-4 w-4" />
-                Assigned to Finance Department
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline">View Details</Button>
-            <Button variant="ghost">
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </CardFooter>
-        </Card>
-      )
+      content: <ImportRequestCreation />
     },
     {
       title: 'Chart Report',
@@ -84,9 +47,12 @@ const InspectionStep: React.FC<Props> = ({ selectedStep, setSelectedStep }) => {
     {
       title: 'Pending Approval',
       content: (
-        <div>
-          <h2>Pending Approval</h2>
-        </div>
+        <WarehouseApproval
+          status="waiting"
+          requestId="123"
+          managerEmail="123"
+          managerName="Nguyen Duc Bao"
+        />
       )
     }
   ];
@@ -119,12 +85,12 @@ const InspectionStep: React.FC<Props> = ({ selectedStep, setSelectedStep }) => {
 
   return (
     <div className="flex items-center justify-center">
-      <Carousel className="w-[90%]" setApi={setCarouselApi}>
+      <Carousel className="w-[90%] h-[80%]" setApi={setCarouselApi}>
         <CarouselContent>
           {stepsActions.map((action, index) => (
             <CarouselItem key={index}>
-              <div className="p-1">
-                <div className="flex  items-center justify-center ">{action.content}</div>
+              <div className="w-full h-full">
+                <div className="flex  items-center justify-center  ">{action.content}</div>
               </div>
             </CarouselItem>
           ))}

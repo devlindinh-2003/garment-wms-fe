@@ -29,8 +29,7 @@ const COLORS = {
 
 const chartData = [
   { status: 'passed', quantity: 750, fill: COLORS.passed },
-  { status: 'failed', quantity: 180, fill: COLORS.failed },
-  { status: 'pending', quantity: 70, fill: COLORS.pending }
+  { status: 'failed', quantity: 180, fill: COLORS.failed }
 ];
 
 const defectTypes = [
@@ -51,10 +50,6 @@ const chartConfig = {
   failed: {
     label: 'Failed Inspection',
     color: COLORS.failed
-  },
-  pending: {
-    label: 'Pending Re-inspection',
-    color: COLORS.pending
   }
 } satisfies ChartConfig;
 
@@ -71,8 +66,8 @@ export function Chart() {
   return (
     <Card className="flex flex-col w-full max-w-5xl">
       <CardHeader className="items-center pb-2">
-        <CardTitle className="text-2xl">Material Inspection Dashboard</CardTitle>
-        <CardDescription>Production Cycle: Q2 2024</CardDescription>
+        <CardTitle className="text-2xl">Material Inspection Report</CardTitle>
+        <CardDescription>Import Request #4f50</CardDescription>
       </CardHeader>
       <CardContent className="grid grid-cols-3 gap-6">
         <div className="col-span-3 sm:col-span-1">
@@ -145,10 +140,6 @@ export function Chart() {
             <XCircle className="h-5 w-5 text-red-500" />
             <span>Failed: {chartData.find((item) => item.status === 'failed')?.quantity}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-yellow-500" />
-            <span>Pending: {chartData.find((item) => item.status === 'pending')?.quantity}</span>
-          </div>
         </div>
         <div className="flex items-center justify-between w-full text-muted-foreground">
           <div className="flex items-center gap-2">
@@ -159,10 +150,6 @@ export function Chart() {
             <Cog className="h-5 w-5" />
             <span>Inspection Efficiency: 98.5%</span>
           </div>
-        </div>
-        <div className="w-full flex justify-center gap-2 mt-2">
-          <Badge variant="outline">Batch #24Q2-1289</Badge>
-          <Badge variant="outline">Updated: 2024-05-15</Badge>
         </div>
       </CardFooter>
     </Card>
