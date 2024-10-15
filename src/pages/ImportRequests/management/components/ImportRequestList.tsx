@@ -1,4 +1,3 @@
-import { Badge } from '@/components/ui/Badge';
 import { badgeVariants } from '@/components/ui/Badge';
 
 import {
@@ -18,12 +17,10 @@ import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/rea
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TanStackBasicTable from './CompositeTable';
-import { getLabelOfImportType } from '../helper';
 type Props = {};
 
 export const getStatusBadgeVariant = (status: string) => {
   const statusObj = Status.find((s) => s.value === status);
-  console.log('getStatusBadgeVariant', statusObj);
   return statusObj ? statusObj.variant : 'default'; // Default variant if no match is found
 };
 
@@ -46,7 +43,7 @@ const ImportRequestList = (props: Props) => {
   const debouncedColumnFilters: ColumnFiltersState = useDebounce(columnFilters, 1000);
 
   const debouncedSorting: SortingState = useDebounce(sorting, 1000);
-  // pagination state of the table
+
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0, //initial page index
     pageSize: 10 //default page size
@@ -76,6 +73,11 @@ const ImportRequestList = (props: Props) => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter of each word
       .join(' '); // Join the words back with spaces
   }
+
+  const getLabelOfImportType = (type: string) => {
+    const typeObj = DeliveryType.find((s) => s.value === type);
+    return typeObj ? typeObj.label : 'N/A'; // Default variant if no match is found
+  };
 
   const importRequestColumn: CustomColumnDef<ImportRequest>[] = [
     {
@@ -174,7 +176,7 @@ const ImportRequestList = (props: Props) => {
     <div className="pb-4">
       <div className="mb-4 w-auto bg-white rounded-xl shadow-sm border">
         <TanStackBasicTable
-          isTableDataLoading={isimportRequestLoading} // Use the persistent loading state
+          isTableDataLoading={isimportRequestLoading && isFetching} // Use the persistent loading state
           paginatedTableData={paginatedTableData ?? undefined}
           columns={importRequestColumn}
           pagination={pagination}
