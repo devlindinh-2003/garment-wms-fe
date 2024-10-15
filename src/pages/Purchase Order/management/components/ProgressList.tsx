@@ -7,7 +7,7 @@ interface StatusCardProps {
   status?: PurchaseOrderStatus;
   value: number;
   label?: string;
-  onViewDetails: (status: PurchaseOrderStatus, value: number, buttonBg: string) => void; // Add onViewDetails prop
+  onViewDetails: (status: PurchaseOrderStatus, value: number, buttonBg: string) => void;
 }
 
 interface ProgressListProps {
@@ -17,7 +17,7 @@ interface ProgressListProps {
     finished: number;
     cancelled: number;
   };
-  onViewDetails: (status: PurchaseOrderStatus, value: number, buttonBg: string) => void; // Add onViewDetails prop
+  onViewDetails: (status: PurchaseOrderStatus, value: number, buttonBg: string) => void;
 }
 
 const getColorClasses = (status?: PurchaseOrderStatus) => {
@@ -50,8 +50,8 @@ const StatusCard: React.FC<StatusCardProps> = ({ status, value, label, onViewDet
   const { bg, text, buttonBg } = getColorClasses(status);
 
   return (
-    <div className={`${bg} p-4 rounded-lg shadow-md w-96 h-32 flex flex-col justify-between`}>
-      <div className="flex justify-between">
+    <div className={`${bg} p-6 rounded-lg shadow-md w-96 flex flex-col justify-between h-36`}>
+      <div className="flex justify-between items-center">
         <div>{getIcon(status)}</div>
         {status && (
           <Button
@@ -62,7 +62,7 @@ const StatusCard: React.FC<StatusCardProps> = ({ status, value, label, onViewDet
         )}
       </div>
 
-      <div className="text-center flex flex-col gap-3">
+      <div className="text-center flex flex-col gap-2">
         <h2 className={`text-4xl font-bold ${text}`}>{value}</h2>
         <p className="text-sm text-slate-400">
           <span className="capitalize font-semibold">

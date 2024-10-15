@@ -9,8 +9,11 @@ import { useEffect } from 'react';
 import { DataTableToolbar } from './DataTableToolbar';
 import TanStackBasicTableTableComponent from './TableComponent';
 import TanStackBasicTablePaginationNavigationComponent from './TablePagnationNavigation';
-import Loading from '../Loading';
 import TableSkeleton from '../TableSekeleton';
+
+interface TanStackBasicTableProps<TData, TValue> extends TableProps<TData, TValue> {
+  showToolbar?: boolean;
+}
 
 export default function TanStackBasicTable<TData, TValue>({
   isTableDataLoading,
@@ -24,8 +27,9 @@ export default function TanStackBasicTable<TData, TValue>({
   setSorting,
   setPagination,
   columnFilters = [],
-  setColumnFilters
-}: TableProps<TData, TValue>) {
+  setColumnFilters,
+  showToolbar = true
+}: TanStackBasicTableProps<TData, TValue>) {
   const table = useReactTable({
     data: paginatedTableData?.data || [],
     columns,
@@ -68,13 +72,13 @@ export default function TanStackBasicTable<TData, TValue>({
   }, [columnFilters, setPagination]);
 
   return (
-    <div className="p-8 ">
+    <div className="p-8">
       <div className="flex flex-col md:flex-row justify-evenly gap-4"></div>
       {isTableDataLoading ? (
         <TableSkeleton />
       ) : (
         <>
-          <DataTableToolbar table={table} />
+          {showToolbar && <DataTableToolbar table={table} />}
           <div className="rounded-md border mb-8">
             <TanStackBasicTableTableComponent table={table} columns={columns} />
           </div>

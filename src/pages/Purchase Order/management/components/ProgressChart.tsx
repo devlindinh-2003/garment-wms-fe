@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import ProgressList from './ProgressList';
 import Colors from '@/constants/color';
 import { useGetPurchaseOrderStatistic } from '@/hooks/useGetPurchaseOrderStatistic';
@@ -6,7 +6,13 @@ import HalfPieChartComponent from '@/components/common/HalfPieChart';
 import ChartSkeleton from '@/components/common/ChartSkeleton';
 import DialogStatusTable from './DialogStatusTable';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
-import { Badge } from '@/components/ui/Badge';
+import {
+  Select,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectContent
+} from '@/components/ui/Select';
 
 const getColorClasses = (status: string) => {
   switch (status) {
@@ -29,7 +35,7 @@ const ProgressChart = () => {
 
   // State for dialog management
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>('IN_PROGRESS');
   const [selectedValue, setSelectedValue] = useState<number>(0);
   const [buttonBg, setButtonBg] = useState<string>('bg-blue-500');
 
@@ -41,7 +47,6 @@ const ProgressChart = () => {
       ]
     : [];
 
-  // Handle view details for dialog
   const handleViewDetails = (status: string, value: number, buttonBg: string) => {
     setSelectedStatus(status);
     setSelectedValue(value);
@@ -51,7 +56,7 @@ const ProgressChart = () => {
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
-    setSelectedStatus(null);
+    setSelectedStatus('IN_PROGRESS');
     setSelectedValue(0);
   };
 
@@ -88,13 +93,20 @@ const ProgressChart = () => {
           <DialogContent className="w-full max-w-[90%] h-[90vh] lg:max-w-screen-lg p-6 mx-auto">
             <DialogTitle className="text-2xl font-semibold flex items-center gap-3">
               <span>Viewing purchase orders with status:</span>
-              <Badge className={`${getColorClasses(selectedStatus)} text-white mt-1`}>
-                {selectedStatus.replace('_', ' ')}
-              </Badge>
+              <Select value={selectedStatus} onValueChange={(value) => setSelectedStatus(value)}>
+                <SelectTrigger
+                  className={`text-white ${getColorClasses(selectedStatus)} mt-1 w-32`}>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                  <SelectItem value="FINISHED">Finished</SelectItem>
+                  <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
             </DialogTitle>
 
-            {/* Pass the selectedStatus to DialogStatusTable to filter the data */}
-            <div className=" -mt-[3rem] overflow-y-auto h-[65vh]">
+            <div className=" mt-3 overflow-y-auto h-[75vh]">
               <DialogStatusTable selectedStatus={selectedStatus} />
             </div>
           </DialogContent>

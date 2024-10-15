@@ -1,16 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TanStackBasicTable from '@/components/common/CompositeTable';
 import { Badge } from '@/components/ui/Badge';
 import { useDebounce } from '@/hooks/useDebouce';
 import { CustomColumnDef } from '@/types/CompositeTable';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
-import { useState } from 'react';
 import { convertDate } from '@/helpers/convertDate';
 import { PurchaseOrder } from '@/types/purchaseOrder';
 import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/enums/purchaseOrderStatus';
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
-import { useGetAllSupplier } from '@/hooks/useGetAllSupplier';
 
 interface DialogStatusTableProps {
   selectedStatus: string;
@@ -20,7 +18,7 @@ const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ selectedStatus })
   const navigate = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
-    { id: 'status', value: selectedStatus } // Filter by the selected status initially
+    { id: 'status', value: selectedStatus }
   ]);
   const debouncedColumnFilters: ColumnFiltersState = useDebounce(columnFilters, 1000);
   const debouncedSorting: SortingState = useDebounce(sorting, 1000);
@@ -34,7 +32,6 @@ const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ selectedStatus })
     columnFilters: debouncedColumnFilters,
     pagination
   });
-  const { data: supplierData, isFetching: isFetchingSuppliers } = useGetAllSupplier();
 
   const paginatedTableData =
     purchaseOrderList && pageMeta
@@ -46,6 +43,19 @@ const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ selectedStatus })
           totalFiltered: pageMeta.totalItems
         }
       : undefined;
+
+  const getColorVariant = (status: PurchaseOrderStatus) => {
+    switch (status) {
+      case PurchaseOrderStatus.IN_PROGRESS:
+        return 'bg-blue-500 text-white';
+      case PurchaseOrderStatus.CANCELLED:
+        return 'bg-red-500 text-white';
+      case PurchaseOrderStatus.FINISHED:
+        return 'bg-green-500 text-white';
+      default:
+        return 'bg-gray-200 text-black';
+    }
+  };
 
   const purchaseOrderColumns: CustomColumnDef<PurchaseOrder>[] = [
     {
@@ -123,29 +133,20 @@ const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ selectedStatus })
       cell: ({ row }) => {
         const status = row.original.status as PurchaseOrderStatus;
         const statusLabel = PurchaseOrderStatusLabels[status];
-        let colorVariant;
-        switch (status) {
-          case PurchaseOrderStatus.IN_PROGRESS:
-            colorVariant = 'bg-blue-500 text-white';
-            break;
-          case PurchaseOrderStatus.CANCELLED:
-            colorVariant = 'bg-red-500 text-white';
-            break;
-          case PurchaseOrderStatus.FINISHED:
-            colorVariant = 'bg-green-500 text-white';
-            break;
-          default:
-            colorVariant = 'bg-gray-200 text-black';
-        }
+        const colorVariant = getColorVariant(status);
         return <Badge className={`mr-6 ${colorVariant}`}>{statusLabel}</Badge>;
       }
     }
   ];
 
+  useEffect(() => {
+    setColumnFilters([{ id: 'status', value: selectedStatus }]);
+  }, [selectedStatus]);
+
   return (
-    <>
+    <div>
       <TanStackBasicTable
-        isTableDataLoading={isFetching || isFetchingSuppliers}
+        isTableDataLoading={isFetching}
         paginatedTableData={paginatedTableData}
         columns={purchaseOrderColumns}
         pagination={pagination}
@@ -154,8 +155,9 @@ const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ selectedStatus })
         setSorting={setSorting}
         columnFilters={columnFilters}
         setColumnFilters={setColumnFilters}
+        showToolbar={false}
       />
-    </>
+    </div>
   );
 };
 
