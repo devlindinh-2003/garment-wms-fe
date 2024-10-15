@@ -9,10 +9,11 @@ export const useGetPurchaseOrderStatistic = () => {
     status: status,
     isPending,
     isError,
-    isSuccess
+    isSuccess,
+    isFetching
   } = useQuery<ApiResponse, AxiosError>({
     queryKey: ['purchaseOrderStatistic'],
     queryFn: () => getPurchaseOrderStatistic()
   });
-  return { data, status, isPending, isError, isSuccess };
+  return { data, status, isPending, isError, isSuccess, isFetching };
 };
