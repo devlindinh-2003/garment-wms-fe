@@ -8,6 +8,7 @@ interface PieChartComponentProps {
   innerRadius?: number;
   outerRadius?: number;
   labelType?: 'percentage' | 'value';
+  showLegend?: boolean;
 }
 
 const RADIAN = Math.PI / 180;
@@ -33,7 +34,8 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({
   height = 550,
   innerRadius = 100,
   outerRadius = 180,
-  labelType = 'percentage'
+  labelType = 'percentage',
+  showLegend = false
 }) => {
   return (
     <div className="flex justify-center">
@@ -53,13 +55,15 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({
           ))}
         </Pie>
         <Tooltip />
-        <Legend
-          iconType="circle"
-          layout="vertical"
-          verticalAlign="bottom"
-          height={80}
-          align="center"
-        />
+        {showLegend && (
+          <Legend
+            iconType="circle"
+            layout="vertical"
+            verticalAlign="bottom"
+            height={80}
+            align="center"
+          />
+        )}
       </PieChart>
     </div>
   );

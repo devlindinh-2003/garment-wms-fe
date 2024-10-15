@@ -1,39 +1,37 @@
-import { BadgeCheck, Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, FileText } from 'lucide-react';
 import { PurchaseOrderStatus } from '@/enums/purchaseOrderStatus';
 import React from 'react';
 
 interface StatusCardProps {
-  status: PurchaseOrderStatus;
+  status?: PurchaseOrderStatus;
   value: number;
+  label?: string;
 }
 
-const StatusCard: React.FC<StatusCardProps> = ({ status, value }) => {
-  const getColorClasses = (status: PurchaseOrderStatus) => {
+interface ProgressListProps {
+  statistics: {
+    total: number;
+    inProgress: number;
+    finished: number;
+    cancelled: number;
+  };
+}
+
+const StatusCard: React.FC<StatusCardProps> = ({ status, value, label }) => {
+  const getColorClasses = (status?: PurchaseOrderStatus) => {
     switch (status) {
       case PurchaseOrderStatus.IN_PROGRESS:
-        return {
-          bg: 'bg-blue-100',
-          text: 'text-blue-900'
-        };
+        return { bg: 'bg-blue-100', text: 'text-blue-900' };
       case PurchaseOrderStatus.CANCELLED:
-        return {
-          bg: 'bg-red-100',
-          text: 'text-red-900'
-        };
+        return { bg: 'bg-red-100', text: 'text-red-900' };
       case PurchaseOrderStatus.FINISHED:
-        return {
-          bg: 'bg-green-100',
-          text: 'text-green-900'
-        };
+        return { bg: 'bg-green-100', text: 'text-green-900' };
       default:
-        return {
-          bg: 'bg-gray-100',
-          text: 'text-gray-900'
-        };
+        return { bg: 'bg-gray-200', text: 'text-gray-900' };
     }
   };
 
-  const getIcon = (status: PurchaseOrderStatus) => {
+  const getIcon = (status?: PurchaseOrderStatus) => {
     switch (status) {
       case PurchaseOrderStatus.IN_PROGRESS:
         return <Loader2 className="text-blue-500 w-6 h-6 animate-spin" />;
@@ -42,7 +40,7 @@ const StatusCard: React.FC<StatusCardProps> = ({ status, value }) => {
       case PurchaseOrderStatus.FINISHED:
         return <CheckCircle className="text-green-500 w-6 h-6" />;
       default:
-        return <BadgeCheck className="text-gray-500 w-6 h-6" />;
+        return <FileText className="text-gray-500 w-6 h-6" />;
     }
   };
 
@@ -54,7 +52,9 @@ const StatusCard: React.FC<StatusCardProps> = ({ status, value }) => {
       <div className="text-center flex flex-col gap-3">
         <h2 className={`text-4xl font-bold ${text}`}>{value}</h2>
         <p className="text-sm text-slate-400 ">
-          <span className="capitalize font-semibold">{status.toLowerCase().replace('_', ' ')}</span>{' '}
+          <span className="capitalize font-semibold">
+            {label || status?.toLowerCase().replace('_', ' ')}
+          </span>{' '}
           purchase orders
         </p>
       </div>
@@ -62,12 +62,13 @@ const StatusCard: React.FC<StatusCardProps> = ({ status, value }) => {
   );
 };
 
-const ProgressList: React.FC = () => {
+const ProgressList: React.FC<ProgressListProps> = ({ statistics }) => {
   return (
     <div className="flex flex-col gap-5">
-      <StatusCard status={PurchaseOrderStatus.IN_PROGRESS} value={25} />
-      <StatusCard status={PurchaseOrderStatus.FINISHED} value={30} />
-      <StatusCard status={PurchaseOrderStatus.CANCELLED} value={10} />
+      <StatusCard value={statistics.total} label="Total Orders" />
+      <StatusCard status={PurchaseOrderStatus.IN_PROGRESS} value={statistics.inProgress} />
+      <StatusCard status={PurchaseOrderStatus.FINISHED} value={statistics.finished} />
+      <StatusCard status={PurchaseOrderStatus.CANCELLED} value={statistics.cancelled} />
     </div>
   );
 };
