@@ -1,6 +1,7 @@
 import PieChartComponent from '@/components/common/PieChart';
 import ProgressList from './ProgressList';
 import Colors from '@/constants/color';
+import { useGetPurchaseOrderStatistic } from '@/hooks/useGetPurchaseOrderStatistic';
 
 const ProgressChart = () => {
   const data = [
@@ -8,8 +9,10 @@ const ProgressChart = () => {
     { name: 'Finished orders', value: 30 },
     { name: 'Cancelled  orders', value: 10 }
   ];
-
   const colors = [Colors.blue[500], Colors.green[500], Colors.red[500]];
+  const { data: statisticData } = useGetPurchaseOrderStatistic();
+  const statistics = statisticData?.data;
+  console.log(statistics);
   return (
     <section className="px-6 pt-6 pb-8 w-auto bg-white rounded-xl shadow-md border">
       <div className="mb-6">

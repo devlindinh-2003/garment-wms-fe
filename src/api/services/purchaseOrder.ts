@@ -95,3 +95,14 @@ export const importPurchaseOrder = async (file: File): Promise<ApiResponse> => {
     throw new Error('An unexpected error occurred during file upload.');
   }
 };
+
+export const getPurchaseOrderStatistic = async (): Promise<ApiResponse> => {
+  try {
+    const config = get(`/purchase-order/statistic`);
+    const response = await axios(config);
+    return response.data as ApiResponse;
+  } catch (error: any) {
+    console.error('Failed to fetch purchase order by ID:', error);
+    throw new Error('Failed to fetch purchase order');
+  }
+};
