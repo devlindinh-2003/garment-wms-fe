@@ -133,7 +133,7 @@ const PurchaseOrderList: React.FC = () => {
         let colorVariant;
         switch (status) {
           case PurchaseOrderStatus.IN_PROGRESS:
-            colorVariant = 'bg-yellow-500 text-white';
+            colorVariant = 'bg-blue-500 text-white';
             break;
           case PurchaseOrderStatus.CANCELLED:
             colorVariant = 'bg-red-500 text-white';

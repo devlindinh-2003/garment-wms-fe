@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ProgressList from './ProgressList';
 import Colors from '@/constants/color';
 import { useGetPurchaseOrderStatistic } from '@/hooks/useGetPurchaseOrderStatistic';
 import HalfPieChartComponent from '@/components/common/HalfPieChart';
 import ChartSkeleton from '@/components/common/ChartSkeleton';
 import DialogStatusTable from './DialogStatusTable';
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-  DialogClose
-} from '@/components/ui/Dialog';
-import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/Dialog';
+import { Badge } from '@/components/ui/Badge';
+
+const getColorClasses = (status: string) => {
+  switch (status) {
+    case 'IN_PROGRESS':
+      return 'bg-blue-500';
+    case 'CANCELLED':
+      return 'bg-red-500';
+    case 'FINISHED':
+      return 'bg-green-500';
+    default:
+      return 'bg-gray-500';
+  }
+};
 
 const ProgressChart = () => {
   const colors = [Colors.blue[500], Colors.green[500], Colors.red[500]];
@@ -76,15 +83,18 @@ const ProgressChart = () => {
         )}
       </section>
 
-      {/* Render the dialog with table inside */}
       {selectedStatus && (
         <Dialog open={dialogOpen} onOpenChange={handleCloseDialog}>
           <DialogContent className="w-full max-w-[90%] h-[90vh] lg:max-w-screen-lg p-6 mx-auto">
-            <DialogTitle className="text-2xl font-semibold">
-              Details for {selectedStatus}
+            <DialogTitle className="text-2xl font-semibold flex items-center gap-3">
+              <span>Viewing purchase orders with status:</span>
+              <Badge className={`${getColorClasses(selectedStatus)} text-white mt-1`}>
+                {selectedStatus.replace('_', ' ')}
+              </Badge>
             </DialogTitle>
+
             {/* Pass the selectedStatus to DialogStatusTable to filter the data */}
-            <div className=" -mt-[5rem] overflow-y-auto h-[65vh]">
+            <div className=" -mt-[3rem] overflow-y-auto h-[65vh]">
               <DialogStatusTable selectedStatus={selectedStatus} />
             </div>
           </DialogContent>

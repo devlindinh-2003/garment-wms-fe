@@ -19,7 +19,7 @@ const ApiCaller = (
 ) => {
   const config: ApiCallerParams = {
     method,
-    url: defaultURL + endpoint,
+    url: serverURL + endpoint,
     headers: { ...headers },
     params: { ...params },
     data: body

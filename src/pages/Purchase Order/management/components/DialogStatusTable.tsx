@@ -5,16 +5,15 @@ import { Badge } from '@/components/ui/Badge';
 import { useDebounce } from '@/hooks/useDebouce';
 import { CustomColumnDef } from '@/types/CompositeTable';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { convertDate } from '@/helpers/convertDate';
 import { PurchaseOrder } from '@/types/purchaseOrder';
 import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/enums/purchaseOrderStatus';
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
 import { useGetAllSupplier } from '@/hooks/useGetAllSupplier';
-import { Supplier } from '@/types/SupplierTypes';
 
 interface DialogStatusTableProps {
-  selectedStatus: string; // Accept the selectedStatus prop to filter data
+  selectedStatus: string;
 }
 
 const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ selectedStatus }) => {
@@ -127,7 +126,7 @@ const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ selectedStatus })
         let colorVariant;
         switch (status) {
           case PurchaseOrderStatus.IN_PROGRESS:
-            colorVariant = 'bg-yellow-500 text-white';
+            colorVariant = 'bg-blue-500 text-white';
             break;
           case PurchaseOrderStatus.CANCELLED:
             colorVariant = 'bg-red-500 text-white';

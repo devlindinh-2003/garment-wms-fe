@@ -56,8 +56,7 @@ const StatusCard: React.FC<StatusCardProps> = ({ status, value, label, onViewDet
         {status && (
           <Button
             className={`text-white ${buttonBg} text-sm flex items-center gap-1 px-4 py-1`}
-            onClick={() => onViewDetails(status, value, buttonBg)} // Trigger parent dialog
-          >
+            onClick={() => onViewDetails(status, value, buttonBg)}>
             View
           </Button>
         )}
