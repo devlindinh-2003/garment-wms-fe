@@ -24,7 +24,7 @@ import { user } from '../types';
 import Cookies from 'js-cookie';
 import { HTTP_MESSAGE, HTTP_STATUS_CODE } from '@/enums/httpStatus';
 import { Role } from '@/enums/role';
-import { loginApi } from '@/api/auth/auth';
+import { authApi } from '@/api/auth/auth';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -103,7 +103,7 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
   async function login(role: string, us: string, pw: string) {
     try {
       let res;
-      res = await axios(loginApi.login(us, pw, role));
+      res = await axios(authApi.login(us, pw, role));
       // Process the response
       const accessToken = res.data.data.accessToken;
       const refreshToken = res.data.data.refreshToken;

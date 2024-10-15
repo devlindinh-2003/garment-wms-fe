@@ -64,7 +64,7 @@ const SideBar: React.FC<SideBarProps> = ({ menu }) => {
           </div>
           <ul className="pt-6">
             {menu.map((Menu, index) => (
-              <Link to={Menu.link}>
+              <Link key={index} to={Menu.link}>
                 <li
                   key={index}
                   className={`flex font-semibold  rounded-md p-2 cursor-pointer hover:bg-blue-500 text-sm items-center gap-x-4 mt-2

@@ -1,6 +1,6 @@
 export enum HTTP_MESSAGE {
   UNAUTHORIZED = 'Unauthorized',
-  EXPIRED = 'Jwt Expired!',
+  EXPIRED = 'Token expired',
   INVALID_TOKEN = 'Invalid Token!',
   INVALID_PW = 'Password not match',
   INVALID_EMAIL = 'Account not found',

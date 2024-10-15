@@ -51,7 +51,7 @@ const ImportRequestList = (props: Props) => {
     pageSize: 10 //default page size
   });
 
-  const { pageMeta, importRequestData, isimportRequestLoading, isFetching } = useGetImportRequests({
+  const { pageMeta, importRequestData, isimportRequestLoading } = useGetImportRequests({
     sorting: debouncedSorting,
     columnFilters: debouncedColumnFilters,
     pagination

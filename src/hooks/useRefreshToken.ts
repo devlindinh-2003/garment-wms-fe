@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import Cookies from 'js-cookie';
 import { actions } from '@/pages/login/slice';
 import { user } from '@/pages/login/types';
-import { refreshApi } from '@/utils/api/shared/refreshApi';
+import { authApi } from '@/api/auth/auth';
 
 const useRefreshToken = () => {
   const dispatch = useDispatch();
@@ -12,7 +12,7 @@ const useRefreshToken = () => {
     let header = {
       'Refresh-Token': refreshToken,
     };
-    const response = await axios(refreshApi.refreshToken(header));
+    const response = await axios(authApi.refreshToken(header));
     dispatch(
       actions.setUser((prev: user) => {
         return {
