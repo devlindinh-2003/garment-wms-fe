@@ -7,7 +7,7 @@ interface PieChartComponentProps {
   height?: number;
   innerRadius?: number;
   outerRadius?: number;
-  labelType?: 'percentage' | 'value'; // New prop for controlling label type
+  labelType?: 'percentage' | 'value';
 }
 
 const RADIAN = Math.PI / 180;
