@@ -3,6 +3,7 @@ import ProgressList from './ProgressList';
 import Colors from '@/constants/color';
 import { useGetPurchaseOrderStatistic } from '@/hooks/useGetPurchaseOrderStatistic';
 import Loading from '@/components/common/Loading';
+import HalfPieChartComponent from '@/components/common/HalfPieChart';
 
 const ProgressChart = () => {
   const colors = [Colors.blue[500], Colors.green[500], Colors.red[500]];
@@ -22,16 +23,16 @@ const ProgressChart = () => {
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-primaryLight">Purchase Order Report</h1>
       </div>
-      <div className="flex items-center justify-center gap-8">
-        <PieChartComponent
+      <div className="grid grid-cols-[2fr_1fr]">
+        <HalfPieChartComponent
           data={chartData}
           colors={colors}
           width={600}
           height={650}
-          innerRadius={80}
-          outerRadius={220}
+          innerRadius={85}
+          outerRadius={280}
           labelType="value"
-          showLegend={true}
+          showLegend={false}
         />
         {statistics ? (
           <ProgressList statistics={statistics} />

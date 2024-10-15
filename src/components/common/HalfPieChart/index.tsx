@@ -1,7 +1,7 @@
 import Colors from '@/constants/color';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 
-interface PieChartComponentProps {
+interface HalfPieChartComponentProps {
   data: { name: string; value: number }[];
   colors: string[];
   width?: number;
@@ -40,7 +40,7 @@ const renderCustomizedLabel = (
   );
 };
 
-const PieChartComponent: React.FC<PieChartComponentProps> = ({
+const HalfPieChartComponent: React.FC<HalfPieChartComponentProps> = ({
   data,
   colors,
   width = 500,
@@ -57,6 +57,8 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({
           data={data}
           cx={width / 2}
           cy={height / 2}
+          startAngle={180}
+          endAngle={0}
           labelLine={false}
           label={(props) => renderCustomizedLabel(props, labelType)}
           innerRadius={innerRadius}
@@ -73,7 +75,7 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({
             iconType="circle"
             layout="vertical"
             verticalAlign="bottom"
-            height={80}
+            height={250}
             align="center"
           />
         )}
@@ -82,4 +84,4 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({
   );
 };
 
-export default PieChartComponent;
+export default HalfPieChartComponent;
