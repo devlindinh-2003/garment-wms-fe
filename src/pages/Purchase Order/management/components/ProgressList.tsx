@@ -1,12 +1,13 @@
 import { Loader2, CheckCircle, XCircle, FileText } from 'lucide-react';
 import { PurchaseOrderStatus } from '@/enums/purchaseOrderStatus';
 import React from 'react';
-import DialogStatusTable from './DialogStatusTable';
+import { Button } from '@/components/ui/button';
 
 interface StatusCardProps {
   status?: PurchaseOrderStatus;
   value: number;
   label?: string;
+  onViewDetails: (status: PurchaseOrderStatus, value: number, buttonBg: string) => void; // Add onViewDetails prop
 }
 
 interface ProgressListProps {
@@ -16,6 +17,7 @@ interface ProgressListProps {
     finished: number;
     cancelled: number;
   };
+  onViewDetails: (status: PurchaseOrderStatus, value: number, buttonBg: string) => void; // Add onViewDetails prop
 }
 
 const getColorClasses = (status?: PurchaseOrderStatus) => {
@@ -44,19 +46,26 @@ const getIcon = (status?: PurchaseOrderStatus) => {
   }
 };
 
-const StatusCard: React.FC<StatusCardProps> = ({ status, value, label }) => {
+const StatusCard: React.FC<StatusCardProps> = ({ status, value, label, onViewDetails }) => {
   const { bg, text, buttonBg } = getColorClasses(status);
 
   return (
     <div className={`${bg} p-4 rounded-lg shadow-md w-96 h-32 flex flex-col justify-between`}>
       <div className="flex justify-between">
         <div>{getIcon(status)}</div>
-        {status && <DialogStatusTable status={status} value={value} buttonBg={buttonBg} />}
+        {status && (
+          <Button
+            className={`text-white ${buttonBg} text-sm flex items-center gap-1 px-4 py-1`}
+            onClick={() => onViewDetails(status, value, buttonBg)} // Trigger parent dialog
+          >
+            View
+          </Button>
+        )}
       </div>
 
       <div className="text-center flex flex-col gap-3">
         <h2 className={`text-4xl font-bold ${text}`}>{value}</h2>
-        <p className="text-sm text-slate-400 ">
+        <p className="text-sm text-slate-400">
           <span className="capitalize font-semibold">
             {label || status?.toLowerCase().replace('_', ' ')}
           </span>{' '}
@@ -67,13 +76,25 @@ const StatusCard: React.FC<StatusCardProps> = ({ status, value, label }) => {
   );
 };
 
-const ProgressList: React.FC<ProgressListProps> = ({ statistics }) => {
+const ProgressList: React.FC<ProgressListProps> = ({ statistics, onViewDetails }) => {
   return (
     <div className="flex flex-col gap-5">
-      <StatusCard value={statistics.total} label="Total Orders" />
-      <StatusCard status={PurchaseOrderStatus.IN_PROGRESS} value={statistics.inProgress} />
-      <StatusCard status={PurchaseOrderStatus.FINISHED} value={statistics.finished} />
-      <StatusCard status={PurchaseOrderStatus.CANCELLED} value={statistics.cancelled} />
+      <StatusCard value={statistics.total} label="Total Orders" onViewDetails={onViewDetails} />
+      <StatusCard
+        status={PurchaseOrderStatus.IN_PROGRESS}
+        value={statistics.inProgress}
+        onViewDetails={onViewDetails}
+      />
+      <StatusCard
+        status={PurchaseOrderStatus.FINISHED}
+        value={statistics.finished}
+        onViewDetails={onViewDetails}
+      />
+      <StatusCard
+        status={PurchaseOrderStatus.CANCELLED}
+        value={statistics.cancelled}
+        onViewDetails={onViewDetails}
+      />
     </div>
   );
 };

@@ -1,42 +1,162 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-  DialogClose
-} from '@/components/ui/Dialog';
-import { EyeOpenIcon } from '@radix-ui/react-icons';
+import { useNavigate } from 'react-router-dom';
+import TanStackBasicTable from '@/components/common/CompositeTable';
+import { Badge } from '@/components/ui/Badge';
+import { useDebounce } from '@/hooks/useDebouce';
+import { CustomColumnDef } from '@/types/CompositeTable';
+import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
+import { useState, useEffect } from 'react';
+import { convertDate } from '@/helpers/convertDate';
+import { PurchaseOrder } from '@/types/purchaseOrder';
+import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/enums/purchaseOrderStatus';
+import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
+import { useGetAllSupplier } from '@/hooks/useGetAllSupplier';
+import { Supplier } from '@/types/SupplierTypes';
 
 interface DialogStatusTableProps {
-  status: string;
-  value: number;
-  buttonBg: string;
+  selectedStatus: string; // Accept the selectedStatus prop to filter data
 }
 
-const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ status, value, buttonBg }) => {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button className={`text-white ${buttonBg} text-sm flex items-center gap-1 px-4 py-1`}>
-          <EyeOpenIcon fontSize={12} />
-          View
-        </Button>
-      </DialogTrigger>
+const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ selectedStatus }) => {
+  const navigate = useNavigate();
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
+    { id: 'status', value: selectedStatus } // Filter by the selected status initially
+  ]);
+  const debouncedColumnFilters: ColumnFiltersState = useDebounce(columnFilters, 1000);
+  const debouncedSorting: SortingState = useDebounce(sorting, 1000);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10
+  });
 
-      <DialogContent>
-        <DialogTitle>Details for {status.toLowerCase().replace('_', ' ')}</DialogTitle>
-        <DialogDescription>
-          You are viewing details for the {status.toLowerCase().replace('_', ' ')} purchase orders.
-        </DialogDescription>
-        <p className="mt-4">Total Orders: {value}</p>
-        <DialogClose asChild>
-          <Button className="mt-4">Close</Button>
-        </DialogClose>
-      </DialogContent>
-    </Dialog>
+  const { isFetching, purchaseOrderList, pageMeta } = useGetAllPurchaseOrder({
+    sorting: debouncedSorting,
+    columnFilters: debouncedColumnFilters,
+    pagination
+  });
+  const { data: supplierData, isFetching: isFetchingSuppliers } = useGetAllSupplier();
+
+  const paginatedTableData =
+    purchaseOrderList && pageMeta
+      ? {
+          data: purchaseOrderList,
+          limit: pageMeta.limit,
+          page: pageMeta.page,
+          total: pageMeta.totalItems,
+          totalFiltered: pageMeta.totalItems
+        }
+      : undefined;
+
+  const purchaseOrderColumns: CustomColumnDef<PurchaseOrder>[] = [
+    {
+      header: 'PO Number',
+      accessorKey: 'poNumber',
+      cell: ({ row }) => (
+        <div
+          className="ml-2 font-semibold cursor-pointer text-primary underline hover:opacity-50"
+          onClick={() => navigate(`/purchase-staff/purchase-order/${row.original.id}`)}>
+          {row.original.poNumber}
+        </div>
+      ),
+      enableColumnFilter: false
+    },
+    {
+      header: 'Production Plan ID',
+      accessorKey: 'quarterlyProductionPlanId',
+      enableColumnFilter: false,
+      cell: ({ getValue }) => {
+        const value = getValue<string>();
+        return <div className="ml-9 font-semibold">{value ? value : 'PL123'}</div>;
+      }
+    },
+    {
+      header: 'Supplier',
+      accessorKey: 'supplierId',
+      enableColumnFilter: false,
+      cell: ({ row }) => <div className="mr-5">{row.original.supplier?.supplierName}</div>
+    },
+    {
+      header: 'Total Amount',
+      accessorKey: 'totalAmount',
+      enableColumnFilter: false,
+      cell: ({ row }) => {
+        const totalAmount = row.original.subTotalAmount;
+        const currency = row.original.currency;
+        return (
+          <div className="ml-1 flex items-center gap-2">
+            <span>{totalAmount.toLocaleString()}</span>
+            <span className="text-slate-500">{currency}</span>
+          </div>
+        );
+      }
+    },
+    {
+      header: 'Order Date',
+      accessorKey: 'orderDate',
+      enableColumnFilter: false,
+      cell: ({ getValue }) => {
+        const isoDate = getValue<string>();
+        return <div className="ml-2">{convertDate(isoDate)}</div>;
+      }
+    },
+    {
+      header: 'Finished Date',
+      accessorKey: 'finishDate',
+      enableColumnFilter: false,
+      cell: ({ getValue }) => {
+        const isoDate = getValue<string>();
+        return (
+          <div>
+            {isoDate ? (
+              <div className="ml-5">{convertDate(isoDate)}</div>
+            ) : (
+              <div className="ml-9 text-xl font-semibold">-</div>
+            )}
+          </div>
+        );
+      }
+    },
+    {
+      header: 'Status',
+      accessorKey: 'status',
+      enableColumnFilter: false,
+      cell: ({ row }) => {
+        const status = row.original.status as PurchaseOrderStatus;
+        const statusLabel = PurchaseOrderStatusLabels[status];
+        let colorVariant;
+        switch (status) {
+          case PurchaseOrderStatus.IN_PROGRESS:
+            colorVariant = 'bg-yellow-500 text-white';
+            break;
+          case PurchaseOrderStatus.CANCELLED:
+            colorVariant = 'bg-red-500 text-white';
+            break;
+          case PurchaseOrderStatus.FINISHED:
+            colorVariant = 'bg-green-500 text-white';
+            break;
+          default:
+            colorVariant = 'bg-gray-200 text-black';
+        }
+        return <Badge className={`mr-6 ${colorVariant}`}>{statusLabel}</Badge>;
+      }
+    }
+  ];
+
+  return (
+    <>
+      <TanStackBasicTable
+        isTableDataLoading={isFetching || isFetchingSuppliers}
+        paginatedTableData={paginatedTableData}
+        columns={purchaseOrderColumns}
+        pagination={pagination}
+        setPagination={setPagination}
+        sorting={sorting}
+        setSorting={setSorting}
+        columnFilters={columnFilters}
+        setColumnFilters={setColumnFilters}
+      />
+    </>
   );
 };
 
