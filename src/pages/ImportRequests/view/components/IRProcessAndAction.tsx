@@ -20,7 +20,11 @@ const IRProcessAndAction: React.FC<Props> = (props) => {
         selectedStep={selectedStep}
       />
       <div className="font-primary font-bold text-2xl mt-4 mb-4">Detail and Action</div>
-      <InspectionStep selectedStep={selectedStep} setSelectedStep={setSelectedStep} />
+      <InspectionStep
+        selectedStep={selectedStep}
+        setSelectedStep={setSelectedStep}
+        currentStatus={importRequest?.status as string}
+      />
     </div>
   );
 };

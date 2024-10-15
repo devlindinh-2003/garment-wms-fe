@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Chart } from './Chart';
-import empty from '@/assets/images/empty.svg';
 import {
   Carousel,
   CarouselContent,
@@ -9,20 +8,17 @@ import {
   CarouselPrevious,
   CarouselApi
 } from '@/components/ui/Carousel';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
-import { CheckCircle, Clock, FileSpreadsheet, MoreVertical, User } from 'lucide-react';
 import WarehouseApproval from './ImportRequestApproval';
 import ImportRequestCreation from './ImportRequestCreation';
+import WarehouseStaffAssignment from './ImportRequestStaffAssignment';
 
 interface Props {
   selectedStep: number | null;
   setSelectedStep: React.Dispatch<React.SetStateAction<number | null>>;
+  currentStatus: string;
 }
 
-const InspectionStep: React.FC<Props> = ({ selectedStep, setSelectedStep }) => {
+const InspectionStep: React.FC<Props> = ({ selectedStep, setSelectedStep, currentStatus }) => {
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null); // Store carousel API
 
   // Step actions data (can be dynamic)
@@ -35,20 +31,32 @@ const InspectionStep: React.FC<Props> = ({ selectedStep, setSelectedStep }) => {
       title: 'Chart Report',
       content: <Chart />
     },
+    // {
+    //   title: 'No Inspection Report',
+    //   content: (
+    //     <div className="w-full flex items-center justify-center flex-col">
+    //       <img src={empty} className="w-[250px] h-[250px]" />
+    //       <h2 className="font-bold text-xl text-gray-700">No Inspection Report Created</h2>
+    //     </div>
+    //   )
+    // },
+
     {
-      title: 'No Inspection Report',
+      title: 'Pending Approval',
       content: (
-        <div className="w-full flex items-center justify-center flex-col">
-          <img src={empty} className="w-[250px] h-[250px]" />
-          <h2 className="font-bold text-xl text-gray-700">No Inspection Report Created</h2>
-        </div>
+        <WarehouseApproval
+          requestId="123"
+          managerEmail="123"
+          managerName="Nguyen Duc Bao"
+          currentStatus={currentStatus}
+        />
       )
     },
     {
       title: 'Pending Approval',
       content: (
-        <WarehouseApproval
-          status="waiting"
+        <WarehouseStaffAssignment
+          currentStatus={currentStatus}
           requestId="123"
           managerEmail="123"
           managerName="Nguyen Duc Bao"
@@ -90,7 +98,7 @@ const InspectionStep: React.FC<Props> = ({ selectedStep, setSelectedStep }) => {
           {stepsActions.map((action, index) => (
             <CarouselItem key={index}>
               <div className="w-full h-full">
-                <div className="flex  items-center justify-center  ">{action.content}</div>
+                <div className="flex  items-center justify-center h-full ">{action.content}</div>
               </div>
             </CarouselItem>
           ))}

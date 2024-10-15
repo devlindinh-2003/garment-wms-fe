@@ -10,7 +10,7 @@ import Disscussion from './components/Disscussion';
 import ImportRequestSheet from './components/ImportRequestSheet';
 import ImportRequestStatus from './components/ImportRequestStatus';
 import { actions } from '../slice';
-import IRProcessAndAction from './components/IRPRocessAndAction';
+import IRProcessAndAction from './components/IRProcessAndAction';
 type Props = {};
 
 const ViewImportRequest = (props: Props) => {

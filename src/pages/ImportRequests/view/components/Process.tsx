@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 import ProcessIcon from './ProcessIcon';
+import { importRequestStatusList } from '../../constants';
 
 type Props = {
   currentStatus: string;
@@ -20,25 +21,6 @@ const statusOrder = [
   'IMPORTED'
 ];
 
-const dataIcon = [
-  {
-    title: 'At Depot',
-    state: ['ARRIVED']
-  },
-  {
-    title: 'In Inspection',
-    state: ['INSPECTING', 'INSPECTED']
-  },
-  {
-    title: 'Waiting for approval',
-    state: ['PENDING', 'CANCELED', 'REJECTED', 'APPROVED']
-  },
-  {
-    title: 'Import To Warehouse',
-    state: ['IMPORTING', 'IMPORTED']
-  }
-];
-
 const Process = ({ currentStatus, selectedStep, setSelectedStep }: Props) => {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
@@ -54,13 +36,13 @@ const Process = ({ currentStatus, selectedStep, setSelectedStep }: Props) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col gap-4 w-full ">
       <div className="font-primary font-bold text-2xl mb-4">Process</div>
       <ol
         className={
           isDesktop ? 'flex items-center w-full text-xs sm:text-base' : 'overflow-hidden space-y-8'
         }>
-        {dataIcon.map((item, index) => (
+        {importRequestStatusList.map((item, index) => (
           <ProcessIcon
             key={index}
             index={index}
@@ -71,7 +53,7 @@ const Process = ({ currentStatus, selectedStep, setSelectedStep }: Props) => {
               statusOrder.indexOf(currentStatus) >=
               statusOrder.indexOf(item.state[item.state.length - 1])
             }
-            totalSteps={dataIcon.length}
+            totalSteps={importRequestStatusList.length}
             onSelect={handleSelectStep} // Pass the selection handler
             isSelected={selectedStep === index} // Pass whether this step is selected
           />
