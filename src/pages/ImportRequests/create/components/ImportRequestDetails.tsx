@@ -22,8 +22,8 @@ const ImportRequestDetails = ({
     // Map through the data and add plannedQuantity and actualQuantity fields
     return (data || []).map((item) => ({
       ...item,
-      plannedQuantity: item.quantityByPack, // Default value, you can modify this as needed
-      actualQuantity: item.quantityByPack // Default value, you can modify this as needed
+      plannedQuantity: item.plannedQuantity || item.quantityByPack, // Default value, you can modify this as needed
+      actualQuantity: item.actualQuantity || item.quantityByPack // Default value, you can modify this as needed
     }));
   };
   const [details, setDetails] = useState(initializeDetails(data));
@@ -48,6 +48,7 @@ const ImportRequestDetails = ({
   };
   const handleSave = () => {
     setEditDetail(false);
+    console.log(details);
     setPoDeliverydetails(details);
   };
   const columns = useMemo(() => getMaterialColumns({}), []);

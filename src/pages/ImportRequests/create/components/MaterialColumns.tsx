@@ -56,7 +56,14 @@ export const getMaterialColumns = ({}: any): CustomColumnDef<ImportRequestDetail
     ),
     cell: ({ row }) => <div className="text-center">{row.original.plannedQuantity}</div>,
 
-    validation: z.number().nonnegative('Planned Quantity must be equal or  greater than 0')
+    validation: z.union([z.string(), z.number()]).refine(
+      (value) => {
+        if (value === '') return true; // Allow empty input while typing
+        const parsed = parseFloat(value);
+        return !isNaN(parsed) && parsed >= 0;
+      },
+      { message: 'Planned Quantity must be equal or greater than 0' }
+    )
   },
   {
     accessorKey: 'actualQuantity',
@@ -65,7 +72,22 @@ export const getMaterialColumns = ({}: any): CustomColumnDef<ImportRequestDetail
     ),
     cell: ({ row }) => <div className="text-center">{row.original.actualQuantity}</div>,
     isEditable: true,
-    validation: z.number().positive('Actual Quantity have to be at least 1')
+    validation: z.preprocess(
+      (val) => (val === '' ? undefined : val), // Allow empty string during typing
+      z
+        .union([
+          z.string().refine(
+            (val) => {
+              if (!val) return true; // Allow empty
+              const num = parseFloat(val);
+              return !isNaN(num) && num > 0; // Validate positive number
+            },
+            { message: 'Actual Quantity must be at least 1' }
+          ),
+          z.number().positive({ message: 'Actual Quantity must be at least 1' })
+        ])
+        .optional() // Allows undefined (empty) state
+    )
   },
 
   {
