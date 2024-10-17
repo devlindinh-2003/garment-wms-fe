@@ -60,6 +60,7 @@ const NewImportRequest = (props: Props) => {
   const [selectedPoDelivery, setSelectedPoDelivery] = useState<PODelivery>();
   const [poDeliveryDetails, setPoDeliverydetails] = useState<PODeliveryDetail[]>([]);
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const onSubmit = async (data: z.infer<typeof deliveryFormSchema>) => {
     try {
@@ -70,19 +71,22 @@ const NewImportRequest = (props: Props) => {
         });
         return;
       }
+
+      setLoading(true); // Start loading
       const response = await importRequestApi.create(
         data.purchaseOrderBatch,
         data.description as string,
         poDeliveryDetails,
         'MATERIAL_BY_PO'
       );
+
       if (response.status === 201) {
         toast({
           variant: 'success',
           title: 'Import Request created successfully',
           description: 'Import request for Material has been created successfully in the system'
         });
-        navigate('/purchase-staff/import-request'); // Navigate back after successful creation
+        navigate('/purchase-staff/import-request');
       }
     } catch (error: any) {
       toast({
@@ -90,9 +94,10 @@ const NewImportRequest = (props: Props) => {
         title: 'Uh oh! Something went wrong.',
         description: error.message || 'There was a problem with your request.'
       });
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
-
   // Re-render ImportRequestDetails when poDeliveryDetails changes
   useEffect(() => {}, [poDeliveryDetails]);
 
@@ -174,7 +179,9 @@ const NewImportRequest = (props: Props) => {
       <div className="flex justify-center items-center pb-4">
         <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <AlertDialogTrigger asChild>
-            <Button type="button">Create Import Request</Button>
+            <Button type="button" disabled={loading}>
+              {loading ? 'Processing...' : 'Submit'}
+            </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -188,7 +195,7 @@ const NewImportRequest = (props: Props) => {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={handleFormSubmit} type="submit">
-                Continue
+                {loading ? 'Processing...' : 'Continue'}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
