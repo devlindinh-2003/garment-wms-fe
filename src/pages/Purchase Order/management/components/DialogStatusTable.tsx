@@ -1,25 +1,27 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import TanStackBasicTable from '@/components/common/CompositeTable';
 import { Badge } from '@/components/ui/Badge';
 import { useDebounce } from '@/hooks/useDebouce';
 import { CustomColumnDef } from '@/types/CompositeTable';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
-import { useState, useEffect } from 'react';
-import UploadExcel from './UploadExcel';
-import { Link, ScrollRestoration, useNavigate } from 'react-router-dom';
 import { convertDate } from '@/helpers/convertDate';
 import { PurchaseOrder } from '@/types/purchaseOrder';
 import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/enums/purchaseOrderStatus';
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
-import { useGetAllSupplier } from '@/hooks/useGetAllSupplier';
-import { Supplier } from '@/types/SupplierTypes';
 
-const PurchaseOrderList: React.FC = () => {
+interface DialogStatusTableProps {
+  selectedStatus: string;
+}
+
+const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ selectedStatus }) => {
   const navigate = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
+    { id: 'status', value: selectedStatus }
+  ]);
   const debouncedColumnFilters: ColumnFiltersState = useDebounce(columnFilters, 1000);
   const debouncedSorting: SortingState = useDebounce(sorting, 1000);
-
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
@@ -30,7 +32,6 @@ const PurchaseOrderList: React.FC = () => {
     columnFilters: debouncedColumnFilters,
     pagination
   });
-  const { data: supplierData, isFetching: isFetchingSuppliers } = useGetAllSupplier();
 
   const paginatedTableData =
     purchaseOrderList && pageMeta
@@ -43,17 +44,29 @@ const PurchaseOrderList: React.FC = () => {
         }
       : undefined;
 
-  // Table columns definition
+  const getColorVariant = (status: PurchaseOrderStatus) => {
+    switch (status) {
+      case PurchaseOrderStatus.IN_PROGRESS:
+        return 'bg-blue-500 text-white';
+      case PurchaseOrderStatus.CANCELLED:
+        return 'bg-red-500 text-white';
+      case PurchaseOrderStatus.FINISHED:
+        return 'bg-green-500 text-white';
+      default:
+        return 'bg-gray-200 text-black';
+    }
+  };
+
   const purchaseOrderColumns: CustomColumnDef<PurchaseOrder>[] = [
     {
       header: 'PO Number',
       accessorKey: 'poNumber',
       cell: ({ row }) => (
-        <Link
-          to={`/purchase-staff/purchase-order/${row.original.id}`}
-          className="ml-2 font-semibold text-primary underline hover:opacity-50">
+        <div
+          className="ml-2 font-semibold cursor-pointer text-primary underline hover:opacity-50"
+          onClick={() => navigate(`/purchase-staff/purchase-order/${row.original.id}`)}>
           {row.original.poNumber}
-        </Link>
+        </div>
       ),
       enableColumnFilter: false
     },
@@ -69,12 +82,7 @@ const PurchaseOrderList: React.FC = () => {
     {
       header: 'Supplier',
       accessorKey: 'supplierId',
-      enableColumnFilter: true,
-      filterOptions: supplierData?.data.map((supplier: Supplier) => ({
-        label: supplier.supplierName,
-        value: supplier.id
-      })),
-
+      enableColumnFilter: false,
       cell: ({ row }) => <div className="mr-5">{row.original.supplier?.supplierName}</div>
     },
     {
@@ -121,42 +129,24 @@ const PurchaseOrderList: React.FC = () => {
     {
       header: 'Status',
       accessorKey: 'status',
-      enableColumnFilter: true,
-      filterOptions: Object.keys(PurchaseOrderStatus).map((key) => ({
-        label:
-          PurchaseOrderStatusLabels[PurchaseOrderStatus[key as keyof typeof PurchaseOrderStatus]],
-        value: PurchaseOrderStatus[key as keyof typeof PurchaseOrderStatus]
-      })),
+      enableColumnFilter: false,
       cell: ({ row }) => {
         const status = row.original.status as PurchaseOrderStatus;
         const statusLabel = PurchaseOrderStatusLabels[status];
-        let colorVariant;
-        switch (status) {
-          case PurchaseOrderStatus.IN_PROGRESS:
-            colorVariant = 'bg-blue-500 text-white';
-            break;
-          case PurchaseOrderStatus.CANCELLED:
-            colorVariant = 'bg-red-500 text-white';
-            break;
-          case PurchaseOrderStatus.FINISHED:
-            colorVariant = 'bg-green-500 text-white';
-            break;
-          default:
-            colorVariant = 'bg-gray-200 text-black';
-        }
+        const colorVariant = getColorVariant(status);
         return <Badge className={`mr-6 ${colorVariant}`}>{statusLabel}</Badge>;
       }
     }
   ];
 
+  useEffect(() => {
+    setColumnFilters([{ id: 'status', value: selectedStatus }]);
+  }, [selectedStatus]);
+
   return (
-    <div className="flex flex-col px-3 pt-3 pb-4 w-auto bg-white rounded-xl shadow-sm border">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-primaryLight">Purchase Order Lists</h1>
-        <UploadExcel fileName="purchase order" triggerButtonLabel="Import" />
-      </div>
+    <div>
       <TanStackBasicTable
-        isTableDataLoading={isFetching || isFetchingSuppliers}
+        isTableDataLoading={isFetching}
         paginatedTableData={paginatedTableData}
         columns={purchaseOrderColumns}
         pagination={pagination}
@@ -165,9 +155,10 @@ const PurchaseOrderList: React.FC = () => {
         setSorting={setSorting}
         columnFilters={columnFilters}
         setColumnFilters={setColumnFilters}
+        showToolbar={false}
       />
     </div>
   );
 };
 
-export default PurchaseOrderList;
+export default DialogStatusTable;
