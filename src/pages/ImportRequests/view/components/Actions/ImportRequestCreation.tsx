@@ -14,13 +14,14 @@ const ImportRequestCreation: React.FC<Props> = (props) => {
   const importRequest: ImportRequest = useSelector(importRequestSelector.importRequest);
   let purchasingStaff = importRequest?.purchasingStaff;
   return (
-    <Card className="flex flex-col w-full max-w-5xl  justify-center items-center">
-      <CardHeader className="items-center pb-10">
+    <Card className="flex flex-col w-full max-w-5xl">
+      <CardHeader className="items-center pb-2">
         <CardTitle className="text-2xl">Import Request Creation</CardTitle>
         <p className="text-sm text-muted-foreground">Request #1234</p>
       </CardHeader>
+
       <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="col-span-1 md:col-span-1 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r pb-6 md:pb-0 p-4">
+        <div className="col-span-1 md:col-span-1 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r pb-6 md:pb-0">
           <Avatar className="w-20 h-20 mb-4">
             <AvatarImage src={purchasingStaff?.users.avatarUrl} alt="John Doe" />
             <AvatarFallback>JD</AvatarFallback>
@@ -30,7 +31,8 @@ const ImportRequestCreation: React.FC<Props> = (props) => {
             <p className="text-xs text-muted-foreground">{purchasingStaff?.users.email}</p>
           </div>
         </div>
-        <div className="col-span-1 md:col-span-2 flex flex-col justify-center p-4">
+
+        <div className="col-span-1 md:col-span-2 flex flex-col justify-center">
           <h3 className="text-lg font-semibold mb-4">Request Details</h3>
           <div className="space-y-4">
             <div className="flex items-center text-sm">
@@ -51,6 +53,14 @@ const ImportRequestCreation: React.FC<Props> = (props) => {
           </div>
         </div>
       </CardContent>
+
+      <CardFooter className="flex-col gap-4 text-sm border-t pt-6">
+        <div className="flex items-center justify-between w-full">
+          <span className="text-muted-foreground">
+            Request created on May 14, 2023 at 09:30 UTC
+          </span>
+        </div>
+      </CardFooter>
     </Card>
   );
 };

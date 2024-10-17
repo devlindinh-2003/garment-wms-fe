@@ -62,8 +62,8 @@ const ViewImportRequest = (props: Props) => {
   return (
     <>
       {isLoading ? (
-        <div className="w-full h-full">
-          <Loading />
+        <div className="w-full h-full flex-col items-center justify-center flex">
+          <Loading size="100" />
         </div>
       ) : error ? (
         <div className="w-full h-full flex justify-center items-center">
