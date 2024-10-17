@@ -36,13 +36,13 @@ const getColorClasses = (status?: PurchaseOrderStatus) => {
 const getIcon = (status?: PurchaseOrderStatus) => {
   switch (status) {
     case PurchaseOrderStatus.IN_PROGRESS:
-      return <Loader2 className="text-blue-500 w-6 h-6 animate-spin" />;
+      return <Loader2 className="text-blue-500 " size={30} />;
     case PurchaseOrderStatus.CANCELLED:
-      return <XCircle className="text-red-500 w-6 h-6" />;
+      return <XCircle className="text-red-500" size={30} />;
     case PurchaseOrderStatus.FINISHED:
-      return <CheckCircle className="text-green-500 w-6 h-6" />;
+      return <CheckCircle className="text-green-500" size={30} />;
     default:
-      return <FileText className="text-gray-500 w-6 h-6" />;
+      return <FileText className="text-gray-500" size={30} />;
   }
 };
 

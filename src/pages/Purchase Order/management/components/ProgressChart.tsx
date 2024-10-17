@@ -13,6 +13,7 @@ import {
   SelectValue,
   SelectContent
 } from '@/components/ui/Select';
+import PieChartComponent from '@/components/common/PieChart';
 
 const getColorClasses = (status: string) => {
   switch (status) {
@@ -72,8 +73,8 @@ const ProgressChart = () => {
             <ChartSkeleton />
           </div>
         ) : (
-          <div className="grid grid-cols-[2fr_1fr] gap-8">
-            <HalfPieChartComponent
+          <div className="flex justify-center items-center gap-5">
+            <PieChartComponent
               data={chartData}
               colors={colors}
               width={600}

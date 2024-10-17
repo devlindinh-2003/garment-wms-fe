@@ -5,7 +5,7 @@ import { CustomColumnDef } from '@/types/CompositeTable';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
 import { useState, useEffect } from 'react';
 import UploadExcel from './UploadExcel';
-import { useNavigate } from 'react-router-dom';
+import { Link, ScrollRestoration, useNavigate } from 'react-router-dom';
 import { convertDate } from '@/helpers/convertDate';
 import { PurchaseOrder } from '@/types/purchaseOrder';
 import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/enums/purchaseOrderStatus';
@@ -49,11 +49,11 @@ const PurchaseOrderList: React.FC = () => {
       header: 'PO Number',
       accessorKey: 'poNumber',
       cell: ({ row }) => (
-        <div
-          className="ml-2 font-semibold cursor-pointer text-primary underline hover:opacity-50"
-          onClick={() => navigate(`/purchase-staff/purchase-order/${row.original.id}`)}>
+        <Link
+          to={`/purchase-staff/purchase-order/${row.original.id}`}
+          className="ml-2 font-semibold text-primary underline hover:opacity-50">
           {row.original.poNumber}
-        </div>
+        </Link>
       ),
       enableColumnFilter: false
     },

@@ -55,6 +55,7 @@ const HalfPieChartComponent: React.FC<HalfPieChartComponentProps> = ({
       <PieChart width={width} height={height}>
         <Pie
           data={data}
+          isAnimationActive={false}
           cx={width / 2}
           cy={height / 2}
           startAngle={180}
