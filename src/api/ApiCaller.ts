@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 const defaultURL = import.meta.env.VITE_LOCALHOST_URL as string;
+const serverURL = 'http://localhost:8000';
 export interface ApiCallerParams {
     method: string;
     url: string;
@@ -18,7 +19,7 @@ const ApiCaller = (
 ) => {
     const config: ApiCallerParams = {
         method,
-        url: defaultURL + endpoint,
+        url: serverURL + endpoint,
         headers: { ...headers },
         params: { ...params },
         data: body,
