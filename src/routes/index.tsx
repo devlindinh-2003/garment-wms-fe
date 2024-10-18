@@ -103,11 +103,11 @@ const RouterComponent: React.FC = () => {
               element: <PurchaseOrderManagement />
             },
             {
-              path: '/purchase-staff/purchase-order/detail/:id',
+              path: '/purchase-staff/purchase-order/:id',
               element: <PurchaseOrderDetails />
             },
             {
-              path: '/purchase-staff/purchase-order/delivery/:deliveryId',
+              path: '/purchase-staff/purchase-order/:poId/po-delivery/:deliveryId',
               element: <PurchaseOrderDeliveryDetails />
             },
             {

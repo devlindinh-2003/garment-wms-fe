@@ -17,7 +17,7 @@ const PurchaseOrderDetails: React.FC = () => {
   const { data, isPending, isError } = useGetPurchaseOrderById(id!);
   if (isPending) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center">
         <Loading />
       </div>
     );
@@ -62,7 +62,7 @@ const PurchaseOrderDetails: React.FC = () => {
         {/* Order to details */}
         <OrderToDetails supplier={supplier} />
         {/* Order item details */}
-        <OrderItemDetails poDelivery={poDelivery} />
+        <OrderItemDetails poDelivery={poDelivery} poId={id} />
       </div>
     </section>
   );
