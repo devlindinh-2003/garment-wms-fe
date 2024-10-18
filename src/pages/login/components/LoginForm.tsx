@@ -6,7 +6,7 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/Form';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,12 +25,15 @@ import Cookies from 'js-cookie';
 import { HTTP_MESSAGE, HTTP_STATUS_CODE } from '@/enums/httpStatus';
 import { Role } from '@/enums/role';
 import { authApi } from '@/api/auth/auth';
+import Loading from '@/components/common/Loading';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
   const dispatch = useDispatch();
   // const [userName, setUserName] = React.useState("");
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   // const handleGoogleLogin = () => {
   //     window.location.replace(devEnvGoogleAuth());
@@ -74,9 +77,10 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
     }
   });
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
     switch (values.role) {
       case 'purchasing-staff':
-        login('PURCHASING-STAFF', values.email, values.password);
+        login('PURCHASING_STAFF', values.email, values.password);
         break;
       case 'warehouse-manager':
         login('WAREHOUSE_MANAGER', values.email, values.password);
@@ -91,13 +95,9 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
         login('INSPECTION_DEPARTMENT', values.email, values.password);
         break;
       default:
-        toast({
-          title: 'Lỗi đăng nhập',
-          variant: 'destructive',
-          description: 'Đã có lỗi xảy ra'
-        });
         break;
     }
+    
   }
 
   async function login(role: string, us: string, pw: string) {
@@ -108,7 +108,6 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
       const accessToken = res.data.data.accessToken;
       const refreshToken = res.data.data.refreshToken;
       const staff: user = res.data.data.user;
-      console.log('staff', staff);
 
       // Set tokens and user data
       staff.accessToken = accessToken;
@@ -145,6 +144,8 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
           });
           break;
       }
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -203,8 +204,8 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
                 </FormItem>
               )}
             />
-            <Button className="mt-5" variant={'default'} type="submit">
-              Đăng nhập với Email
+            <Button className="mt-5" variant={'default'} disabled={loading} type="submit">
+            {loading ? (<Loading/>) : 'Đăng nhập với Email'}
             </Button>
           </div>
           {/* </div> */}
