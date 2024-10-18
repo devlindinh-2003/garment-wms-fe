@@ -17,17 +17,13 @@ export const getAllPurchaseOrders = async ({
   pagination
 }: GetAllPurchaseOrdersInput): Promise<PurchaseOrderListResponse> => {
   const limit = pagination.pageSize;
-  const offset = pagination.pageIndex * pagination.pageSize;
-
-  // Initialize filter and order arrays
+  const page = pagination.pageIndex + 1;
+  const offset = page === 1 ? 0 : (page - 1) * limit - 1;
   const filter: any[] = [];
   const order: any[] = [];
 
-  // Build filter array from columnFilters
   columnFilters.forEach((filterItem) => {
     const { id, value } = filterItem;
-
-    // Check the type of operation based on your requirement
     let type: FilterOperationType;
     if (Array.isArray(value)) {
       type = FilterOperationType.InStrings;
@@ -36,17 +32,14 @@ export const getAllPurchaseOrders = async ({
     } else {
       type = FilterOperationType.Eq;
     }
-
     filter.push({ field: id, type, value });
   });
 
-  // Build order array from sorting
   sorting.forEach((sort) => {
     const direction = sort.desc ? 'desc' : 'asc';
     order.push({ field: sort.id, dir: direction });
   });
 
-  // Construct the query string
   const queryString = FilterBuilder.buildFilterQueryString({
     limit,
     offset,
@@ -54,9 +47,11 @@ export const getAllPurchaseOrders = async ({
     order
   });
 
-  // Make the API request
+  const fullUrl = queryString.startsWith('?')
+    ? `/purchase-order${queryString}`
+    : `/purchase-order?${queryString}`;
   try {
-    const config = get(`/purchase-order?${queryString}`);
+    const config = get(fullUrl);
     const response = await axios(config);
     return response.data.data as PurchaseOrderListResponse;
   } catch (error) {

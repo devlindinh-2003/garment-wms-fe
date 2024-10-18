@@ -24,7 +24,7 @@ const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ selectedStatus })
   const debouncedSorting: SortingState = useDebounce(sorting, 1000);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10
+    pageSize: 8
   });
 
   const { isFetching, purchaseOrderList, pageMeta } = useGetAllPurchaseOrder({
@@ -39,8 +39,8 @@ const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ selectedStatus })
           data: purchaseOrderList,
           limit: pageMeta.limit,
           page: pageMeta.page,
-          total: pageMeta.totalItems,
-          totalFiltered: pageMeta.totalItems
+          total: pageMeta.total,
+          totalFiltered: pageMeta.totalPages
         }
       : undefined;
 
@@ -156,6 +156,7 @@ const DialogStatusTable: React.FC<DialogStatusTableProps> = ({ selectedStatus })
         columnFilters={columnFilters}
         setColumnFilters={setColumnFilters}
         showToolbar={false}
+        totalPages={paginatedTableData?.totalFiltered}
       />
     </div>
   );

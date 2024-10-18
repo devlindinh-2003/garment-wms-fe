@@ -3,9 +3,9 @@ import { Badge } from '@/components/ui/Badge';
 import { useDebounce } from '@/hooks/useDebouce';
 import { CustomColumnDef } from '@/types/CompositeTable';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import UploadExcel from './UploadExcel';
-import { Link, ScrollRestoration, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { convertDate } from '@/helpers/convertDate';
 import { PurchaseOrder } from '@/types/purchaseOrder';
 import { PurchaseOrderStatus, PurchaseOrderStatusLabels } from '@/enums/purchaseOrderStatus';
@@ -14,7 +14,6 @@ import { useGetAllSupplier } from '@/hooks/useGetAllSupplier';
 import { Supplier } from '@/types/SupplierTypes';
 
 const PurchaseOrderList: React.FC = () => {
-  const navigate = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const debouncedColumnFilters: ColumnFiltersState = useDebounce(columnFilters, 1000);
@@ -42,7 +41,6 @@ const PurchaseOrderList: React.FC = () => {
         }
       : undefined;
 
-  // Table columns definition
   const purchaseOrderColumns: CustomColumnDef<PurchaseOrder>[] = [
     {
       header: 'PO Number',

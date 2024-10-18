@@ -50,7 +50,20 @@ export default function TanStackBasicTable<TData, TValue>({
 
     // pagination config
     getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
+    onPaginationChange: (updater) => {
+      if (setPagination) {
+        setPagination((prevPagination) => {
+          const newPagination = typeof updater === 'function' ? updater(prevPagination) : updater;
+          return {
+            ...newPagination,
+            pageIndex: newPagination.pageIndex
+          };
+        });
+      } else {
+        console.warn('setPagination is undefined');
+      }
+    },
+
     rowCount: paginatedTableData?.totalFiltered,
     pageCount: totalPages,
     manualPagination: true,
@@ -82,7 +95,9 @@ export default function TanStackBasicTable<TData, TValue>({
           <div className="rounded-md border mb-8">
             <TanStackBasicTableTableComponent table={table} columns={columns} />
           </div>
-          <TanStackBasicTablePaginationNavigationComponent table={table} />
+          {totalPages && totalPages > 1 && (
+            <TanStackBasicTablePaginationNavigationComponent table={table} />
+          )}
         </>
       )}
     </div>
