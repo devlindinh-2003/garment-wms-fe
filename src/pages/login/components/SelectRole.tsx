@@ -18,7 +18,7 @@ const SelectRole: React.FC<Props> = ({ field }) => {
       <Select
       onValueChange={field.onChange} defaultValue={field.value}>
         <SelectTrigger className="w-full flex ">
-          <SelectValue placeholder="Chọn vai trò" />
+          <SelectValue placeholder="Select role" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
