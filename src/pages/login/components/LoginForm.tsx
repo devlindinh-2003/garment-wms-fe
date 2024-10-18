@@ -49,22 +49,22 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
     password: z
       .string()
       .min(8, {
-        message: 'Mật khẩu phải chứa ít nhất 8 ký tự.'
+        message: 'Password must be at least 8 characters long.'
       })
       // .regex(/[A-Z]/, {
       //   message: 'Mật khẩu phải chứa ít nhất 1 ký tự in hoa.',
       // })
       .regex(/[a-z]/, {
-        message: 'Mật khẩu phải chứa ít nhất 1 ký tự in thường.'
+        message: 'Password must contain at least 1 lowercase letter.'
       })
       // .regex(/[!@#$%^&*(),.?":{}|<>]/, {
       //   message: 'Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt.',
       // })
       .regex(/[0-9]/, {
-        message: 'Mật khẩu phải chứa ít nhất 1 chữ số.'
+        message: 'Password must contain at least 1 number.'
       }),
     role: z.enum(roleValues, {
-      required_error: 'Cần phải chọn vai trò.'
+      required_error: 'Role need to be chosen.'
     })
   });
 
@@ -124,23 +124,23 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
       switch (message) {
         case HTTP_STATUS_CODE.NOT_FOUND:
           toast({
-            title: 'Lỗi đăng nhập',
+            title: 'Login Error',
             variant: 'destructive',
-            description: 'Email không tồn tại'
+            description: 'Email not exist or wrong'
           });
           break;
         case HTTP_MESSAGE.INVALID_PW:
           toast({
-            title: 'Lỗi đăng nhập',
+            title: 'Login Error',
             variant: 'destructive',
-            description: 'Mật khẩu không đúng'
+            description: 'Password is wrong'
           });
           break;
         default:
           toast({
-            title: 'Lỗi đăng nhập',
+            title: 'Login Error',
             variant: 'destructive',
-            description: 'Đã có lỗi xảy ra'
+            description: 'Something went wrong'
           });
           break;
       }
@@ -161,7 +161,7 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
                 name="role"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel className=" text-black mb-2">Vai trò</FormLabel>
+                    <FormLabel className=" text-black mb-2">Role</FormLabel>
                     <FormControl>
                       <SelectRole field={field} />
                     </FormControl>
@@ -205,7 +205,7 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
               )}
             />
             <Button className="mt-5" variant={'default'} disabled={loading} type="submit">
-            {loading ? (<Loading/>) : 'Đăng nhập với Email'}
+            {loading ? (<Loading/>) : 'Login with email'}
             </Button>
           </div>
           {/* </div> */}
@@ -213,12 +213,12 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
       </Form>
       <div className="relative">
         <div className="relative flex justify-center text-xs uppercase">
-          <span className=" px-2 font-semibold text-muted-foreground ">Hoặc</span>
+          <span className=" px-2 font-semibold text-muted-foreground ">Or</span>
         </div>
       </div>
       <Button variant="outline" type="button">
         <img src={Google} width={25} className="mr-3" />
-        Đăng nhập với Google
+        Login with Google
       </Button>
     </div>
   );
