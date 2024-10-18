@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import VariantTable from "./components/VariantTable"
 import ImportRequestTable from "./components/ImportRequestTable"
 import { Image } from "@radix-ui/react-avatar"
+import VariantChart from "./components/VariantChart"
 
 const MaterialDetails = () => {
     const [activeTab, setActiveTab] = useState("general")
@@ -84,7 +85,10 @@ const MaterialDetails = () => {
             <ImportRequestTable/>
           </TabsContent>
         </Tabs>
-
+        
+        <div className="mt-4">
+          <VariantChart/>
+        </div>
         <div className="mt-6">
           <h3 className="text-lg font-semibold mb-2">INTERNAL NOTES</h3>
           <textarea

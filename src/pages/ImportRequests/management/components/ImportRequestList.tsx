@@ -22,7 +22,6 @@ type Props = {};
 
 export const getStatusBadgeVariant = (status: string) => {
   const statusObj = Status.find(s => s.value === status);
-  console.log('getStatusBadgeVariant',statusObj);
   return statusObj ? statusObj.variant : 'default'; // Default variant if no match is found
 };
 
@@ -61,10 +60,10 @@ const ImportRequestList = (props: Props) => {
     importRequestData && pageMeta
       ? {
           data: importRequestData,
-          limit: pageMeta.limit,
-          page: pageMeta.page,
-          total: pageMeta.totalItems,
-          totalFiltered: pageMeta.totalItems
+          limit: pageMeta.limit ?? 0,
+          page: pageMeta.page ?? 0,
+          total: pageMeta.total ?? 0,
+          totalFiltered: pageMeta.total ?? 0
         }
       : undefined;
 
@@ -173,12 +172,13 @@ const ImportRequestList = (props: Props) => {
     }
   ];
 
+  console.log(columnFilters)
   return (
     <div className="pb-4">
         <div className="mb-4 w-auto bg-white rounded-xl shadow-sm border">
           <TanStackBasicTable
             isTableDataLoading={isimportRequestLoading} // Use the persistent loading state
-            paginatedTableData={paginatedTableData ?? undefined}
+            paginatedTableData={paginatedTableData}
             columns={importRequestColumn}
             pagination={pagination}
             setPagination={setPagination}

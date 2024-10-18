@@ -22,6 +22,7 @@ import Loading from '@/components/common/Loading';
 import ImportRequestManagement from '@/pages/ImportRequests/management';
 import ViewImportRequest from '@/pages/ImportRequests/view';
 import MaterialDetails from '@/pages/Material/MaterialDetails';
+import MaterialList from '@/pages/Material/management';
 
 const RouterComponent: React.FC = () => {
   const router = createBrowserRouter([
@@ -40,10 +41,6 @@ const RouterComponent: React.FC = () => {
     {
       path: '/test',
       element: <TestPage />
-    },
-    {
-      path: '/material/:id',
-      element: <MaterialDetails/>
     },
     {
       element: <WarehouseManagerRoute />,
@@ -97,7 +94,15 @@ const RouterComponent: React.FC = () => {
             {
               path: '/purchase-staff/home',
               element: <Home />
-            }
+            },
+            {
+              path: '/purchase-staff/material/:id',
+              element: <MaterialDetails/>
+            },
+            {
+              path: '/purchase-staff/material',
+              element: <MaterialList/>
+            },
           ]
         },
         {

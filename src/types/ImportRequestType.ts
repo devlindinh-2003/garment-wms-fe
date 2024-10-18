@@ -90,11 +90,13 @@ export interface UseImportRequestsInput {
   pagination: PaginationState;
 }
 export interface PageMetaData{
-  totalItems: number;
-  offset: number;
-  limit: number;
-  page: number;
-  totalPages: number;
+  total?: number;
+  offset?: number;
+  limit?: number;
+  page?: number;
+  totalPages?: number;
+  hasNext?: boolean;
+  hasPrevious?: boolean;
 }
 
   

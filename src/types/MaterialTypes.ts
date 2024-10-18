@@ -1,4 +1,6 @@
+import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
 import { PageMeta } from './purchaseOrder';
+import { PageMetaData } from './ImportRequestType';
 
 // Unit of Measure (UOM)
 export interface UOM {
@@ -32,6 +34,30 @@ export interface Material {
   deletedAt: string | null;
   materialUom: UOM;
   materialType: MaterialType;
+}
+
+
+export interface MaterialResponse {
+  statusCode: number;
+  data: {
+    data: Material[];
+    pageMeta: PageMetaData;
+  };
+  message: string;
+  errors: any | null;
+}
+
+export interface MaterialDataToRender {
+  limit: number;
+  page: number;
+  total: number;
+  totalFiltered: number;
+  data: Material[];
+}
+export interface UseMaterialsInput {
+  sorting: SortingState;
+  columnFilters: ColumnFiltersState;
+  pagination: PaginationState;
 }
 
 // Material Variant
