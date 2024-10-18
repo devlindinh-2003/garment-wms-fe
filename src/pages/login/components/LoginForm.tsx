@@ -122,11 +122,11 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
       // Handle login errors
       const message = error.response?.data?.message || 'UNKNOWN_ERROR';
       switch (message) {
-        case HTTP_STATUS_CODE.NOT_FOUND:
+        case HTTP_MESSAGE.INVALID_EMAIL:
           toast({
             title: 'Login Error',
             variant: 'destructive',
-            description: 'Email not exist or wrong'
+            description: "Email doesn't exist"
           });
           break;
         case HTTP_MESSAGE.INVALID_PW:

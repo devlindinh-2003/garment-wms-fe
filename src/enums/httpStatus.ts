@@ -3,7 +3,7 @@ export enum HTTP_MESSAGE {
   EXPIRED = 'Token expired',
   INVALID_TOKEN = 'Invalid Token!',
   INVALID_PW = 'Password not match',
-  INVALID_EMAIL = 'Account not found',
+  INVALID_EMAIL = 'Email not found',
 }
 
 export enum HTTP_STATUS_CODE {
