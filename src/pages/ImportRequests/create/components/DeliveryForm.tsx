@@ -107,7 +107,7 @@ const DeliveryForm: React.FC<DeliveryFormProps> = ({
                         <CommandList>
                           <CommandEmpty>No Purchase Order found.</CommandEmpty>
                           <CommandGroup>
-                            {data?.data.data.map((item: any) => (
+                            {data?.map((item: any) => (
                               <CommandItem
                                 key={item.id}
                                 value={item.poNumber}
