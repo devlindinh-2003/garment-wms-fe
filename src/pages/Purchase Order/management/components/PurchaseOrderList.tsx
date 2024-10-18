@@ -19,10 +19,9 @@ const PurchaseOrderList: React.FC = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const debouncedColumnFilters: ColumnFiltersState = useDebounce(columnFilters, 1000);
   const debouncedSorting: SortingState = useDebounce(sorting, 1000);
-
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10
+    pageSize: 5
   });
 
   const { isFetching, purchaseOrderList, pageMeta } = useGetAllPurchaseOrder({
@@ -38,8 +37,8 @@ const PurchaseOrderList: React.FC = () => {
           data: purchaseOrderList,
           limit: pageMeta.limit,
           page: pageMeta.page,
-          total: pageMeta.totalItems,
-          totalFiltered: pageMeta.totalItems
+          total: pageMeta.total,
+          totalFiltered: pageMeta.totalPages
         }
       : undefined;
 
@@ -165,6 +164,7 @@ const PurchaseOrderList: React.FC = () => {
         setSorting={setSorting}
         columnFilters={columnFilters}
         setColumnFilters={setColumnFilters}
+        totalPages={paginatedTableData?.totalFiltered}
       />
     </div>
   );

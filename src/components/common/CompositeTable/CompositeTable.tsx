@@ -13,6 +13,7 @@ import TableSkeleton from '../TableSekeleton';
 
 interface TanStackBasicTableProps<TData, TValue> extends TableProps<TData, TValue> {
   showToolbar?: boolean;
+  totalPages?: number;
 }
 
 export default function TanStackBasicTable<TData, TValue>({
@@ -28,7 +29,8 @@ export default function TanStackBasicTable<TData, TValue>({
   setPagination,
   columnFilters = [],
   setColumnFilters,
-  showToolbar = true
+  showToolbar = true,
+  totalPages
 }: TanStackBasicTableProps<TData, TValue>) {
   const table = useReactTable({
     data: paginatedTableData?.data || [],
@@ -50,9 +52,7 @@ export default function TanStackBasicTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
     rowCount: paginatedTableData?.totalFiltered,
-    pageCount: Math.ceil(
-      (paginatedTableData?.totalFiltered || 0) / (paginatedTableData?.limit || 1)
-    ),
+    pageCount: totalPages,
     manualPagination: true,
     state: {
       sorting,
