@@ -19,38 +19,41 @@ export const getAllPurchaseOrders = async ({
   const limit = pagination.pageSize;
   const page = pagination.pageIndex + 1;
   const offset = page === 1 ? 0 : (page - 1) * limit - 1;
-  const filter: any[] = [];
-  const order: any[] = [];
+  const filters: string[] = [];
+  const orders: string[] = [];
 
-  columnFilters.forEach((filterItem) => {
+  // Manually build the filter query
+  columnFilters.forEach((filterItem, index) => {
     const { id, value } = filterItem;
-    let type: FilterOperationType;
+    let type: string;
+
     if (Array.isArray(value)) {
-      type = FilterOperationType.InStrings;
+      type = 'in';
     } else if (value === null) {
-      type = FilterOperationType.NeNull;
+      type = 'ne_null';
     } else {
-      type = FilterOperationType.Eq;
+      type = '='; // Manually set the type to '=='
     }
-    filter.push({ field: id, type, value });
+
+    filters.push(`filter[${index}][field]=${id}`);
+    filters.push(`filter[${index}][type]=${type}`);
+    filters.push(`filter[${index}][value]=${value}`);
   });
 
-  sorting.forEach((sort) => {
+  // Manually build the order query
+  sorting.forEach((sort, index) => {
     const direction = sort.desc ? 'desc' : 'asc';
-    order.push({ field: sort.id, dir: direction });
+    orders.push(`order[${index}][field]=${sort.id}`);
+    orders.push(`order[${index}][dir]=${direction}`);
   });
 
-  const queryString = FilterBuilder.buildFilterQueryString({
-    limit,
-    offset,
-    filter,
-    order
-  });
+  // Build the complete query string
+  const queryString = `?offset=${offset}&limit=${limit}&${filters.join('&')}&${orders.join('&')}`;
 
-  const fullUrl = queryString.startsWith('?')
-    ? `/purchase-order${queryString}`
-    : `/purchase-order?${queryString}`;
+  const fullUrl = `/purchase-order${queryString}`;
+
   try {
+    // Make the API request using Axios
     const config = get(fullUrl);
     const response = await axios(config);
     return response.data.data as PurchaseOrderListResponse;

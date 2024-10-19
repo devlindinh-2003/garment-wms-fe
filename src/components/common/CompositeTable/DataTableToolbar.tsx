@@ -78,9 +78,9 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
     <div className="flex items-center justify-between mb-4">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter users..."
-          value={(table.getColumn('username')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('username')?.setFilterValue(event.target.value)}
+          placeholder="Filter by PO Number..."
+          value={(table.getColumn('status')?.getFilterValue() as string) ?? ''}
+          onChange={(event) => table.getColumn('status')?.setFilterValue(event.target.value)}
           className="h-8 w-[150px] lg:w-[350px]"
         />
         {table
@@ -107,8 +107,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
           </Button>
         )}
       </div>
-        <DataTableViewOptions table={table} />
-    
+      <DataTableViewOptions table={table} />
     </div>
   );
 }
