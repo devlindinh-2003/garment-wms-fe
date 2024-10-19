@@ -70,17 +70,23 @@ export const priorities = [
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  searchColumnId: string;
+  searchPlaceholder?: string;
 }
 
-export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+export function DataTableToolbar<TData>({
+  table,
+  searchColumnId,
+  searchPlaceholder = 'Search...'
+}: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter by PO Number..."
-          value={(table.getColumn('status')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('status')?.setFilterValue(event.target.value)}
+          placeholder={searchPlaceholder}
+          value={(table.getColumn(searchColumnId)?.getFilterValue() as string) ?? ''}
+          onChange={(event) => table.getColumn(searchColumnId)?.setFilterValue(event.target.value)}
           className="h-8 w-[150px] lg:w-[350px]"
         />
         {table

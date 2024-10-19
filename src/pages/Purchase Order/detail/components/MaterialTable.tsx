@@ -27,7 +27,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({ poDeliveryDetail }) => {
       header: 'Material Code',
       accessorKey: 'materialVariant.code',
       cell: ({ getValue }) => <div className="pl-2 font-semibold">{getValue<string>()}</div>,
-      enableColumnFilter: false
+      enableColumnFilter: true
     },
     {
       header: 'Material Name',
@@ -128,6 +128,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({ poDeliveryDetail }) => {
         setSorting={setSorting}
         columnFilters={columnFilters}
         setColumnFilters={setColumnFilters}
+        showToolbar={false}
       />
     </div>
   );

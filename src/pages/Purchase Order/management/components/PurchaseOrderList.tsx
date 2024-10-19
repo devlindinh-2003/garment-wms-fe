@@ -163,6 +163,7 @@ const PurchaseOrderList: React.FC = () => {
         columnFilters={columnFilters}
         setColumnFilters={setColumnFilters}
         totalPages={paginatedTableData?.totalFiltered}
+        searchColumnId="status"
       />
     </div>
   );
