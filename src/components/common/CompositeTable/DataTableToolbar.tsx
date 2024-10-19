@@ -70,13 +70,13 @@ export const priorities = [
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
-  searchColumnId: string;
+  searchColumnId?: string;
   searchPlaceholder?: string;
 }
 
 export function DataTableToolbar<TData>({
   table,
-  searchColumnId,
+  searchColumnId = 'id',
   searchPlaceholder = 'Search...'
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
