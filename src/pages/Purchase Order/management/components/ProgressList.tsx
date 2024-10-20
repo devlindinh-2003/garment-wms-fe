@@ -1,4 +1,4 @@
-import { Loader2, CheckCircle, XCircle, FileText } from 'lucide-react';
+import { CheckCircle, XCircle, FileText, CircleDashed } from 'lucide-react';
 import { PurchaseOrderStatus } from '@/enums/purchaseOrderStatus';
 import React from 'react';
 import { Button } from '@/components/ui/button';
@@ -36,7 +36,7 @@ const getColorClasses = (status?: PurchaseOrderStatus) => {
 const getIcon = (status?: PurchaseOrderStatus) => {
   switch (status) {
     case PurchaseOrderStatus.IN_PROGRESS:
-      return <Loader2 className="text-blue-500 " size={30} />;
+      return <CircleDashed className="text-blue-500 " size={30} />;
     case PurchaseOrderStatus.CANCELLED:
       return <XCircle className="text-red-500" size={30} />;
     case PurchaseOrderStatus.FINISHED:
