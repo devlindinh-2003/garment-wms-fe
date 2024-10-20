@@ -172,7 +172,6 @@ const ImportRequestList = (props: Props) => {
     }
   ];
 
-  console.log(columnFilters)
   return (
     <div className="pb-4">
         <div className="mb-4 w-auto bg-white rounded-xl shadow-sm border">

@@ -22,24 +22,23 @@ export const getAllImportRequestFn = async ({
   const filter: any[] = [];
   const order: any[] = [];
 
-  // Build filter array from columnFilters
   columnFilters.forEach((filterItem) => {
     const { id, value } = filterItem;
-
-    // Check the type of operation based on your requirement
+  
     let type: FilterOperationType;
-    if (Array.isArray(value)) {
-      type = FilterOperationType.InStrings; // Example operation type
-    } else if (value === null) {
-      type = FilterOperationType.NeNull; // Example operation type
+    if (id === 'name') {
+      type = FilterOperationType.Ilike;
     } else {
-      type = FilterOperationType.Eq; // Default operation type
+      type = FilterOperationType.Eq;
     }
-
-    filter.push({ field: id, type, value });
+    if (Array.isArray(value)) {
+      value.forEach((val) => {
+        filter.push({ field: id, type, value: val });
+      });
+    } else {
+      filter.push({ field: id, type, value });
+    }
   });
-
-  // Build order array from sorting
   sorting.forEach((sort) => {
     const direction = sort.desc ? 'desc' : 'asc';
     order.push({ field: sort.id, dir: direction });

@@ -6,12 +6,10 @@ import { PageMetaData } from './ImportRequestType';
 
 export interface KanbanDisplayProps<TData> {
   isLoading: boolean;
-  paginatedData: UseGetTableResponseType<TData>;
-  search: string;
-  setSearch: Dispatch<SetStateAction<string>>;
-  pagination: PaginationState;
-  setPagination: Dispatch<SetStateAction<PaginationState>>;
-  columnFilters: ColumnFiltersState;
-  setColumnFilters: Dispatch<SetStateAction<ColumnFiltersState>>;
-  pageMeta?: PageMetaData;
+  paginatedData?: UseGetTableResponseType<TData>;
+  // pagination: PaginationState;
+  // setPagination?: Dispatch<SetStateAction<PaginationState>>;
+  // columnFilters: ColumnFiltersState;
+  // setColumnFilters?: Dispatch<SetStateAction<ColumnFiltersState>>;
+
 }

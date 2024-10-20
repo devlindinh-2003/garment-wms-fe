@@ -9,23 +9,6 @@ export default function KanbanSkeleton() {
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <Skeleton className="h-10 w-40" />
-        <div className="flex items-center space-x-2">
-          <div className="relative">
-            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-            <Input
-              type="text"
-              placeholder="Search..."
-              className="pl-8 pr-4"
-              disabled
-            />
-          </div>
-          <Button variant="outline" size="icon" disabled>
-            <Grid size={20} />
-          </Button>
-          <Button variant="outline" size="icon" disabled>
-            <List size={20} />
-          </Button>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

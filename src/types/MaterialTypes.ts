@@ -34,6 +34,10 @@ export interface Material {
   deletedAt: string | null;
   materialUom: UOM;
   materialType: MaterialType;
+  materialVariant: MaterialVariant[]
+  image: string | null;
+  onHand: number;
+  numberOfMaterialVariant: number;
 }
 
 
@@ -47,6 +51,37 @@ export interface MaterialResponse {
   errors: any | null;
 }
 
+export interface MaterialReceiptResponse {
+  statusCode: number;
+  data: MaterialReceipt;
+  message: string;
+  errors: any | null;
+}
+export interface MaterialReceipt {
+  materialimportReceipt: MaterialImportReceipt[];
+    materialExportReceipt: MaterialExportReceipt[];
+}
+export interface MaterialImportReceipt{
+  id: string;
+  materialId: string;
+  importReceiptId: string;
+  expiredDate: string;
+  quantityByPack:number;
+
+  createdAt: string | null;
+  updatedAt: string | null;
+  deletedAt: string | null;
+}
+export interface MaterialExportReceipt{
+  id: string;
+  materialId: string;
+  exportReceiptId: string;
+  expiredDate: string;
+  quantityByPack:number;
+  createdAt: string | null;
+  updatedAt: string | null;
+  deletedAt: string | null;
+}
 export interface MaterialDataToRender {
   limit: number;
   page: number;
@@ -76,6 +111,16 @@ export interface MaterialVariant {
   updatedAt: string | null;
   deletedAt: string | null;
   material: Material;
+  inventoryStock: InventoryStock
+}
+export interface InventoryStock {
+  id: string;
+  materialVariantId: string | null;
+  productVariantId: string | null;
+  quantityByPack: number;
+  createdAt: string | null;
+  updatedAt: string | null;
+  deletedAt: string | null;
 }
 export type MaterialVariantResponse = {
   statusCode: number;
