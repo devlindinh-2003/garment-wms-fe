@@ -28,11 +28,11 @@ export const getAllPurchaseOrders = async ({
     let type: string;
 
     if (Array.isArray(value)) {
-      type = 'in';
+      type = '=';
     } else if (value === null) {
       type = 'ne_null';
     } else {
-      type = '='; // Manually set the type to '=='
+      type = '=';
     }
 
     filters.push(`filter[${index}][field]=${id}`);
