@@ -50,8 +50,8 @@ const PurchaseOrderDetails: React.FC = () => {
   ];
 
   return (
-    <section className="h-full w-full px-4 bg-slate-200 py-3 flex flex-col space-y-7">
-      <div className="bg-white px-5 py-3 rounded-lg ring-1 ring-gray-300 flex flex-col gap-8">
+    <section className="h-full w-full px-4  py-3 flex flex-col space-y-7">
+      <div className="bg-white px-5 py-3 rounded-xl shadow-lg ring-1 ring-gray-300 flex flex-col gap-8">
         <BreadcrumbResponsive breadcrumbItems={breadcrumbItems} itemsToDisplay={2} />
         {/* Order overview */}
         <OrderOverview
