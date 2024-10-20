@@ -64,7 +64,7 @@ const StatusCard: React.FC<StatusCardProps> = ({ status, value, label, onViewDet
 
       <div className="text-center flex flex-col gap-2">
         <h2 className={`text-4xl font-bold ${text}`}>{value}</h2>
-        <p className="text-sm text-slate-400">
+        <p className={`text-sm ${text}`}>
           <span className="capitalize font-semibold">
             {label || status?.toLowerCase().replace('_', ' ')}
           </span>{' '}
