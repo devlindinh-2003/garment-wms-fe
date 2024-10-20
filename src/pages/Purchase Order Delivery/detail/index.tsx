@@ -12,8 +12,6 @@ const PurchaseOrderDeliveryDetails = () => {
   const { delivery, poNumber } = location.state as { delivery: PODelivery; poNumber: string };
   const { poId } = useParams();
 
-  console.log(delivery);
-
   const totalMaterialAmount = delivery.poDeliveryDetail.reduce(
     (sum: number, detail: PODeliveryDetail) => sum + (detail.totalAmount || 0),
     0
@@ -28,7 +26,8 @@ const PurchaseOrderDeliveryDetails = () => {
     { label: `Purchase Order #${poNumber}`, href: `/purchase-staff/purchase-order/${poId}` },
     {
       label: `Delivery #${delivery.code}`,
-      href: `/purchase-staff/purchase-order/${poId}/po-delivery/${delivery.id}`
+      href: `/purchase-staff/purchase-order/${poId}/po-delivery/${delivery.id}`,
+      disabled: true
     }
   ];
 
