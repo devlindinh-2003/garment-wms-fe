@@ -20,7 +20,7 @@ const PurchaseOrderList: React.FC = () => {
   const debouncedSorting: SortingState = useDebounce(sorting, 1000);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 5
+    pageSize: 10
   });
 
   const { isFetching, purchaseOrderList, pageMeta } = useGetAllPurchaseOrder({
@@ -152,19 +152,22 @@ const PurchaseOrderList: React.FC = () => {
         <h1 className="text-3xl font-bold text-primaryLight">Purchase Order Lists</h1>
         <UploadExcel fileName="purchase order" triggerButtonLabel="Import" />
       </div>
-      <TanStackBasicTable
-        isTableDataLoading={isFetching || isFetchingSuppliers}
-        paginatedTableData={paginatedTableData}
-        columns={purchaseOrderColumns}
-        pagination={pagination}
-        setPagination={setPagination}
-        sorting={sorting}
-        setSorting={setSorting}
-        columnFilters={columnFilters}
-        setColumnFilters={setColumnFilters}
-        totalPages={paginatedTableData?.totalFiltered}
-        searchColumnId="status"
-      />
+      {/* Set fixed height for the table */}
+      <div className="overflow-auto h-[700px]">
+        <TanStackBasicTable
+          isTableDataLoading={isFetching || isFetchingSuppliers}
+          paginatedTableData={paginatedTableData}
+          columns={purchaseOrderColumns}
+          pagination={pagination}
+          setPagination={setPagination}
+          sorting={sorting}
+          setSorting={setSorting}
+          columnFilters={columnFilters}
+          setColumnFilters={setColumnFilters}
+          totalPages={paginatedTableData?.totalFiltered}
+          searchColumnId="status"
+        />
+      </div>
     </div>
   );
 };
