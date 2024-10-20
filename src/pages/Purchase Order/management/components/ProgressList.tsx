@@ -77,7 +77,7 @@ const StatusCard: React.FC<StatusCardProps> = ({ status, value, label, onViewDet
 
 const ProgressList: React.FC<ProgressListProps> = ({ statistics, onViewDetails }) => {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="grid grid-cols-2 items-center gap-5">
       <StatusCard value={statistics.total} label="Total Orders" onViewDetails={onViewDetails} />
       <StatusCard
         status={PurchaseOrderStatus.IN_PROGRESS}
