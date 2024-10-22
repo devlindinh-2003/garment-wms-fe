@@ -31,7 +31,6 @@ const handleResponseSuccess = (res:any) => {
 const handleResponseErr = async (error :any) => {
     const originalRequest = error.config;
     const refreshToken = Cookies.get('refreshToken');
-    console.log('error',error);
     if (error?.response?.status === HTTP_STATUS_CODE.UNAUTHORIZED && error?.response?.data?.message === HTTP_MESSAGE.EXPIRED && !originalRequest._retry ) {
         originalRequest._retry = true;
         try{
@@ -46,21 +45,6 @@ const handleResponseErr = async (error :any) => {
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return privateCall(originalRequest);
         }
-        
-        // const refreshToken = Cookies.get('refreshToken');
-
-        // if (!refreshToken) return Promise.reject(err);
-
-        // try {
-        //     const res = await axiosClient.post('/refresh-token', {
-        //         token: refreshToken
-        //     });
-
-        //     const newAccessToken = res.data.accessToken;
-        //     Cookies.set('token', newAccessToken);
-        //     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
-        //     return axiosClient(originalRequest);
          catch (error) {
             Cookies.remove('token');
             Cookies.remove('refreshToken');
