@@ -211,15 +211,6 @@ const LoginForm: React.FC = ({ className, ...props }: UserAuthFormProps) => {
           {/* </div> */}
         </form>
       </Form>
-      <div className="relative">
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className=" px-2 font-semibold text-muted-foreground ">Or</span>
-        </div>
-      </div>
-      <Button variant="outline" type="button">
-        <img src={Google} width={25} className="mr-3" />
-        Login with Google
-      </Button>
     </div>
   );
 };
