@@ -19,7 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import DeliveryForm from './DeliveryForm';
 import ImportRequestDetails from './ImportRequestDetails';
-import { PODelivery, PODeliveryDetail, PurchaseOrder } from '@/types/purchaseOrder';
+import { PODelivery, PODeliveryDetail, PurchaseOrder } from '@/types/PurchaseOrder';
 import { useGetAllPurchaseOrder } from '@/hooks/useGetAllPurchaseOrder';
 import { useDebounce } from '@/hooks/useDebouce';
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table';
@@ -68,7 +68,6 @@ const NewImportRequest = (props: Props) => {
     columnFilters: debouncedColumnFilters,
     pagination
   });
-  console.log(data);
   const [isEditDetail, setEditDetail] = useState<Boolean>(false);
   const [dialogOpen, setDialogOpen] = useState(false); // State to control AlertDialog open/close
   const [selectedPO, setSelectedPO] = useState<PurchaseOrder>();
